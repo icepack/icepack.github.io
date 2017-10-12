@@ -1,4 +1,3 @@
-## icepack
 
 Welcome to the project website for _icepack_, a glacier flow modelling library.
 If you're a researcher in earth sciences and you need to simulate large-scale ice flow, you might be in the right place!
