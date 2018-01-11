@@ -1,2 +1,5 @@
 theme: jekyll-theme-slate
 title: icepack
+github:
+    repository_url: https://github.com/icepack/icepack
+
