@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>icepack.optimization &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="icepack 0.0.3 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Demos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../meshes.html">Meshes, functions, plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">icepack</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>icepack.optimization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for icepack.optimization</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">derivative</span><span class="p">,</span> <span class="n">solve</span><span class="p">,</span> \
+    <span class="n">Function</span><span class="p">,</span> <span class="n">Constant</span>
+
+<div class="viewcode-block" id="compute_search_direction"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.compute_search_direction">[docs]</a><span class="k">def</span> <span class="nf">compute_search_direction</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Solve the linear system for the search direction in Newton&#39;s method</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : firedrake.Form</span>
+<span class="sd">        A functional to be optimized</span>
+<span class="sd">    u : firedrake.Function</span>
+<span class="sd">        The current guess for the optimizer of `E`</span>
+<span class="sd">    bc : firedrake.DirichletBC</span>
+<span class="sd">        Boundary conditions for the PDE</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    firedrake.Function</span>
+<span class="sd">        The solution of the PDE</span>
+
+<span class="sd">    .. math:: (d^2E)p = -dE</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">dF</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
+    <span class="n">solve</span><span class="p">(</span><span class="n">dF</span> <span class="o">==</span> <span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span>
+          <span class="n">solver_parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ilu&#39;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="functional_along_line"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.functional_along_line">[docs]</a><span class="k">def</span> <span class="nf">functional_along_line</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Restrict a functional to a line in parameter space</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : firedrake.Form</span>
+<span class="sd">        The functional to be optimized</span>
+<span class="sd">    u : firedrake.Function</span>
+<span class="sd">        The current guess for the optimizer of `E`</span>
+<span class="sd">    p : firedrake.Function</span>
+<span class="sd">        The current search direction</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function `f(z) = E(u0 + z * p)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">p</span><span class="p">})</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+        <span class="n">alpha</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">assemble</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="backtracking_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.backtracking_search">[docs]</a><span class="k">def</span> <span class="nf">backtracking_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">armijo</span><span class="o">=</span><span class="mf">1.0e-4</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Search for the minimum of a functional along a line</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : firedrake.Form</span>
+<span class="sd">        The functional to be minimized</span>
+<span class="sd">    u : firedrake.Function</span>
+<span class="sd">        The current guess for the minimizer of `E`</span>
+<span class="sd">    p : firedrake.Function</span>
+<span class="sd">        The direction from `u` where we are searching for a new minimizer</span>
+<span class="sd">    armijo : float, optional</span>
+<span class="sd">        The Armijo parameter used to determine when the line search has</span>
+<span class="sd">        found a sufficiently better guess</span>
+<span class="sd">    rho : float, optional</span>
+<span class="sd">        The backtracking parameter used to determine how much to shrink the</span>
+<span class="sd">        step length if the current value is too long</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The distance along `p` of an approximate minimizer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">functional_along_line</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">f0</span><span class="p">,</span> <span class="n">df0</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">assemble</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">),</span> <span class="n">p</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">df0</span> <span class="o">&lt;</span> <span class="mi">0</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">while</span> <span class="n">f</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">f0</span> <span class="o">+</span> <span class="n">armijo</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">df0</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">*=</span> <span class="n">rho</span>
+
+    <span class="k">return</span> <span class="n">alpha</span></div>
+
+
+<div class="viewcode-block" id="newton_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.newton_search">[docs]</a><span class="k">def</span> <span class="nf">newton_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the minimizer of a convex functional</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : firedrake.Form</span>
+<span class="sd">        The functional to be minimized</span>
+<span class="sd">    u0 : firedrake.Function</span>
+<span class="sd">        Initial guess for the minimizer</span>
+<span class="sd">    tolerance : float</span>
+<span class="sd">        Stopping criterion for the optimization procedure</span>
+<span class="sd">    max_iterations : int, optional</span>
+<span class="sd">        Optimization procedure will stop at this many iterations regardless</span>
+<span class="sd">        of convergence</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    firedrake.Function</span>
+<span class="sd">        The approximate minimizer of `E` to within tolerance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dE</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">compute_search_direction</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
+        <span class="n">dE_dp</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">dE</span><span class="p">,</span> <span class="n">p</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">dE_dp</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="n">max_iterations</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">u</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">backtracking_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

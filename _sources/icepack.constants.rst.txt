@@ -1,0 +1,7 @@
+icepack\.constants module
+=========================
+
+.. automodule:: icepack.constants
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,28 @@
+icepack package
+===============
+
+.. automodule:: icepack
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    icepack.grid
+    icepack.models
+
+Submodules
+----------
+
+.. toctree::
+
+   icepack.adjoint
+   icepack.constants
+   icepack.interpolate
+   icepack.norms
+   icepack.optimization
+   icepack.plot
+

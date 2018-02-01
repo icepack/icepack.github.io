@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
+        <link rel="next" title="Installation" href="installation.html"/>
+        <link rel="prev" title="icepack" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Demos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="meshes.html">Meshes, functions, plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">icepack</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Icepack uses the library <a class="reference external" href="https://www.firedrakeproject.org">firedrake</a> for finite element analysis.
+The important objects from firedrake that you’ll be using are:</p>
+<dl class="docutils">
+<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.mesh.Mesh" title="(in Firedrake v0.12)"><code class="xref py py-func docutils literal"><span class="pre">Mesh()</span></code></a></dt>
+<dd>Create the geometry for the domain</dd>
+<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.functionspace.FunctionSpace" title="(in Firedrake v0.12)"><code class="xref py py-func docutils literal"><span class="pre">FunctionSpace()</span></code></a></dt>
+<dd>Create a finite element basis over a given mesh for representing fields</dd>
+<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.function.Function" title="(in Firedrake v0.12)"><code class="xref py py-class docutils literal"><span class="pre">Function</span></code></a></dt>
+<dd>Represents a scalar, vector, or tensor field defined on some function space</dd>
+</dl>
+<p>Icepack consists of routines that solve for various quantities encountered in ice sheet physics.
+For example, the class <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf" title="icepack.models.ice_shelf.IceShelf"><code class="xref py py-class docutils literal"><span class="pre">IceShelf</span></code></a> has methods <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="icepack.models.ice_shelf.IceShelf.diagnostic_solve"><code class="xref py py-meth docutils literal"><span class="pre">diagnostic_solve()</span></code></a> and <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve" title="icepack.models.ice_shelf.IceShelf.prognostic_solve"><code class="xref py py-meth docutils literal"><span class="pre">prognostic_solve()</span></code></a> that compute (respectively) the ice velocity and thickness.
+The computed velocity and thickness are <cite>firedrake.Function</cite> objects that you can plot or analyze using the various routines in firedrake.</p>
+<p>For a thorough reference on ice sheet physics, see <a class="reference internal" href="#greve2009dynamics" id="id1">[1]</a> and <a class="reference internal" href="#cuffey2010physics" id="id2">[2]</a>.
+For an introduction to the finite element method, see <a class="reference internal" href="#gockenbach2006understanding" id="id3">[3]</a> and <a class="reference internal" href="#braess2007finite" id="id4">[4]</a>.</p>
+<p id="bibtex-bibliography-overview-0"><table class="docutils citation" frame="void" id="greve2009dynamics" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ralf Greve and Heinz Blatter. <em>Dynamics of ice sheets and glaciers</em>. Springer Science &amp; Business Media, 2009.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="cuffey2010physics" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Kurt&nbsp;M Cuffey and William Stanley&nbsp;Bryce Paterson. <em>The physics of glaciers</em>. Academic Press, 2010.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="gockenbach2006understanding" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Mark&nbsp;S Gockenbach. <em>Understanding and implementing the finite element method</em>. Volume&nbsp;97. SIAM, 2006.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="braess2007finite" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Dietrich Braess. <em>Finite elements: Theory, fast solvers, and applications in solid mechanics</em>. Cambridge University Press, 2007.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="icepack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

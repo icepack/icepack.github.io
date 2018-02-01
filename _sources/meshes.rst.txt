@@ -1,0 +1,228 @@
+
+.. code:: ipython3
+
+    %matplotlib inline
+    import firedrake
+    import icepack
+
+Meshes, functions, plotting
+===========================
+
+This demo will show you how to create a simple mesh, define a function
+on that mesh, and postprocess the results. A function on a domain can be
+defined analytically by getting some handles for the x- and
+y-coordinates of the points of the domain, and manipulating the
+coordinate functions algebraically. Firedrake includes some routines for
+plotting functions defined on unstructured meshes so we can visualize
+the results. Finally, we'll demonstrate the possibilities for how to
+analyze a function by evaluating some area and contour integrals.
+
+Meshes
+~~~~~~
+
+First, we need to make a mesh. Firedrake includes routines for
+generating meshes of simple domains; to see all of the meshes that are
+available, you can type
+
+::
+
+    help(firedrake.utility_meshes)
+
+from the python interpreter. In this demo we'll use a mesh of the unit
+square.
+
+Mesh plots are shown with a different color for each segments of the
+boundary and a legend. This is useful to when applying different
+boundary conditions to different segments, for example, Dirichlet
+boundary conditions on part of the domain and Neumann boundary
+conditions on the other part.
+
+.. code:: ipython3
+
+    nx, ny = 16, 16
+    mesh = firedrake.UnitSquareMesh(nx, ny)
+    icepack.plot(mesh)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x10ab59048>
+
+
+
+
+.. image:: meshes_files/meshes_3_1.png
+
+
+Functions
+~~~~~~~~~
+
+We can make scalar and vector fields defined on this mesh by
+interpolating the values of an algebraic expression to some space of
+functions.
+
+First, we have to construct a function space ``Q``. We already have a
+mesh, and we need to decide what element family and polynomial degree.
+In almost all the cases you'll encounter, the element family consists of
+continuous piecewise-polynomial functions in each triangle, which is
+abbreviated to ``CG`` for "continuous Galerkin".
+
+Next, we have to make an expression for the function and interpolate it
+to the function space ``Q``. The function
+``firedrake.SpatialCoordinate`` returns two symbolic objects ``x``,
+``y`` for the coordinates of each point of the mesh. We can then use
+these symbols to define expressions for the function we'd like to
+analyze. In this case, I've chosen the `Rosenbrock
+function <https://en.wikipedia.org/wiki/Rosenbrock_function>`__.
+Firedrake has built-in functions for evaluating various transcendental
+functions of the coordinates, for example the sine, cosine, exponential,
+logarithm, etc. To see all of the available functions, you can check the
+namespace ``ufl.operators``.
+
+Finally, the function ``firedrake.interpolate`` takes in an expression
+and a function space, and returns a field from that function space.
+
+.. code:: ipython3
+
+    degree = 2
+    Q = firedrake.FunctionSpace(mesh, 'CG', degree)
+    
+    x, y = firedrake.SpatialCoordinate(mesh)
+    a, b = 0.5, 10.0
+    expr = (a - x)**2 + b*(y - x**2)**2
+    q = firedrake.interpolate(expr, Q)
+    icepack.plot(q, plot3d=True)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.Axes3DSubplot at 0x10aead828>
+
+
+
+
+.. image:: meshes_files/meshes_5_1.png
+
+
+We can make vector fields in much the same way as we make scalar fields,
+the only difference being that we need a new type of function space.
+
+.. code:: ipython3
+
+    V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
+    v = firedrake.interpolate(firedrake.grad(expr), V)
+    icepack.plot(v)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x10b14e470>
+
+
+
+
+.. image:: meshes_files/meshes_7_1.png
+
+
+Post-processing
+~~~~~~~~~~~~~~~
+
+We've already seen about how to visualize a scalar or a vector field;
+this is just a call to the function ``icepack.plot``. To analyze the
+results of a simulation, you might also want to evaluate scalar or
+vector fields at points in the domain:
+
+.. code:: ipython3
+
+    z = (a, a**2)
+    print(q(z))
+    print(v(z))
+
+
+.. parsed-literal::
+
+    -2.4582620195591153e-17
+    [  2.32893496e-15  -1.48980215e-15]
+
+
+Firedrake also provides a rich set of operations for evaluating integral
+expressions of scalar and vector fields. Much like how the function
+``SpatialCoordinate`` gives you two symbols ``x``, ``y`` that represent
+the coordinates of each point of the mesh, firedrake also provides an
+object ``dx`` that represents the differential area element.
+
+To define an integral, we multiply an expression by ``dx``, and then
+call the function ``firedrake.assemble`` to evaluate it.
+
+.. code:: ipython3
+
+    from firedrake import inner, grad, dx, assemble
+    
+    print(assemble(x*y*dx))
+    print(assemble(q*dx))
+    print(assemble(inner(v, v)*dx))
+
+
+.. parsed-literal::
+
+    0.25
+    2.0833346049
+    172.016096698
+
+
+We can also evaluate integrals over the boundary of the mesh. Boundary
+integrals are specified using the differential surface element ``ds``
+instead of ``dx``.
+
+Sometimes we need to integrate over only part of the boundary. We can
+specify which part by passing the right numeric ID to ``ds``; these are
+the same IDs that are color-coded in the mesh plot above.
+
+Finally, you might also want to evaluate the flux of a vector field
+across the boundary. To evaluate a flux, we need to get the unit outward
+normal vector to the boundary. You can get a symbol representing the
+unit outward normal by calling the function ``firedrake.FacetNormal``.
+
+.. code:: ipython3
+
+    from firedrake import ds
+    
+    print(assemble(q*ds))
+    print(assemble(q*ds(2)))
+    
+    n = firedrake.FacetNormal(mesh)
+    print(assemble(inner(v, n) * ds))
+
+
+.. parsed-literal::
+
+    14.6666692098
+    3.58333333333
+    42.0
+
+
+Epilogue
+~~~~~~~~
+
+Icepack uses the functions in firedrake to implement solvers for the
+various physics problems that show up in ice sheet modeling. The
+firedrake routines that we've demonstrated here can be used for
+analyzing simulation results, either through visualization, evaluating
+fields at points, or evaluating integrals of fields. They can also be
+used to define input fields of simulations, if those fields have a
+simple analytical expression. In the next demo, we'll show how to use
+icepack to solve for the velocity and thickness of a floating ice shelf
+with a synthetic geometry. In later demos, we'll show how to use real
+observational data sets, as well as more complicated geometries imported
+from mesh generators.
+
+To read more about firedrake, you can visit their
+`documentation <http://www.firedrakeproject.org/documentation.html>`__
+or check out some of the
+`demos <http://www.firedrakeproject.org/notebooks.html>`__.

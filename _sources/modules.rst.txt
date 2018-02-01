@@ -1,0 +1,7 @@
+icepack
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   icepack

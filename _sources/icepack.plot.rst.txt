@@ -1,0 +1,7 @@
+icepack\.plot module
+====================
+
+.. automodule:: icepack.plot
+    :members:
+    :undoc-members:
+    :show-inheritance:

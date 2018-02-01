@@ -1,0 +1,7 @@
+icepack\.interpolate module
+===========================
+
+.. automodule:: icepack.interpolate
+    :members:
+    :undoc-members:
+    :show-inheritance:

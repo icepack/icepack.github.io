@@ -1,0 +1,262 @@
+
+.. code:: ipython3
+
+    %matplotlib inline
+    import firedrake
+    import icepack, icepack.models
+
+Synthetic ice shelf
+===================
+
+In this demo, we'll show how to simulate the evolution of a floating ice
+shelf. Running a simulation consists of creating a model object that
+represents the physics you're using, and calling the model object's
+solve methods. These methods take a set of input fields and return some
+output field. For most ice sheet models, there are two kinds of PDEs to
+solve: a diagnostic equation that takes in a thickness and returns the
+current velocity, and a prognostic equation that takes the current
+velocity and thickness, and returns the thickness at the next timestep.
+To keep things as simple as possible, we'll use an exact analytic
+solution for the velocity of a floating ice shelf with a thickness that
+decreases linearly from the inflow boundary to the ice front.
+
+Geometry and input data
+~~~~~~~~~~~~~~~~~~~~~~~
+
+First we need to define some input data, for which we'll use an exact
+solution for a floating ice shelf with a simple geometry. A thorough
+derivation of the PDE for ice shelf flow can be found in chapter 6 of
+Greve and Blatter, `Dynamics of Ice Sheets and
+Glaciers <https://books.google.com/books?isbn=3642034152>`__, along with
+the exact solution that we'll use here. We'll briefly review what these
+PDEs are below. The symbols and variable names we use will correspond
+exactly to the variable names used in the code that follows.
+
+The diagnostic equation for the velocity of an ice shelf is
+
+.. math::  \nabla\cdot hM - \frac{1}{2}\varrho g\nabla h^2 = 0
+
+where :math:`h` is the ice thickness, :math:`M` is the membrane stress
+tensor, :math:`g` is the acceleration due to gravity, and
+:math:`\varrho = \rho_I(1 - \rho_I/\rho_W)`. The membrane stress is
+defined as
+
+.. math:: M = 2\mu(\dot\varepsilon + \text{tr}(\dot\varepsilon)I),
+
+where :math:`\mu` is the ice viscosity,
+:math:`\dot\varepsilon = (\nabla u + \nabla u^*)/2` is the 2D
+strain-rate tensor, and :math:`I` is the identity tensor. Note that
+since we're in 2D the trace of the strain rate tensor is no longer zero.
+Finally, the ice viscosity is a function of the strain rate tensor:
+
+.. math:: \mu = \frac{B}{2}\sqrt{\frac{\dot\varepsilon : \dot\varepsilon + \text{tr}(\dot\varepsilon)^2}{2}}^{1/n - 1}
+
+where :math:`n = 3`, and :math:`B` is the temperature-dependent rheology
+coefficient.
+
+When we consider ice shelves with no variation in the
+:math:`y`-direction, these equations reduce to a 1D boundary value
+problem. Provided that the rheology coefficient is constant throughout
+the domain, we can integrate twice to get that
+
+.. math::  u = u_0 + \int_0^x\left(\frac{\varrho g h(x')}{4B}\right)^n dx'.
+
+When :math:`h` is a linear function of :math:`x`, we can evaluate this
+integral exactly to arrive at an expression for :math:`u` which is a
+degree-4 polynomial.
+
+First, let's make some python functions that represent the thickness and
+velocity fields.
+
+.. code:: ipython3
+
+    Lx, Ly = 20e3, 20e3
+    
+    h0, delta_h = 500.0, 100.0
+    def thickness(x):
+        return h0 - delta_h * x[0] / Lx
+    
+    from icepack.constants import rho_ice, rho_water, gravity
+    rho = rho_ice * (1 - rho_ice / rho_water)
+    
+    from icepack.constants import glen_flow_law as n
+    T = 254.15
+    B = icepack.rate_factor(T)**(-1/n)
+    
+    def velocity(x):
+        u0 = 100.0
+        # These variables don't have any significance of their own, it's just
+        # a really long expression.
+        zeta = (rho * gravity * h0 / (4 * B))**n
+        beta = 1 - (1 - (delta_h/h0)*(x[0]/Lx))**(n + 1)
+        du = zeta * beta * Lx * (h0/delta_h) / (n + 1)
+        return (u0 + du, 0.0)
+
+Next we'll set up a mesh and interpolate these functions to the finite
+element representation. This should all be familiar from the last demo.
+
+.. code:: ipython3
+
+    nx, ny = 16, 16
+    mesh = firedrake.RectangleMesh(nx, ny, Lx, Ly)
+    
+    degree = 2
+    Q = firedrake.FunctionSpace(mesh, 'CG', degree)
+    V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
+    
+    h = icepack.interpolate(thickness, Q)
+    v = icepack.interpolate(velocity, V)
+    
+    icepack.plot(h)
+    icepack.plot(v)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x117d5ed68>
+
+
+
+
+.. image:: synthetic-ice-shelf_files/synthetic-ice-shelf_5_1.png
+
+
+
+.. image:: synthetic-ice-shelf_files/synthetic-ice-shelf_5_2.png
+
+
+Modeling
+~~~~~~~~
+
+To actually start solving things, we'll make an ``IceShelf`` object that
+represents the physical model we're using. The model object stores a
+bunch of data about the individual physics components -- viscosity,
+gravity, etc. These aren't important for now but we'll come back to them
+later.
+
+Each model type has two methods, ``diagnostic_solve`` and
+``prognostic_solve``, that solve the PDEs for the ice velocity and
+thickness.
+
+.. code:: ipython3
+
+    ice_shelf = icepack.models.IceShelf()
+    help(ice_shelf.diagnostic_solve)
+
+
+.. parsed-literal::
+
+    Help on method diagnostic_solve in module icepack.models.ice_shelf:
+    
+    diagnostic_solve(u0=None, h=None, dirichlet_ids=[], tol=1e-06, **kwargs) method of icepack.models.ice_shelf.IceShelf instance
+        Solve for the ice velocity from the thickness
+        
+        Parameters
+        ----------
+        u0 : firedrake.Function
+            Initial guess for the ice velocity; the Dirichlet boundaries
+            are taken from `u0`
+        h : firedrake.Function
+            Ice thickness
+        dirichlet_ids : list of int
+            list of integer IDs denoting the parts of the boundary where
+            Dirichlet conditions should be applied
+        tol : float
+            dimensionless tolerance for when to terminate Newton's method
+        
+        Returns
+        -------
+        u : firedrake.Function
+            Ice velocity
+        
+        Other parameters
+        ----------------
+        **kwargs
+            All other keyword arguments will be passed on to the
+            `viscosity` and `gravity` functions that were set when this
+            model object was initialized
+    
+
+
+To solve for the ice velocity, we pass in all the input fields as
+keyword arguments. To make things a little more interesting, we'll use a
+value of the fluidity parameter that changes in the center of the
+domain.
+
+We also need to describe the boundary conditions we're using and the
+tolerance for solving Newton's method. Since the boundary conditions and
+convergence tolerance are usually the same throughout a simulation,
+we'll pack them into a dictionary and reuse it throughout.
+
+.. code:: ipython3
+
+    def fluidity(x):
+        y = (x[0]/Lx, x[1]/Ly)
+        inside = (1/4 < y[0] < 3/4) and (1/4 < y[1] < 3/4)
+        shape = 16 * inside * y[0] * (1 - y[0]) * y[1] * (1 - y[1])
+        delta_T = 10.0
+        return icepack.rate_factor(T + delta_T * shape)
+    
+    A = icepack.interpolate(fluidity, Q)
+    
+    opts = {"dirichlet_ids": [1, 3, 4], "tol": 1e-12}
+    u = ice_shelf.diagnostic_solve(u0=v, h=h, A=A, **opts)
+    
+    icepack.plot(u)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x117d37198>
+
+
+
+
+.. image:: synthetic-ice-shelf_files/synthetic-ice-shelf_9_1.png
+
+
+The solve procedures take in all the physical fields as keyword
+arguments instead of positional arguments. Keyword arguments save you
+the trouble of remembering what order everything goes in. As we'll see
+later, they also make it easier to swap out components of the model
+physics for your own customized versions.
+
+The ice shelf model object also has a prognostic solve methods that
+updates the ice thickness for a given timestep. The following code runs
+the model forward for a year with a timestep of one month, assuming a
+constant value of the accumulation rate.
+
+.. code:: ipython3
+
+    T = 1.0
+    num_timesteps = 12
+    dt = T / num_timesteps
+    a = icepack.interpolate(lambda x: -2.5, Q)
+    
+    for k in range(num_timesteps):
+        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u)
+        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
+        
+    icepack.plot(h)
+    icepack.plot(u)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x118be1518>
+
+
+
+
+.. image:: synthetic-ice-shelf_files/synthetic-ice-shelf_12_1.png
+
+
+
+.. image:: synthetic-ice-shelf_files/synthetic-ice-shelf_12_2.png
+

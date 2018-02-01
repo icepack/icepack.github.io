@@ -1,0 +1,16 @@
+icepack\.grid package
+=====================
+
+.. automodule:: icepack.grid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   icepack.grid.arcinfo
+   icepack.grid.grid_data
+

@@ -1,0 +1,7 @@
+icepack\.adjoint module
+=======================
+
+.. automodule:: icepack.adjoint
+    :members:
+    :undoc-members:
+    :show-inheritance:

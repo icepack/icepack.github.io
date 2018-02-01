@@ -1,0 +1,18 @@
+icepack\.models package
+=======================
+
+.. automodule:: icepack.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   icepack.models.ice_shelf
+   icepack.models.ice_stream
+   icepack.models.mass_transport
+   icepack.models.viscosity
+
