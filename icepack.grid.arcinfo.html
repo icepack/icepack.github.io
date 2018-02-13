@@ -98,9 +98,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="meshes.html">Meshes, functions, plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.meshes.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -196,13 +196,13 @@ Arc/Info ASCII format has the virtue of being human readable, easy to
 parse, and readable by every geographic information system.</p>
 <dl class="function">
 <dt id="icepack.grid.arcinfo.read">
-<code class="descclassname">icepack.grid.arcinfo.</code><code class="descname">read</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/arcinfo.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.arcinfo.read" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.grid.arcinfo.</code><code class="descname">read</code><span class="sig-paren">(</span><em>filename_or_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/arcinfo.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.arcinfo.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an ArcInfo ASCII file into a gridded data set</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file</strong> – the source file</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename_or_file</strong> (<em>str</em><em> or </em><em>file-like</em>) – either the name of the file or the opened input file</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>q</strong> – the gridded data set’s coordinates, values, and missing data mask</td>
 </tr>
@@ -214,14 +214,14 @@ parse, and readable by every geographic information system.</p>
 
 <dl class="function">
 <dt id="icepack.grid.arcinfo.write">
-<code class="descclassname">icepack.grid.arcinfo.</code><code class="descname">write</code><span class="sig-paren">(</span><em>file</em>, <em>q</em>, <em>missing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/arcinfo.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.arcinfo.write" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.grid.arcinfo.</code><code class="descname">write</code><span class="sig-paren">(</span><em>filename_or_file</em>, <em>q</em>, <em>missing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/arcinfo.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.arcinfo.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a gridded data set to an ArcInfo ASCII format file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> – the destination file</li>
+<li><strong>filename_or_file</strong> (<em>str</em><em> or </em><em>file-like</em>) – either the name of the file or the opened output file</li>
 <li><strong>q</strong> (<em>icepack.grid.GridData</em>) – the gridded data set to be written</li>
 </ul>
 </td>

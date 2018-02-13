@@ -98,9 +98,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="meshes.html">Meshes, functions, plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.meshes.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -191,17 +191,37 @@
 <span id="icepack-adjoint-module"></span><h1>icepack.adjoint module<a class="headerlink" href="#module-icepack.adjoint" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="icepack.adjoint.derivative">
-<code class="descclassname">icepack.adjoint.</code><code class="descname">derivative</code><span class="sig-paren">(</span><em>J</em>, <em>F</em>, <em>u</em>, <em>p</em>, <em>bc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/adjoint.html#derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.adjoint.derivative" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.adjoint.</code><code class="descname">derivative</code><span class="sig-paren">(</span><em>J</em>, <em>F</em>, <em>u</em>, <em>p</em>, <em>bc=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/adjoint.html#derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.adjoint.derivative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the sensitivity of a functional of the solution of a PDE
 with respect to a parameter</p>
-<p>Given a functional <span class="math">\(J(u)\)</span> of the solution <span class="math">\(u\)</span> of the
-nonlinear equation</p>
-<dl class="docutils">
-<dt>..math::</dt>
-<dd>F(u, p) = 0,</dd>
-</dl>
-<p>this procedure returns a form representing the derivative of <span class="math">\(J\)</span>
-with respect to the parameter <span class="math">\(p\)</span> using the adjoint method.</p>
+<p>Let <span class="math">\(G(p)\)</span> be the solution operator for the nonlinear equation</p>
+<div class="math">
+\[F(u, p) = 0,\]</div>
+<p>i.e. <span class="math">\(F(G(p), p) = 0\)</span> for all <span class="math">\(p\)</span>. Given a functional
+<span class="math">\(J(u)\)</span> of the solution, this function returns the derivative of
+<span class="math">\(J(G(p))\)</span> with respect to the parameter <span class="math">\(p\)</span> using the
+adjoint method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>J</strong> (<em>firedrake.Form</em>) – A functional of the solution of a PDE</li>
+<li><strong>F</strong> (<em>firedrake.Form</em>) – The weak form of the PDE</li>
+<li><strong>u</strong> (<em>firedrake.Function</em>) – A solution of the PDE with the given parameters</li>
+<li><strong>p</strong> (<em>firedrake.Function</em>) – The parameters we’re linearizing around</li>
+<li><strong>bc</strong> (<em>firedrake.DirichletBC</em><em>, </em><em>optional</em>) – Boundary conditions for the PDE</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dJ</strong> – The derivative of <cite>J</cite> with respect to <cite>p</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Form</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

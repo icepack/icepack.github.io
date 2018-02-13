@@ -96,9 +96,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../meshes.html">Meshes, functions, plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.meshes.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -170,18 +170,37 @@
 <span></span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 
-<div class="viewcode-block" id="derivative"><a class="viewcode-back" href="../../icepack.adjoint.html#icepack.adjoint.derivative">[docs]</a><span class="k">def</span> <span class="nf">derivative</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
+<div class="viewcode-block" id="derivative"><a class="viewcode-back" href="../../icepack.adjoint.html#icepack.adjoint.derivative">[docs]</a><span class="k">def</span> <span class="nf">derivative</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the sensitivity of a functional of the solution of a PDE</span>
 <span class="sd">    with respect to a parameter</span>
 
-<span class="sd">    Given a functional :math:`J(u)` of the solution :math:`u` of the</span>
-<span class="sd">    nonlinear equation</span>
+<span class="sd">    Let :math:`G(p)` be the solution operator for the nonlinear equation</span>
 
-<span class="sd">    ..math::</span>
-<span class="sd">       F(u, p) = 0,</span>
+<span class="sd">    .. math:: F(u, p) = 0,</span>
 
-<span class="sd">    this procedure returns a form representing the derivative of :math:`J`</span>
-<span class="sd">    with respect to the parameter :math:`p` using the adjoint method.</span>
+<span class="sd">    i.e. :math:`F(G(p), p) = 0` for all :math:`p`. Given a functional</span>
+<span class="sd">    :math:`J(u)` of the solution, this function returns the derivative of</span>
+<span class="sd">    :math:`J(G(p))` with respect to the parameter :math:`p` using the</span>
+<span class="sd">    adjoint method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    J : firedrake.Form</span>
+<span class="sd">        A functional of the solution of a PDE</span>
+<span class="sd">    F : firedrake.Form</span>
+<span class="sd">        The weak form of the PDE</span>
+<span class="sd">    u : firedrake.Function</span>
+<span class="sd">        A solution of the PDE with the given parameters</span>
+<span class="sd">    p : firedrake.Function</span>
+<span class="sd">        The parameters we&#39;re linearizing around</span>
+<span class="sd">    bc : firedrake.DirichletBC, optional</span>
+<span class="sd">        Boundary conditions for the PDE</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dJ : firedrake.Form</span>
+<span class="sd">        The derivative of `J` with respect to `p`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dF</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
     <span class="n">dJ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>

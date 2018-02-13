@@ -96,9 +96,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../meshes.html">Meshes, functions, plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.meshes.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -176,50 +176,61 @@
 <span class="sd">Arc/Info ASCII format has the virtue of being human readable, easy to</span>
 <span class="sd">parse, and readable by every geographic information system.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">GridData</span>
 
-<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../icepack.grid.arcinfo.html#icepack.grid.arcinfo.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">missing</span><span class="p">):</span>
+<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../icepack.grid.arcinfo.html#icepack.grid.arcinfo.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">missing</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a gridded data set to an ArcInfo ASCII format file</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename</span>
-<span class="sd">       the destination file</span>
+<span class="sd">    filename_or_file : str or file-like</span>
+<span class="sd">        either the name of the file or the opened output file</span>
 <span class="sd">    q : icepack.grid.GridData</span>
-<span class="sd">       the gridded data set to be written</span>
+<span class="sd">        the gridded data set to be written</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span>
 
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ncols           </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nx</span><span class="p">))</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;nrows           </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ny</span><span class="p">))</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;xllcorner       </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;yllcorner       </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;cellsize        </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_delta</span><span class="p">))</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;NODATA_value    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">filename_or_file</span>
+
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ncols           </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nx</span><span class="p">))</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;nrows           </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ny</span><span class="p">))</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;xllcorner       </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;yllcorner       </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;cellsize        </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_delta</span><span class="p">))</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;NODATA_value    </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">else</span> <span class="n">missing</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../icepack.grid.arcinfo.html#icepack.grid.arcinfo.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../icepack.grid.arcinfo.html#icepack.grid.arcinfo.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read an ArcInfo ASCII file into a gridded data set</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    file</span>
-<span class="sd">        the source file</span>
+<span class="sd">    filename_or_file : str or file-like</span>
+<span class="sd">        either the name of the file or the opened input file</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    q : icepack.grid.GridData</span>
 <span class="sd">        the gridded data set&#39;s coordinates, values, and missing data mask</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">filename_or_file</span>
+
     <span class="k">def</span> <span class="nf">rd</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rd</span><span class="p">())</span>
     <span class="n">ny</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rd</span><span class="p">())</span>
@@ -230,7 +241,7 @@
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
 
     <span class="k">return</span> <span class="n">GridData</span><span class="p">((</span><span class="n">xo</span><span class="p">,</span> <span class="n">yo</span><span class="p">),</span> <span class="n">dx</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">missing_data_value</span><span class="o">=</span><span class="n">missing</span><span class="p">)</span></div>
 

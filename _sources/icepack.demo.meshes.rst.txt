@@ -5,8 +5,8 @@
     import firedrake
     import icepack
 
-Meshes, functions, plotting
-===========================
+Meshes, functions
+=================
 
 This demo will show you how to create a simple mesh, define a function
 on that mesh, and postprocess the results. A function on a domain can be
@@ -48,12 +48,12 @@ conditions on the other part.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10ab59048>
+    <matplotlib.axes._subplots.AxesSubplot at 0x112784518>
 
 
 
 
-.. image:: meshes_files/meshes_3_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_3_1.png
 
 
 Functions
@@ -100,12 +100,12 @@ and a function space, and returns a field from that function space.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.Axes3DSubplot at 0x10aead828>
+    <matplotlib.axes._subplots.Axes3DSubplot at 0x1129f08d0>
 
 
 
 
-.. image:: meshes_files/meshes_5_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_5_1.png
 
 
 We can make vector fields in much the same way as we make scalar fields,
@@ -122,12 +122,12 @@ the only difference being that we need a new type of function space.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10b14e470>
+    <matplotlib.axes._subplots.AxesSubplot at 0x113493940>
 
 
 
 
-.. image:: meshes_files/meshes_7_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_7_1.png
 
 
 Post-processing
@@ -207,8 +207,8 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
     42.0
 
 
-Epilogue
-~~~~~~~~
+Conclusion
+~~~~~~~~~~
 
 Icepack uses the functions in firedrake to implement solvers for the
 various physics problems that show up in ice sheet modeling. The

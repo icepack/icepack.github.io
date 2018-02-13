@@ -74,12 +74,12 @@ Rise.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x11067d2e8>
+    <matplotlib.axes._subplots.AxesSubplot at 0x112884550>
 
 
 
 
-.. image:: larsen-ice-shelf_files/larsen-ice-shelf_4_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_4_1.png
 
 
 Input data
@@ -111,11 +111,11 @@ ice speed and plot that instead.
 .. code:: ipython3
 
     from icepack.grid import arcinfo, GridData
-    thickness = arcinfo.read(open(os.path.join(data_directory, "bedmap2/larsen-h.txt"), 'r'))
+    thickness = arcinfo.read(os.path.join(data_directory, "bedmap2/larsen-h.txt"))
     icepack.plot(thickness, levels=[25 * n for n in range(26)])
     
-    vx = arcinfo.read(open(os.path.join(data_directory, "measures_antarctica/larsen-vx.txt"), 'r'))
-    vy = arcinfo.read(open(os.path.join(data_directory, "measures_antarctica/larsen-vy.txt"), 'r'))
+    vx = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vx.txt"))
+    vy = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vy.txt"))
     
     x0, delta = vx._origin, vx._delta
     with np.errstate(invalid='ignore'):
@@ -127,16 +127,16 @@ ice speed and plot that instead.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x111a88d30>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1144dfda0>
 
 
 
 
-.. image:: larsen-ice-shelf_files/larsen-ice-shelf_6_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_6_1.png
 
 
 
-.. image:: larsen-ice-shelf_files/larsen-ice-shelf_6_2.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_6_2.png
 
 
 Preprocessing
@@ -171,7 +171,7 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
     Q = firedrake.FunctionSpace(mesh, 'CG', degree)
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
     
-    h = icepack.interpolate(thickness, Q)
+    h0 = icepack.interpolate(thickness, Q)
     u0 = icepack.interpolate(lambda x: (vx(x), vy(x)), V)
     
     icepack.plot(u0)
@@ -181,12 +181,12 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x108c1b5f8>
+    <matplotlib.axes._subplots.AxesSubplot at 0x115b41a90>
 
 
 
 
-.. image:: larsen-ice-shelf_files/larsen-ice-shelf_10_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_10_1.png
 
 
 .. code:: ipython3
@@ -196,7 +196,7 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
     
     ice_shelf = icepack.models.IceShelf()
     opts = {"dirichlet_ids": [3, 4, 5, 6, 7, 8], "tol": 1e-6}
-    u = ice_shelf.diagnostic_solve(u0=u0, h=h, A=A, **opts)
+    u = ice_shelf.diagnostic_solve(u0=u0, h=h0, A=A, **opts)
     
     icepack.plot(u)
 
@@ -205,12 +205,12 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x111902c50>
+    <matplotlib.axes._subplots.AxesSubplot at 0x11441a5c0>
 
 
 
 
-.. image:: larsen-ice-shelf_files/larsen-ice-shelf_11_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_11_1.png
 
 
 We get a fairly reasonable approximation for the velocity even with a
@@ -225,3 +225,95 @@ spatially homogeneous guess for the ice temperature.
 
     0.108881031496
 
+
+Ballpark estimate, the surface and basal mass balance of Larsen C are
++30 and -30 cm/yr respectively, so we can take the total to be 0. Let's
+simulate the evolution of the ice shelf for the next 10 years. The code
+for this loop should be familiar from the previous example.
+
+.. code:: ipython3
+
+    a = firedrake.Function(Q)
+    h = h0.copy(deepcopy=True)
+    
+    dt = 0.5
+    for n in range(int(10 / dt) + 1):
+        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u)
+        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
+
+.. code:: ipython3
+
+    icepack.plot(h)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1142fe2b0>
+
+
+
+
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_16_1.png
+
+
+By plotting the difference between the modeled thickness after 10 years
+and the initial thickness, we can see the propagation of the rifts
+downstream.
+
+.. code:: ipython3
+
+    δh = firedrake.Function(Q)
+    δh.assign(h - h0)
+    icepack.plot(δh)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x116836908>
+
+
+
+
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_18_1.png
+
+
+The oscillatory pattern makes it less than obvious whether the ice shelf
+gained or lost mass, so let's evaluate the integral of the thickness
+change to see.
+
+.. code:: ipython3
+
+    from firedrake import assemble, dx
+    print(assemble(δh * dx) / assemble(1 * dx(mesh)))
+
+
+.. parsed-literal::
+
+    -3.85592389542
+
+
+Seeing as the simulation ran for 10 years, this isn't a wildly
+unrealistic number.
+
+Conclusion
+~~~~~~~~~~
+
+In the last demo, we showed how to simulate ice shelf flow using
+synthetic data. Here we showed how to load in a generated mesh and
+observational data, and we used this same functionality to simulate a
+real ice shelf.
+
+Many real data sets require some amount of preprocessing before they can
+be used for modeling. For example, many velocity data sets have missing
+pixels or patches due to noise in the optical or radar imagery, and
+these missing points have to be filled in somehow. The Bedmap2 thickness
+also contains processing artifacts that are visible as depressions
+running diagonally across the ice shelf. These artifacts could be
+removed by using a low-pass filter on the gridded data, although this
+might also wash out some real features like the many rifts in the ice.
+Most of this preprocessing can be done directly on the ``GridData``
+object.

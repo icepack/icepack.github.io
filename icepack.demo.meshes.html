@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Meshes, functions, plotting &mdash; icepack 0.0.3 documentation</title>
+  <title>Meshes, functions &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
-        <link rel="next" title="Synthetic ice shelf" href="synthetic-ice-shelf.html"/>
+        <link rel="next" title="Synthetic ice shelf" href="icepack.demo.synthetic-ice-shelf.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
   
@@ -97,15 +97,15 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Meshes, functions, plotting</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Meshes, functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#meshes">Meshes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#post-processing">Post-processing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#epilogue">Epilogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -154,13 +154,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Meshes, functions, plotting</li>
+      <li>Meshes, functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/meshes.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.demo.meshes.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,8 +178,8 @@
 <span class="kn">import</span> <span class="nn">icepack</span>
 </pre></div>
 </div>
-<div class="section" id="meshes-functions-plotting">
-<h1>Meshes, functions, plotting<a class="headerlink" href="#meshes-functions-plotting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="meshes-functions">
+<h1>Meshes, functions<a class="headerlink" href="#meshes-functions" title="Permalink to this headline">¶</a></h1>
 <p>This demo will show you how to create a simple mesh, define a function
 on that mesh, and postprocess the results. A function on a domain can be
 defined analytically by getting some handles for the x- and
@@ -208,10 +208,10 @@ conditions on the other part.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10ab59048</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112784518</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/meshes_3_1.png" src="_images/meshes_3_1.png" />
+<img alt="_images/icepack.demo.meshes_3_1.png" src="_images/icepack.demo.meshes_3_1.png" />
 </div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
@@ -246,10 +246,10 @@ and a function space, and returns a field from that function space.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">plot3d</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">Axes3DSubplot</span> <span class="n">at</span> <span class="mh">0x10aead828</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">Axes3DSubplot</span> <span class="n">at</span> <span class="mh">0x1129f08d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/meshes_5_1.png" src="_images/meshes_5_1.png" />
+<img alt="_images/icepack.demo.meshes_5_1.png" src="_images/icepack.demo.meshes_5_1.png" />
 <p>We can make vector fields in much the same way as we make scalar fields,
 the only difference being that we need a new type of function space.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
@@ -257,10 +257,10 @@ the only difference being that we need a new type of function space.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10b14e470</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x113493940</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/meshes_7_1.png" src="_images/meshes_7_1.png" />
+<img alt="_images/icepack.demo.meshes_7_1.png" src="_images/icepack.demo.meshes_7_1.png" />
 </div>
 <div class="section" id="post-processing">
 <h2>Post-processing<a class="headerlink" href="#post-processing" title="Permalink to this headline">¶</a></h2>
@@ -321,8 +321,8 @@ unit outward normal by calling the function <code class="docutils literal"><span
 </pre></div>
 </div>
 </div>
-<div class="section" id="epilogue">
-<h2>Epilogue<a class="headerlink" href="#epilogue" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>Icepack uses the functions in firedrake to implement solvers for the
 various physics problems that show up in ice sheet modeling. The
 firedrake routines that we’ve demonstrated here can be used for
@@ -351,7 +351,7 @@ or check out some of the
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="synthetic-ice-shelf.html" class="btn btn-neutral float-right" title="Synthetic ice shelf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.demo.synthetic-ice-shelf.html" class="btn btn-neutral float-right" title="Synthetic ice shelf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -36,8 +36,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
-        <link rel="next" title="Larsen Ice Shelf" href="larsen-ice-shelf.html"/>
-        <link rel="prev" title="Meshes, functions, plotting" href="meshes.html"/> 
+        <link rel="next" title="Larsen Ice Shelf" href="icepack.demo.larsen-ice-shelf.html"/>
+        <link rel="prev" title="Meshes, functions" href="icepack.demo.meshes.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -97,13 +97,14 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="meshes.html">Meshes, functions, plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.meshes.html">Meshes, functions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Synthetic ice shelf</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#geometry-and-input-data">Geometry and input data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeling">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -158,7 +159,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/synthetic-ice-shelf.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.demo.synthetic-ice-shelf.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -230,12 +231,12 @@ degree-4 polynomial.</p>
 velocity fields.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">20e3</span><span class="p">,</span> <span class="mf">20e3</span>
 
-<span class="n">h0</span><span class="p">,</span> <span class="n">delta_h</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
+<span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
 <span class="k">def</span> <span class="nf">thickness</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">h0</span> <span class="o">-</span> <span class="n">delta_h</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">Lx</span>
+    <span class="k">return</span> <span class="n">h0</span> <span class="o">-</span> <span class="n">δh</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">Lx</span>
 
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span><span class="p">,</span> <span class="n">rho_water</span><span class="p">,</span> <span class="n">gravity</span>
-<span class="n">rho</span> <span class="o">=</span> <span class="n">rho_ice</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho_ice</span> <span class="o">/</span> <span class="n">rho_water</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span><span class="p">,</span> <span class="n">rho_water</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<span class="n">ϱ</span> <span class="o">=</span> <span class="n">rho_ice</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho_ice</span> <span class="o">/</span> <span class="n">rho_water</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 <span class="n">T</span> <span class="o">=</span> <span class="mf">254.15</span>
@@ -245,9 +246,9 @@ velocity fields.</p>
     <span class="n">u0</span> <span class="o">=</span> <span class="mf">100.0</span>
     <span class="c1"># These variables don&#39;t have any significance of their own, it&#39;s just</span>
     <span class="c1"># a really long expression.</span>
-    <span class="n">zeta</span> <span class="o">=</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">gravity</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span><span class="o">**</span><span class="n">n</span>
-    <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">delta_h</span><span class="o">/</span><span class="n">h0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">Lx</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">du</span> <span class="o">=</span> <span class="n">zeta</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span><span class="o">/</span><span class="n">delta_h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ζ</span> <span class="o">=</span> <span class="p">(</span><span class="n">ϱ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span><span class="o">**</span><span class="n">n</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">δh</span><span class="o">/</span><span class="n">h0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">Lx</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">β</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span><span class="o">/</span><span class="n">δh</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -267,11 +268,11 @@ element representation. This should all be familiar from the last demo.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x117d5ed68</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x1101ece48</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/synthetic-ice-shelf_5_1.png" src="_images/synthetic-ice-shelf_5_1.png" />
-<img alt="_images/synthetic-ice-shelf_5_2.png" src="_images/synthetic-ice-shelf_5_2.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_5_1.png" src="_images/icepack.demo.synthetic-ice-shelf_5_1.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_5_2.png" src="_images/icepack.demo.synthetic-ice-shelf_5_2.png" />
 </div>
 <div class="section" id="modeling">
 <h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
@@ -330,8 +331,8 @@ we’ll pack them into a dictionary and reuse it throughout.</p>
     <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">Ly</span><span class="p">)</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">delta_T</span> <span class="o">=</span> <span class="mf">10.0</span>
-    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">delta_T</span> <span class="o">*</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="n">δT</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">δT</span> <span class="o">*</span> <span class="n">shape</span><span class="p">)</span>
 
 <span class="n">A</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">fluidity</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
@@ -341,10 +342,10 @@ we’ll pack them into a dictionary and reuse it throughout.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x117d37198</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x107a58d68</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/synthetic-ice-shelf_9_1.png" src="_images/synthetic-ice-shelf_9_1.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_9_1.png" src="_images/icepack.demo.synthetic-ice-shelf_9_1.png" />
 <p>The solve procedures take in all the physical fields as keyword
 arguments instead of positional arguments. Keyword arguments save you
 the trouble of remembering what order everything goes in. As we’ll see
@@ -367,11 +368,25 @@ constant value of the accumulation rate.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x118be1518</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x1110704e0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="_images/synthetic-ice-shelf_12_1.png" src="_images/synthetic-ice-shelf_12_1.png" />
-<img alt="_images/synthetic-ice-shelf_12_2.png" src="_images/synthetic-ice-shelf_12_2.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_12_1.png" src="_images/icepack.demo.synthetic-ice-shelf_12_1.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_12_2.png" src="_images/icepack.demo.synthetic-ice-shelf_12_2.png" />
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In the last demo, we saw how to create a mesh, define a finite element
+space, interpolate functions to that finite element space, and analyze
+the results through either plotting or more general post-processing.
+Here we’ve shown how to use these functions as an input to an ice shelf
+flow model. There are a lot of interesting experiments you can do with
+synthetic ice shelves. For example, you can approximate the effect of
+seasonality by making the accumulation rate and inflow thickness a
+sinusoidal function of time. You can then add things like tidal effects
+and see how they alter the overall ice flow. In the next demo, we’ll
+show how to use these functions for simulating a real ice shelf using
+observational data.</p>
 </div>
 </div>
 
@@ -385,10 +400,10 @@ constant value of the accumulation rate.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="larsen-ice-shelf.html" class="btn btn-neutral float-right" title="Larsen Ice Shelf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.demo.larsen-ice-shelf.html" class="btn btn-neutral float-right" title="Larsen Ice Shelf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="meshes.html" class="btn btn-neutral" title="Meshes, functions, plotting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.demo.meshes.html" class="btn btn-neutral" title="Meshes, functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
