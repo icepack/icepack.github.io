@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack.interpolate module &mdash; icepack 0.0.3 documentation</title>
+  <title>icepack.utilities module &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -37,8 +37,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
         <link rel="up" title="icepack package" href="icepack.html"/>
-        <link rel="next" title="icepack.norms module" href="icepack.norms.html"/>
-        <link rel="prev" title="icepack.constants module" href="icepack.constants.html"/> 
+        <link rel="prev" title="icepack.plot module" href="icepack.plot.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -110,11 +109,11 @@
 <li class="toctree-l3 current"><a class="reference internal" href="icepack.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="icepack.adjoint.html">icepack.adjoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="icepack.constants.html">icepack.constants module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">icepack.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.interpolate.html">icepack.interpolate module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="icepack.norms.html">icepack.norms module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="icepack.optimization.html">icepack.optimization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="icepack.plot.html">icepack.plot module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.utilities.html">icepack.utilities module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">icepack.utilities module</a></li>
 </ul>
 </li>
 </ul>
@@ -169,13 +168,13 @@
         
           <li><a href="icepack.html">icepack package</a> &raquo;</li>
         
-      <li>icepack.interpolate module</li>
+      <li>icepack.utilities module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/icepack.interpolate.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.utilities.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -188,36 +187,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-icepack.interpolate">
-<span id="icepack-interpolate-module"></span><h1>icepack.interpolate module<a class="headerlink" href="#module-icepack.interpolate" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-icepack.utilities">
+<span id="icepack-utilities-module"></span><h1>icepack.utilities module<a class="headerlink" href="#module-icepack.utilities" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="icepack.interpolate.interpolate">
-<code class="descclassname">icepack.interpolate.</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>f</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/interpolate.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.interpolate.interpolate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolate an analytically-defined function to a function space</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>f</strong> (<em>firedrake.Expression</em><em>, </em><em>firedrake.Function</em><em>, or </em><em>a callable object</em>) – If callable, must take in values of the dimension of the function
-space and return either scalar/vector/tensor values</li>
-<li><strong>Q</strong> (<em>firedrake.FunctionSpace</em>) – The function space to interpolate to</li>
-<li><strong>function space Q must be of the right rank for the type of the</strong> (<em>The</em>) – </li>
-<li><strong>of f. For example</strong><strong>, </strong><strong>if f is a vector-valued function</strong><strong>, </strong><strong>then Q</strong> (<em>range</em>) – </li>
-<li><strong>be a vector function space</strong><strong>, </strong><strong>likewise for tensors</strong><strong> or </strong><strong>scalars.</strong> (<em>must</em>) – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A finite element function defined on <cite>Q</cite> with the same nodal values
-as the function <cite>f</cite></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Function</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dt id="icepack.utilities.add_kwarg_wrapper">
+<code class="descclassname">icepack.utilities.</code><code class="descname">add_kwarg_wrapper</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#add_kwarg_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.add_kwarg_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -231,10 +206,8 @@ as the function <cite>f</cite></p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="icepack.norms.html" class="btn btn-neutral float-right" title="icepack.norms module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="icepack.constants.html" class="btn btn-neutral" title="icepack.constants module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.plot.html" class="btn btn-neutral" title="icepack.plot module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

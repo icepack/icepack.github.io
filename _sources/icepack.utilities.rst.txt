@@ -1,0 +1,7 @@
+icepack\.utilities module
+=========================
+
+.. automodule:: icepack.utilities
+    :members:
+    :undoc-members:
+    :show-inheritance:

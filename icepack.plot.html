@@ -37,6 +37,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
         <link rel="up" title="icepack package" href="icepack.html"/>
+        <link rel="next" title="icepack.utilities module" href="icepack.utilities.html"/>
         <link rel="prev" title="icepack.optimization module" href="icepack.optimization.html"/> 
 
   
@@ -113,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="icepack.norms.html">icepack.norms module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="icepack.optimization.html">icepack.optimization module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">icepack.plot module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.utilities.html">icepack.utilities module</a></li>
 </ul>
 </li>
 </ul>
@@ -192,9 +194,14 @@
 <dt id="icepack.plot.plot">
 <code class="descclassname">icepack.plot.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>mesh_or_function</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a visualization of a mesh or a field</p>
-<p>This function overrides the usual firedrake plotting function so that
-meshes are shown with colors and a legend for different parts of the
-boundary.</p>
+<p>This function overrides the usual firedrake plotting functions. When
+plotting a mesh, the boundaries are shown with colors and a legend to
+show the ID for each boundary segment. When plotting a scalar or vector
+field, the default colormap is set to viridis. Finally, when plotting a
+vector field, the default behavior is to instead plot the magnitude of
+the vector, rather than a quiver plot. A quiver plot or a streamline
+plot can instead be selected by passing the keyword argument <cite>method</cite>
+with value <cite>quiver</cite> or <cite>streamline</cite> respectively.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
@@ -213,11 +220,48 @@ boundary.</p>
 <dl class="function">
 <dt id="icepack.plot.plot_mesh">
 <code class="descclassname">icepack.plot.</code><code class="descname">plot_mesh</code><span class="sig-paren">(</span><em>mesh</em>, <em>colors=None</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot_mesh" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plot a mesh with a different color for each boundary segment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.plot.plot_vector_field">
+<code class="descclassname">icepack.plot.</code><code class="descname">plot_vector_field</code><span class="sig-paren">(</span><em>v</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot_vector_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot_vector_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the directions, streamlines, or magnitude of a vector field</p>
+<p>The default method to plot a vector field is to compute the magnitude
+at each point and make a contour plot of this scalar field. You can also
+make a quiver plot by passing the keyword argument <cite>method=’quiver’</cite>.
+Finally, the streamlines of the vector field can be plotted with colors
+representing the magnitude by passing <cite>method=’streamline’</cite>, although
+this is substantially more expensive and may require tweaking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v</strong> (<em>firedrake.Function</em>) – The vector field to plot</li>
+<li><strong>axes</strong> (<em>matplotlib.Axes</em><em>, </em><em>optional</em>) – The axis to draw the figure on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> (<em>str, optional</em>) – Either ‘magnitude’ (default), ‘streamline’, or ‘quiver’</li>
+<li><strong>resolution</strong> (<em>float, optional</em>) – If using a streamline plot, the resolution along a streamline</li>
+<li><strong>spacing</strong> (<em>float, optional</em>) – If using a streamline plot, the minimum spacing between seed points
+for streamlines</li>
+<li><strong>max_num_points</strong> (<em>int, optional</em>) – If using a streamline plot, the maximum number of points along a
+streamline; this is probably necessary if the vector field has a
+stable equilibrium</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="icepack.plot.streamline">
-<code class="descclassname">icepack.plot.</code><code class="descname">streamline</code><span class="sig-paren">(</span><em>velocity</em>, <em>initial_point</em>, <em>resolution</em>, <em>max_num_points=inf</em>, <em>backwards=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.plot.</code><code class="descname">streamline</code><span class="sig-paren">(</span><em>velocity</em>, <em>initial_point</em>, <em>resolution</em>, <em>max_num_points=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a streamline of a 2D velocity field</p>
 <p>A streamline <span class="math">\(\gamma\)</span> of a velocity field <span class="math">\(v\)</span> is a curve
 that solves the ordinary differential equation</p>
@@ -236,8 +280,6 @@ other kinds of postprocessing of vector field data.</p>
 <li><strong>resolution</strong> (<em>float</em>) – the desired length of each segment of the streamline</li>
 <li><strong>max_num_points</strong> (<em>int</em>) – maximum number of points of the streamline; can be necessary to set
 if the trajectory can spiral around a center node</li>
-<li><strong>backwards</strong> (<em>bool</em>) – whether to integrate the streamline in the reverse direction
-(defaults to <cite>False</cite>)</li>
 </ul>
 </td>
 </tr>
@@ -262,6 +304,8 @@ if the trajectory can spiral around a center node</li>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="icepack.utilities.html" class="btn btn-neutral float-right" title="icepack.utilities module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="icepack.optimization.html" class="btn btn-neutral" title="icepack.optimization module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

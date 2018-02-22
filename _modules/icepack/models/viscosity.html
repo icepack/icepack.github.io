@@ -223,7 +223,7 @@
     <span class="k">return</span> <span class="n">sym</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="viscosity_depth_averaged"><a class="viewcode-back" href="../../../icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged">[docs]</a><span class="k">def</span> <span class="nf">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="viscosity_depth_averaged"><a class="viewcode-back" href="../../../icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged">[docs]</a><span class="k">def</span> <span class="nf">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the viscous part of the action for depth-averaged models</span>
 
 <span class="sd">    The viscous component of the action for depth-averaged ice flow is</span>
@@ -258,8 +258,6 @@
 <span class="sd">    firedrake.Form</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">M</span><span class="p">(</span><span class="n">eps</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">A</span><span class="p">),</span> <span class="n">eps</span><span class="p">(</span><span class="n">u</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span></div>
-
-
 </pre></div>
 
            </div>

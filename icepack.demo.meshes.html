@@ -208,7 +208,7 @@ conditions on the other part.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112784518</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x1129e17b8</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.meshes_3_1.png" src="_images/icepack.demo.meshes_3_1.png" />
@@ -246,18 +246,23 @@ and a function space, and returns a field from that function space.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">plot3d</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">Axes3DSubplot</span> <span class="n">at</span> <span class="mh">0x1129f08d0</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">Axes3DSubplot</span> <span class="n">at</span> <span class="mh">0x112c9d9e8</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.meshes_5_1.png" src="_images/icepack.demo.meshes_5_1.png" />
 <p>We can make vector fields in much the same way as we make scalar fields,
-the only difference being that we need a new type of function space.</p>
+the only difference being the type of function space. There are many
+ways to plot a vector field. Here we show a plot of the streamlines of
+the vector field, colored according to the magnitude of the vector. This
+method is expensive, especially if you set the resolution or spacing of
+the streamlines to be too small, but nonetheless it produces really nice
+graphics.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">expr</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;streamline&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">96</span><span class="p">,</span> <span class="n">max_num_points</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x113493940</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112fbc668</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.meshes_7_1.png" src="_images/icepack.demo.meshes_7_1.png" />

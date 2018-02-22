@@ -231,7 +231,7 @@ Rise.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112884550</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10d2965c0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_4_1.png" src="_images/icepack.demo.larsen-ice-shelf_4_1.png" />
@@ -271,7 +271,7 @@ ice speed and plot that instead.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span> <span class="o">*</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">31</span><span class="p">)])</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x1144dfda0</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10e6ba390</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_6_1.png" src="_images/icepack.demo.larsen-ice-shelf_6_1.png" />
@@ -306,10 +306,10 @@ We’ll assume that the ice temperature is a uniform <span class="math">\(-13^\c
 <span class="n">h0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">u0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">vx</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">vy</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
 
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u0</span><span class="p">)</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;streamline&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x115b41a90</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10fcc07f0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_10_1.png" src="_images/icepack.demo.larsen-ice-shelf_10_1.png" />
@@ -320,10 +320,10 @@ We’ll assume that the ice temperature is a uniform <span class="math">\(-13^\c
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dirichlet_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;streamline&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x11441a5c0</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x110e7db70</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_11_1.png" src="_images/icepack.demo.larsen-ice-shelf_11_1.png" />
@@ -351,19 +351,20 @@ for this loop should be familiar from the previous example.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x1142fe2b0</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x110cee438</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_16_1.png" src="_images/icepack.demo.larsen-ice-shelf_16_1.png" />
 <p>By plotting the difference between the modeled thickness after 10 years
 and the initial thickness, we can see the propagation of the rifts
-downstream.</p>
+downstream. This effect is best visualized with a diverging colormap
+that makes the 0-contour really obvious.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">δh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 <span class="n">δh</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">δh</span><span class="p">)</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">δh</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x116836908</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x111531390</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.larsen-ice-shelf_18_1.png" src="_images/icepack.demo.larsen-ice-shelf_18_1.png" />

@@ -25,4 +25,5 @@ Submodules
    icepack.norms
    icepack.optimization
    icepack.plot
+   icepack.utilities
 

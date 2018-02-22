@@ -203,6 +203,44 @@ in ch. 6 of Greve and Blatter.</p>
 </dl>
 </div>
 <dl class="method">
+<dt id="icepack.models.ice_shelf.IceShelf.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>u=None</em>, <em>h=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action functional that gives the ice shelf diagnostic
+model as the Euler-Lagrange equations</p>
+<p>The action functional for the ice shelf diagnostic model is</p>
+<div class="math">
+\[E(u) = \int_\Omega\left(\frac{n}{n + 1}hM:\dot\varepsilon
+- \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx\]</div>
+<p>where <span class="math">\(u\)</span> is the velocity, <span class="math">\(h\)</span> is the ice thickness,
+<span class="math">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math">\(M\)</span> is
+the membrane stress tensor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
+<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>E</strong> – the ice shelf action functional</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">firedrake.Form</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last"><strong>**kwargs</strong> – All other keyword arguments will be passed on to the viscosity
+and gravity functionals. The ice fluidity coefficient, for
+example, is passed as a keyword argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="icepack.models.ice_shelf.IceShelf.diagnostic_solve">
 <code class="descname">diagnostic_solve</code><span class="sig-paren">(</span><em>u0=None</em>, <em>h=None</em>, <em>dirichlet_ids=[]</em>, <em>tol=1e-06</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness</p>
@@ -275,7 +313,7 @@ the other hand, many velocity/pressure element pairs are unstable.</p>
 
 <dl class="function">
 <dt id="icepack.models.ice_shelf.gravity">
-<code class="descclassname">icepack.models.ice_shelf.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u=None</em>, <em>h=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.gravity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.models.ice_shelf.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u=None</em>, <em>h=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice shelf action functional</p>
 <p>The gravitational part of the ice shelf action functional is</p>
 <div class="math">

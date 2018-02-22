@@ -115,7 +115,7 @@ element representation. This should all be familiar from the last demo.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1101ece48>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10d916cf8>
 
 
 
@@ -211,7 +211,7 @@ we'll pack them into a dictionary and reuse it throughout.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x107a58d68>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10e1f2940>
 
 
 
@@ -249,7 +249,7 @@ constant value of the accumulation rate.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1110704e0>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10ea36f28>
 
 
 

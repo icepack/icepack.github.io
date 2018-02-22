@@ -48,7 +48,7 @@ conditions on the other part.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x112784518>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1129e17b8>
 
 
 
@@ -100,7 +100,7 @@ and a function space, and returns a field from that function space.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.Axes3DSubplot at 0x1129f08d0>
+    <matplotlib.axes._subplots.Axes3DSubplot at 0x112c9d9e8>
 
 
 
@@ -109,20 +109,25 @@ and a function space, and returns a field from that function space.
 
 
 We can make vector fields in much the same way as we make scalar fields,
-the only difference being that we need a new type of function space.
+the only difference being the type of function space. There are many
+ways to plot a vector field. Here we show a plot of the streamlines of
+the vector field, colored according to the magnitude of the vector. This
+method is expensive, especially if you set the resolution or spacing of
+the streamlines to be too small, but nonetheless it produces really nice
+graphics.
 
 .. code:: ipython3
 
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
     v = firedrake.interpolate(firedrake.grad(expr), V)
-    icepack.plot(v)
+    icepack.plot(v, method='streamline', resolution=1/96, max_num_points=200)
 
 
 
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x113493940>
+    <matplotlib.axes._subplots.AxesSubplot at 0x112fbc668>
 
 
 
