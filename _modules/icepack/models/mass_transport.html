@@ -167,7 +167,19 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.models.mass_transport</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Solvers for the mass continuity equation</span>
+<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Solvers for the mass continuity equation</span>
 
 <span class="sd">This module contains a solver for the conservative advection equation that</span>
 <span class="sd">describes the evolution of ice thickness. While the basic mass transport</span>
@@ -176,35 +188,27 @@
 <span class="sd">manner consistent with the bed elevation and where the ice may go afloat.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">firedrake</span> <span class="k">as</span> <span class="nn">fe</span>
+<span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">inner</span>
 
 <div class="viewcode-block" id="MassTransport"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">[docs]</a><span class="k">class</span> <span class="nc">MassTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <div class="viewcode-block" id="MassTransport.solve"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">ufl_function_space</span><span class="p">()</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">fe</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">fe</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
         <span class="n">mesh</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">outflow</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-            <span class="n">vn</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">fe</span><span class="o">.</span><span class="n">conditional</span><span class="p">(</span><span class="n">fe</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">vn</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">inflow</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-            <span class="n">vn</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">fe</span><span class="o">.</span><span class="n">conditional</span><span class="p">(</span><span class="n">fe</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">vn</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">n</span> <span class="o">=</span> <span class="n">fe</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">outflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">inflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span> <span class="o">*</span> <span class="n">dx</span>
-             <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">outflow</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
+             <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">outflow</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">h0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">inflow</span> <span class="o">*</span> <span class="n">ds</span>
 
-        <span class="n">A</span> <span class="o">=</span> <span class="p">((</span><span class="n">h0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">dx</span>
-             <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">inflow</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">solver_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span> <span class="p">:</span><span class="s1">&#39;lu&#39;</span><span class="p">}</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">F</span> <span class="o">==</span> <span class="n">A</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">)</span>
 
-        <span class="n">h</span> <span class="o">=</span> <span class="n">fe</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h0</span><span class="p">)</span>
-        <span class="n">fe</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">F</span> <span class="o">==</span> <span class="n">A</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span>
-                 <span class="n">solver_parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ilu&#39;</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">h</span></div></div>
 
 </pre></div>

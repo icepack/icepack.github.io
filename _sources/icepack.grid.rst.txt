@@ -12,5 +12,6 @@ Submodules
 .. toctree::
 
    icepack.grid.arcinfo
+   icepack.grid.geotiff
    icepack.grid.grid_data
 

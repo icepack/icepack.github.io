@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Python Module Index &mdash; icepack 0.0.3 documentation</title>
+  <title>icepack.grid.geotiff module &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -36,9 +36,9 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="icepack 0.0.3 documentation" href="index.html"/>
- 
-
-
+        <link rel="up" title="icepack.grid package" href="icepack.grid.html"/>
+        <link rel="next" title="icepack.grid.grid_data module" href="icepack.grid.grid_data.html"/>
+        <link rel="prev" title="icepack.grid.arcinfo module" href="icepack.grid.arcinfo.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -103,8 +103,19 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">icepack</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="icepack.grid.html">icepack.grid package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -149,12 +160,20 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Python Module Index</li>
+          <li><a href="modules.html">icepack</a> &raquo;</li>
+        
+          <li><a href="icepack.html">icepack package</a> &raquo;</li>
+        
+          <li><a href="icepack.grid.html">icepack.grid package</a> &raquo;</li>
+        
+      <li>icepack.grid.geotiff module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/icepack.grid.geotiff.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -166,104 +185,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
+  <div class="section" id="module-icepack.grid.geotiff">
+<span id="icepack-grid-geotiff-module"></span><h1>icepack.grid.geotiff module<a class="headerlink" href="#module-icepack.grid.geotiff" title="Permalink to this headline">¶</a></h1>
+<p>Utility for reading geotifs into the GridData class</p>
+<p>depends on gdal</p>
+<dl class="function">
+<dt id="icepack.grid.geotiff.read">
+<code class="descclassname">icepack.grid.geotiff.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/geotiff.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.geotiff.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a gridded geotiff</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>str</em>) – File to read. This does not actually need to be a geotiff, but any gdal-readable file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-   <h1>Python Module Index</h1>
+<dl class="function">
+<dt id="icepack.grid.geotiff.write">
+<code class="descclassname">icepack.grid.geotiff.</code><code class="descname">write</code><span class="sig-paren">(</span><em>fn</em>, <em>q</em>, <em>missing=-9999</em>, <em>t_srs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/geotiff.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.geotiff.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a gridded dataset to a GeoTIFF file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fn</strong> (<em>str</em>) – Destination filename</li>
+<li><strong>q</strong> (<em>icepack.grid.GridData</em>) – GridData to write</li>
+<li><strong>missing</strong> (<em>float</em><em>, </em><em>optional</em>) – No data value (default -9999)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-   <div class="modindex-jumpbox">
-   <a href="#cap-i"><strong>i</strong></a>
-   </div>
-
-   <table class="indextable modindextable">
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-i"><td></td><td>
-       <strong>i</strong></td><td></td></tr>
-     <tr>
-       <td><img src="_static/minus.png" class="toggler"
-              id="toggle-1" style="display: none" alt="-" /></td>
-       <td>
-       <a href="icepack.html#module-icepack"><code class="xref">icepack</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.adjoint.html#module-icepack.adjoint"><code class="xref">icepack.adjoint</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.constants.html#module-icepack.constants"><code class="xref">icepack.constants</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.grid.html#module-icepack.grid"><code class="xref">icepack.grid</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.grid.arcinfo.html#module-icepack.grid.arcinfo"><code class="xref">icepack.grid.arcinfo</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.grid.geotiff.html#module-icepack.grid.geotiff"><code class="xref">icepack.grid.geotiff</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.grid.grid_data.html#module-icepack.grid.grid_data"><code class="xref">icepack.grid.grid_data</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.interpolate.html#module-icepack.interpolate"><code class="xref">icepack.interpolate</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.models.html#module-icepack.models"><code class="xref">icepack.models</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.models.ice_shelf.html#module-icepack.models.ice_shelf"><code class="xref">icepack.models.ice_shelf</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.models.ice_stream.html#module-icepack.models.ice_stream"><code class="xref">icepack.models.ice_stream</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.models.mass_transport.html#module-icepack.models.mass_transport"><code class="xref">icepack.models.mass_transport</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.models.viscosity.html#module-icepack.models.viscosity"><code class="xref">icepack.models.viscosity</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.norms.html#module-icepack.norms"><code class="xref">icepack.norms</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.optimization.html#module-icepack.optimization"><code class="xref">icepack.optimization</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.plot.html#module-icepack.plot"><code class="xref">icepack.plot</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="icepack.utilities.html#module-icepack.utilities"><code class="xref">icepack.utilities</code></a></td><td>
-       <em></em></td></tr>
-   </table>
+</div>
 
 
            </div>
@@ -272,6 +231,15 @@
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="icepack.grid.grid_data.html" class="btn btn-neutral float-right" title="icepack.grid.grid_data module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="icepack.grid.arcinfo.html" class="btn btn-neutral" title="icepack.grid.arcinfo module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

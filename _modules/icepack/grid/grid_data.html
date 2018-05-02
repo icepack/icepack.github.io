@@ -167,7 +167,18 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.grid.grid_data</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
 <span class="kn">import</span> <span class="nn">numpy.ma</span> <span class="k">as</span> <span class="nn">ma</span>
 
 <div class="viewcode-block" id="GridData"><a class="viewcode-back" href="../../../icepack.grid.grid_data.html#icepack.grid.grid_data.GridData">[docs]</a><span class="k">class</span> <span class="nc">GridData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -281,7 +292,6 @@
         <span class="n">d2q_dx_dy</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">dq_dx</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dq_dy</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">d2q_dx_dy</span></div>
-
 </pre></div>
 
            </div>

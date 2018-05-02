@@ -14,7 +14,7 @@ defined analytically by getting some handles for the x- and
 y-coordinates of the points of the domain, and manipulating the
 coordinate functions algebraically. Firedrake includes some routines for
 plotting functions defined on unstructured meshes so we can visualize
-the results. Finally, we'll demonstrate the possibilities for how to
+the results. Finally, we’ll demonstrate the possibilities for how to
 analyze a function by evaluating some area and contour integrals.
 
 Meshes
@@ -28,7 +28,7 @@ available, you can type
 
     help(firedrake.utility_meshes)
 
-from the python interpreter. In this demo we'll use a mesh of the unit
+from the python interpreter. In this demo we’ll use a mesh of the unit
 square.
 
 Mesh plots are shown with a different color for each segments of the
@@ -48,7 +48,7 @@ conditions on the other part.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x1129e17b8>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1127eed30>
 
 
 
@@ -65,16 +65,16 @@ functions.
 
 First, we have to construct a function space ``Q``. We already have a
 mesh, and we need to decide what element family and polynomial degree.
-In almost all the cases you'll encounter, the element family consists of
+In almost all the cases you’ll encounter, the element family consists of
 continuous piecewise-polynomial functions in each triangle, which is
-abbreviated to ``CG`` for "continuous Galerkin".
+abbreviated to ``CG`` for “continuous Galerkin”.
 
 Next, we have to make an expression for the function and interpolate it
 to the function space ``Q``. The function
 ``firedrake.SpatialCoordinate`` returns two symbolic objects ``x``,
 ``y`` for the coordinates of each point of the mesh. We can then use
-these symbols to define expressions for the function we'd like to
-analyze. In this case, I've chosen the `Rosenbrock
+these symbols to define expressions for the function we’d like to
+analyze. In this case, I’ve chosen the `Rosenbrock
 function <https://en.wikipedia.org/wiki/Rosenbrock_function>`__.
 Firedrake has built-in functions for evaluating various transcendental
 functions of the coordinates, for example the sine, cosine, exponential,
@@ -100,7 +100,7 @@ and a function space, and returns a field from that function space.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.Axes3DSubplot at 0x112c9d9e8>
+    <matplotlib.axes._subplots.Axes3DSubplot at 0x112a69fd0>
 
 
 
@@ -127,7 +127,7 @@ graphics.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x112fbc668>
+    <matplotlib.axes._subplots.AxesSubplot at 0x112d01128>
 
 
 
@@ -138,7 +138,7 @@ graphics.
 Post-processing
 ~~~~~~~~~~~~~~~
 
-We've already seen about how to visualize a scalar or a vector field;
+We’ve already seen about how to visualize a scalar or a vector field;
 this is just a call to the function ``icepack.plot``. To analyze the
 results of a simulation, you might also want to evaluate scalar or
 vector fields at points in the domain:
@@ -217,13 +217,13 @@ Conclusion
 
 Icepack uses the functions in firedrake to implement solvers for the
 various physics problems that show up in ice sheet modeling. The
-firedrake routines that we've demonstrated here can be used for
+firedrake routines that we’ve demonstrated here can be used for
 analyzing simulation results, either through visualization, evaluating
 fields at points, or evaluating integrals of fields. They can also be
 used to define input fields of simulations, if those fields have a
-simple analytical expression. In the next demo, we'll show how to use
+simple analytical expression. In the next demo, we’ll show how to use
 icepack to solve for the velocity and thickness of a floating ice shelf
-with a synthetic geometry. In later demos, we'll show how to use real
+with a synthetic geometry. In later demos, we’ll show how to use real
 observational data sets, as well as more complicated geometries imported
 from mesh generators.
 

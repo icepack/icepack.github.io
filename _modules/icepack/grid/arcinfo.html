@@ -167,7 +167,19 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.grid.arcinfo</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Functions for reading/writing the ArcInfo ASCII format</span>
+<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Functions for reading/writing the ArcInfo ASCII format</span>
 
 <span class="sd">This module contains functions for reading and writing raster data in the</span>
 <span class="sd">`Arc/Info ASCII grid &lt;https://en.wikipedia.org/wiki/Esri_grid&gt;`_ format.</span>
@@ -178,6 +190,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.ma</span> <span class="k">as</span> <span class="nn">ma</span>
 <span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">GridData</span>
 
 <div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../icepack.grid.arcinfo.html#icepack.grid.arcinfo.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">filename_or_file</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">missing</span><span class="p">):</span>
@@ -206,7 +219,7 @@
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">else</span> <span class="n">missing</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="ow">is</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked</span> <span class="k">else</span> <span class="n">missing</span>
             <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 

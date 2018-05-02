@@ -13,7 +13,7 @@ Larsen Ice Shelf
 
 This demo will involve using real data for the Larsen Ice Shelf in the
 Antarctic Peninsula. So far as the actual modeling is concerned, most of
-what we'll need was in the previous demo. What's new here are the
+what we’ll need was in the previous demo. What’s new here are the
 functions for reading in meshes from files, reading in gridded data
 sets, and ways to cope with the messiness of real data.
 
@@ -21,7 +21,7 @@ The scripts I used to fetch and process all of this data are contained
 in `this repo <https://github.com/icepack/icepack-data>`__. To use it,
 clone the repository and run ``make`` in each of the directories
 ``bedmap2/``, ``measures_antarctica/``, and ``meshes/larsen/``. For this
-notebook, I'll assume that the absolute path of the data repository on
+notebook, I’ll assume that the absolute path of the data repository on
 your computer is stored in a variable ``data_directory``. In my case, I
 keep this in an environment variable called ``ICEPACK_DATA``. If you
 modify this notebook for your own uses, you can use whatever works for
@@ -36,7 +36,7 @@ hard-code ``data_directory`` to the right location on your computer.
 
 .. parsed-literal::
 
-    /Users/daniel/programs/icepack-data
+    /Volumes/Seagate Backup Plus Drive/icepack-data
 
 
 Geometry
@@ -44,7 +44,7 @@ Geometry
 
 First, we need to make a mesh. I go about this by hand-drawing the
 domain boundary in `QGIS <https://www.qgis.org>`__ on top of satellite
-imagery and whatever other gridded data sets I'm working with. I always
+imagery and whatever other gridded data sets I’m working with. I always
 save these vector data in the `GeoJSON <http://geojson.org/>`__ format
 rather than, say, an ESRI shapefile. GeoJSON is human-readable and easy
 to keep in version control. The GeoJSON files for the outline of Larsen
@@ -74,7 +74,7 @@ Rise.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10d2965c0>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10e42fd68>
 
 
 
@@ -85,7 +85,7 @@ Rise.
 Input data
 ~~~~~~~~~~
 
-Next, we have to load the input data. We'll use ice thickness data from
+Next, we have to load the input data. We’ll use ice thickness data from
 `Bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ and velocity data
 from `MEaSUREs <https://nsidc.org/data/measures/aiv>`__. These data sets
 are large and not all in the same format. The scripts in the ``bedmap2``
@@ -93,8 +93,8 @@ and ``measures_antarctica`` directories of the `data
 repo <https://github.com/icepack/icepack-data>`__ fetch the data from
 the original sources, divide them up into subsets for several
 interesting regions in Antarctica, and save them as `Arc/Info ASCII
-grids <https://en.wikipedia.org/wiki/Esri_grid>`__. This format isn't
-especially compact, but it's easy to write a parser for and all the
+grids <https://en.wikipedia.org/wiki/Esri_grid>`__. This format isn’t
+especially compact, but it’s easy to write a parser for and all the
 common GIS programs can read it too.
 
 The module ``icepack.grid.arcinfo`` contains functions for reading and
@@ -104,7 +104,7 @@ These objects can interpolate values to arbitrary points within the
 domain, and are designed to gracefully handle missing data.
 
 The ``icepack.plot`` function can also take in ``GridData`` objects as
-arguments. Since the individual components of the ice velocity aren't
+arguments. Since the individual components of the ice velocity aren’t
 that illuminating to look at, we first make a gridded data set of the
 ice speed and plot that instead.
 
@@ -127,7 +127,7 @@ ice speed and plot that instead.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10e6ba390>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10f919a20>
 
 
 
@@ -143,8 +143,8 @@ Preprocessing
 ~~~~~~~~~~~~~
 
 It would be tempting at this point to interpolate the gridded data to
-the mesh and go model some ice flow, but unfortunately we can't do that
-quite yet. There are just a few points in the domain that we can't
+the mesh and go model some ice flow, but unfortunately we can’t do that
+quite yet. There are just a few points in the domain that we can’t
 interpolate to because either the thickness or velocity data set is
 missing around that point. We can fill in these missing points in the
 gridded data by taking a weighted average of nearby points. The code for
@@ -163,7 +163,16 @@ Modeling
 
 Having done all the leg work to make a mesh and get a good set of input
 data, the modeling itself should be fairly familiar from the last step.
-We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
+We’ll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
+
+One thing is substantially different from previous examples. Before, we
+called the function ``firedrake.SpatialCoordinate`` to get some symbolic
+handles ``x, y`` for the mesh coordinates, and we created symbolic
+expressions to define the input data to our problem analytically. When
+we work with real data, we instead use icepack’s ``GridData`` object,
+which firedrake doesn’t know how to interpolate. The function
+``icepack.interpolate`` works as a layer on top of the firedrake
+interpolate function and knows what to do with gridded data sets.
 
 .. code:: ipython3
 
@@ -181,7 +190,7 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x10fcc07f0>
+    <matplotlib.axes._subplots.AxesSubplot at 0x110f19f28>
 
 
 
@@ -205,7 +214,7 @@ We'll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x110e7db70>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10ded57b8>
 
 
 
@@ -227,7 +236,7 @@ spatially homogeneous guess for the ice temperature.
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
-+30 and -30 cm/yr respectively, so we can take the total to be 0. Let's
++30 and -30 cm/yr respectively, so we can take the total to be 0. Let’s
 simulate the evolution of the ice shelf for the next 10 years. The code
 for this loop should be familiar from the previous example.
 
@@ -250,7 +259,7 @@ for this loop should be familiar from the previous example.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x110cee438>
+    <matplotlib.axes._subplots.AxesSubplot at 0x10f04a278>
 
 
 
@@ -274,7 +283,7 @@ that makes the 0-contour really obvious.
 
 .. parsed-literal::
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x111531390>
+    <matplotlib.axes._subplots.AxesSubplot at 0x110debb00>
 
 
 
@@ -283,7 +292,7 @@ that makes the 0-contour really obvious.
 
 
 The oscillatory pattern makes it less than obvious whether the ice shelf
-gained or lost mass, so let's evaluate the integral of the thickness
+gained or lost mass, so let’s evaluate the integral of the thickness
 change to see.
 
 .. code:: ipython3
@@ -294,10 +303,10 @@ change to see.
 
 .. parsed-literal::
 
-    -3.85592389542
+    -3.85592391301
 
 
-Seeing as the simulation ran for 10 years, this isn't a wildly
+Seeing as the simulation ran for 10 years, this isn’t a wildly
 unrealistic number.
 
 Conclusion

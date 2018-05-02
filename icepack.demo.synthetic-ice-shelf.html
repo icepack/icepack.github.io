@@ -227,48 +227,39 @@ the domain, we can integrate twice to get that</p>
 <p>When <span class="math">\(h\)</span> is a linear function of <span class="math">\(x\)</span>, we can evaluate this
 integral exactly to arrive at an expression for <span class="math">\(u\)</span> which is a
 degree-4 polynomial.</p>
-<p>First, let’s make some python functions that represent the thickness and
-velocity fields.</p>
+<p>First, let’s set up the geometry and some function spaces.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">20e3</span><span class="p">,</span> <span class="mf">20e3</span>
-
-<span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
-<span class="k">def</span> <span class="nf">thickness</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">h0</span> <span class="o">-</span> <span class="n">δh</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">Lx</span>
-
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span><span class="p">,</span> <span class="n">rho_water</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
-<span class="n">ϱ</span> <span class="o">=</span> <span class="n">rho_ice</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho_ice</span> <span class="o">/</span> <span class="n">rho_water</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
-<span class="n">T</span> <span class="o">=</span> <span class="mf">254.15</span>
-<span class="n">B</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">u0</span> <span class="o">=</span> <span class="mf">100.0</span>
-    <span class="c1"># These variables don&#39;t have any significance of their own, it&#39;s just</span>
-    <span class="c1"># a really long expression.</span>
-    <span class="n">ζ</span> <span class="o">=</span> <span class="p">(</span><span class="n">ϱ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span><span class="o">**</span><span class="n">n</span>
-    <span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">δh</span><span class="o">/</span><span class="n">h0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">Lx</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">du</span> <span class="o">=</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">β</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span><span class="o">/</span><span class="n">δh</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Next we’ll set up a mesh and interpolate these functions to the finite
-element representation. This should all be familiar from the last demo.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
+<span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
 <span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, we’ll interpolate the expressions for the exact fields to the
+finite element representation. This should all be familiar from the last
+demo.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">h0</span> <span class="o">-</span> <span class="n">δh</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
-<span class="n">h</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> \
+    <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
+<span class="n">ϱ</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mf">254.15</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+<span class="n">ζ</span> <span class="o">=</span> <span class="p">(</span><span class="n">ϱ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span><span class="o">**</span><span class="n">n</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">δh</span><span class="o">/</span><span class="n">h0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="n">du</span> <span class="o">=</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">β</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span> <span class="o">/</span> <span class="n">δh</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
 
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10d916cf8</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112369da0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.synthetic-ice-shelf_5_1.png" src="_images/icepack.demo.synthetic-ice-shelf_5_1.png" />
@@ -327,14 +318,16 @@ domain.</p>
 tolerance for solving Newton’s method. Since the boundary conditions and
 convergence tolerance are usually the same throughout a simulation,
 we’ll pack them into a dictionary and reuse it throughout.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fluidity</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">Ly</span><span class="p">)</span>
-    <span class="n">inside</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">δT</span> <span class="o">=</span> <span class="mf">10.0</span>
-    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">δT</span> <span class="o">*</span> <span class="n">shape</span><span class="p">)</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="n">Ly</span>
+<span class="n">shape_x</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">px</span><span class="p">))</span>
+<span class="n">shape_y</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">py</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">py</span><span class="p">))</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">fluidity</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">δT</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="n">δA</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">δT</span><span class="p">)</span> <span class="o">-</span> <span class="n">A0</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">+</span> <span class="n">shape_x</span> <span class="o">*</span> <span class="n">shape_y</span> <span class="o">*</span> <span class="n">δA</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dirichlet_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">}</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
@@ -342,10 +335,11 @@ we’ll pack them into a dictionary and reuse it throughout.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10e1f2940</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x11283a208</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.synthetic-ice-shelf_9_1.png" src="_images/icepack.demo.synthetic-ice-shelf_9_1.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_9_2.png" src="_images/icepack.demo.synthetic-ice-shelf_9_2.png" />
 <p>The solve procedures take in all the physical fields as keyword
 arguments instead of positional arguments. Keyword arguments save you
 the trouble of remembering what order everything goes in. As we’ll see
@@ -358,7 +352,7 @@ constant value of the accumulation rate.</p>
 <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="n">num_timesteps</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span><span class="p">):</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
@@ -368,7 +362,7 @@ constant value of the accumulation rate.</p>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x10ea36f28</span><span class="o">&gt;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x113453b00</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.synthetic-ice-shelf_12_1.png" src="_images/icepack.demo.synthetic-ice-shelf_12_1.png" />
