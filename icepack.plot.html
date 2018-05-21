@@ -190,82 +190,40 @@
             
   <div class="section" id="module-icepack.plot">
 <span id="icepack-plot-module"></span><h1>icepack.plot module<a class="headerlink" href="#module-icepack.plot" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="icepack.plot.plot">
-<code class="descclassname">icepack.plot.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>mesh_or_function</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a visualization of a mesh or a field</p>
-<p>This function overrides the usual firedrake plotting functions. When
-plotting a mesh, the boundaries are shown with colors and a legend to
-show the ID for each boundary segment. When plotting a scalar or vector
-field, the default colormap is set to viridis. Finally, when plotting a
-vector field, the default behavior is to instead plot the magnitude of
-the vector, rather than a quiver plot. A quiver plot or a streamline
-plot can instead be selected by passing the keyword argument <cite>method</cite>
-with value <cite>quiver</cite> or <cite>streamline</cite> respectively.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.plot.plot" title="(in Firedrake v0.12)"><code class="xref py py-func docutils literal"><span class="pre">firedrake.plot.plot()</span></code></a></dt>
-<dd>Documentation for the firedrake plot function</dd>
-</dl>
-</div>
+<p>Utilities for plotting gridded data, meshes, and finite element fields</p>
+<p>This module contains thin wrappers around functionality in matplotlib for
+plotting things. For example, <cite>triplot</cite>, <cite>tricontourf</cite>, and <cite>streamplot</cite>
+all call the equivalent matplotlib functions under the hood for plotting
+respectively an unstructured mesh, a scalar field on an unstructured mesh,
+and a vector field on an unstructured mesh.</p>
+<p>The return types should be the same as for the corresponding matplotlib
+function. Usually the return type is something that inherits from the
+class <cite>ScalarMappable</cite> so that you can make a colorbar out of it.</p>
+<dl class="class">
+<dt id="icepack.plot.StreamplotSet">
+<em class="property">class </em><code class="descclassname">icepack.plot.</code><code class="descname">StreamplotSet</code><span class="sig-paren">(</span><em>lines=None</em>, <em>arrows=None</em>, <em>norm=None</em>, <em>cmap=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#StreamplotSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.StreamplotSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.streamplot.StreamplotSet</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.cm.ScalarMappable</span></code></p>
 </dd></dl>
 
 <dl class="function">
-<dt id="icepack.plot.plot_grid_data">
-<code class="descclassname">icepack.plot.</code><code class="descname">plot_grid_data</code><span class="sig-paren">(</span><em>grid_data</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot_grid_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot_grid_data" title="Permalink to this definition">¶</a></dt>
+<dt id="icepack.plot.contourf">
+<code class="descclassname">icepack.plot.</code><code class="descname">contourf</code><span class="sig-paren">(</span><em>grid_data</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#contourf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.contourf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a gridded data object</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="icepack.plot.plot_mesh">
-<code class="descclassname">icepack.plot.</code><code class="descname">plot_mesh</code><span class="sig-paren">(</span><em>mesh</em>, <em>colors=None</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot_mesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a mesh with a different color for each boundary segment</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.plot.plot_vector_field">
-<code class="descclassname">icepack.plot.</code><code class="descname">plot_vector_field</code><span class="sig-paren">(</span><em>v</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#plot_vector_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.plot_vector_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the directions, streamlines, or magnitude of a vector field</p>
-<p>The default method to plot a vector field is to compute the magnitude
-at each point and make a contour plot of this scalar field. You can also
-make a quiver plot by passing the keyword argument <cite>method=’quiver’</cite>.
-Finally, the streamlines of the vector field can be plotted with colors
-representing the magnitude by passing <cite>method=’streamline’</cite>, although
-this is substantially more expensive and may require tweaking.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>v</strong> (<em>firedrake.Function</em>) – The vector field to plot</li>
-<li><strong>axes</strong> (<em>matplotlib.Axes</em><em>, </em><em>optional</em>) – The axis to draw the figure on</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first last simple">
-<li><strong>method</strong> (<em>str, optional</em>) – Either ‘magnitude’ (default), ‘streamline’, or ‘quiver’</li>
-<li><strong>resolution</strong> (<em>float, optional</em>) – If using a streamline plot, the resolution along a streamline</li>
-<li><strong>spacing</strong> (<em>float, optional</em>) – If using a streamline plot, the minimum spacing between seed points
-for streamlines</li>
-<li><strong>max_num_points</strong> (<em>int, optional</em>) – If using a streamline plot, the maximum number of points along a
-streamline; this is probably necessary if the vector field has a
-stable equilibrium</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="icepack.plot.quiver">
+<code class="descclassname">icepack.plot.</code><code class="descname">quiver</code><span class="sig-paren">(</span><em>function</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#quiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.quiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a quiver plot of a vector field</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="icepack.plot.streamline">
 <code class="descclassname">icepack.plot.</code><code class="descname">streamline</code><span class="sig-paren">(</span><em>velocity</em>, <em>initial_point</em>, <em>resolution</em>, <em>max_num_points=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a streamline of a 2D velocity field</p>
-<p>A streamline <span class="math">\(\gamma\)</span> of a velocity field <span class="math">\(v\)</span> is a curve
+<p>A streamline <span class="math notranslate nohighlight">\(\gamma\)</span> of a velocity field <span class="math notranslate nohighlight">\(v\)</span> is a curve
 that solves the ordinary differential equation</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\frac{d\gamma}{dt} = v(\gamma)\]</div>
 <p>This function returns an approximate streamline for a velocity field.
 Streamlines are primarily for plotting vector fields but are useful for
@@ -291,6 +249,29 @@ if the trajectory can spiral around a center node</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.plot.streamplot">
+<code class="descclassname">icepack.plot.</code><code class="descname">streamplot</code><span class="sig-paren">(</span><em>u</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw streamlines of a vector field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.plot.subplots">
+<code class="descclassname">icepack.plot.</code><code class="descname">subplots</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.subplots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="icepack.plot.tricontourf">
+<code class="descclassname">icepack.plot.</code><code class="descname">tricontourf</code><span class="sig-paren">(</span><em>function</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tricontourf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tricontourf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a finite element field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.plot.triplot">
+<code class="descclassname">icepack.plot.</code><code class="descname">triplot</code><span class="sig-paren">(</span><em>mesh</em>, <em>bnd_colors=None</em>, <em>axes=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#triplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.triplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a mesh with a different color for each boundary segment</p>
 </dd></dl>
 
 </div>

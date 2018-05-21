@@ -2,8 +2,9 @@
 .. code:: ipython3
 
     %matplotlib inline
+    import matplotlib.pyplot as plt
     import firedrake
-    import icepack, icepack.models
+    import icepack, icepack.plot, icepack.models
 
 Synthetic ice shelf
 ===================
@@ -38,8 +39,8 @@ The diagnostic equation for the velocity of an ice shelf is
 
 where :math:`h` is the ice thickness, :math:`M` is the membrane stress
 tensor, :math:`g` is the acceleration due to gravity, and
-:math:`\varrho = \rho_I(1 - \rho_I/\rho_W)`. The membrane stress is
-defined as
+:math:`\varrho = \rho_I(1 - \rho_I/\rho_W)` is the buoyant density of
+ice over water. The membrane stress is defined as
 
 .. math:: M = 2\mu(\dot\varepsilon + \text{tr}(\dot\varepsilon)I),
 
@@ -56,14 +57,13 @@ coefficient.
 
 When we consider ice shelves with no variation in the
 :math:`y`-direction, these equations reduce to a 1D boundary value
-problem. Provided that the rheology coefficient is constant throughout
-the domain, we can integrate twice to get that
+problem. We can integrate twice to get that
 
 .. math::  u = u_0 + \int_0^x\left(\frac{\varrho g h(x')}{4B}\right)^n dx'.
 
-When :math:`h` is a linear function of :math:`x`, we can evaluate this
-integral exactly to arrive at an expression for :math:`u` which is a
-degree-4 polynomial.
+When :math:`h` is a linear function of :math:`x` and :math:`B` is
+constant, we can evaluate this integral exactly to arrive at an
+expression for :math:`u` which is a degree-4 polynomial.
 
 First, let’s set up the geometry and some function spaces.
 
@@ -77,7 +77,6 @@ First, let’s set up the geometry and some function spaces.
     degree = 2
     Q = firedrake.FunctionSpace(mesh, 'CG', degree)
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
-
 
 Next, we’ll interpolate the expressions for the exact fields to the
 finite element representation. This should all be familiar from the last
@@ -98,25 +97,31 @@ demo.
     u0 = 100.0
     du = ζ * β * Lx * (h0 / δh) / (n + 1)
     v = firedrake.interpolate(firedrake.as_vector((u0 + du, 0)), V)
+
+Here we’ll plot both the thickness and the exact solution for the
+velocity. Just to show off some of the matplotlib integration, we’ll
+make them as subplots of the same figure. The extra padding around the
+colorbars and the call to ``fig.tight_layout()`` are necessary for
+things to look nice.
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots(ncols=2, sharex=True, sharey=True)
     
-    icepack.plot(h)
-    icepack.plot(v)
+    axes[0].set_title("Thickness")
+    contours_h = icepack.plot.tricontourf(h, axes=axes[0])
+    fig.colorbar(contours_h, ax=axes[0], label='meters', fraction=0.046, pad=0.04)
+    
+    axes[1].set_title("Velocity")
+    contours_v = icepack.plot.tricontourf(v, axes=axes[1])
+    fig.colorbar(contours_v, ax=axes[1], label='meters/year', fraction=0.046, pad=0.04)
+    
+    fig.tight_layout()
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x112369da0>
-
-
-
-
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_5_1.png
-
-
-
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_5_2.png
+.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_7_0.png
 
 
 Modeling
@@ -142,7 +147,7 @@ thickness.
 
     Help on method diagnostic_solve in module icepack.models.ice_shelf:
     
-    diagnostic_solve(u0=None, h=None, dirichlet_ids=[], tol=1e-06, **kwargs) method of icepack.models.ice_shelf.IceShelf instance
+    diagnostic_solve(u0, h, dirichlet_ids, tol=1e-06, **kwargs) method of icepack.models.ice_shelf.IceShelf instance
         Solve for the ice velocity from the thickness
         
         Parameters
@@ -175,12 +180,9 @@ thickness.
 To solve for the ice velocity, we pass in all the input fields as
 keyword arguments. To make things a little more interesting, we’ll use a
 value of the fluidity parameter that changes in the center of the
-domain.
-
-We also need to describe the boundary conditions we’re using and the
-tolerance for solving Newton’s method. Since the boundary conditions and
-convergence tolerance are usually the same throughout a simulation,
-we’ll pack them into a dictionary and reuse it throughout.
+domain. Since we’re using a value of the fluidity parameter that varies
+in both the :math:`x`- and :math:`y`-directions, the PDE will no longer
+have a nice closed-form solution.
 
 .. code:: ipython3
 
@@ -193,40 +195,60 @@ we’ll pack them into a dictionary and reuse it throughout.
     δA = icepack.rate_factor(T + δT) - A0
     A = firedrake.interpolate(A0 + shape_x * shape_y * δA, Q)
     
-    icepack.plot(A)
-    
-    opts = {"dirichlet_ids": [1, 3, 4], "tol": 1e-12}
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(A, axes=axes)
+    fig.colorbar(contours, label=r'MPa${}^{-3}$ * years${}^{-1}$')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_11_0.png
+
+
+We also need to describe the boundary conditions we’re using and the
+tolerance for solving Newton’s method. Since the boundary conditions and
+convergence tolerance are usually the same throughout a simulation,
+we’ll pack them into a dictionary and reuse it throughout. To compute
+the velocity field that results from the values of the thickness and
+fluidity we’ve chosen, we invoke the diagnostic solve method of the ice
+shelf object, passing in the extra options as keyword arguments.
+
+.. code:: ipython3
+
+    opts = {'dirichlet_ids': [1, 3, 4], 'tol': 1e-12}
     u = ice_shelf.diagnostic_solve(u0=v, h=h, A=A, **opts)
-    
-    icepack.plot(u)
+
+Note how in the diagnostic solve procedure we passed everything in as a
+keyword argument. This convention will be used throughout all the demos.
+Keyword arguments are slightly more verbose, but they save you the
+trouble of remembering what order everything goes in. On top of that,
+many fields are *only* passed in as keyword arguments; for example, the
+fluidity parameter is not a positional argument of the diagnostic solve
+routine. The reason for this choice, as we’ll see later, is that it’s
+much easier to swap out components of the model physics for your own
+customized versions.
+
+The effect of using a different fluidity field can be seen in how the
+contour lines for the ice speed bend in the middle of the domain.
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(u, axes=axes)
+    fig.colorbar(contours, label='meters/year')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x11283a208>
+.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_16_0.png
 
 
-
-
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_9_1.png
-
-
-
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_9_2.png
-
-
-The solve procedures take in all the physical fields as keyword
-arguments instead of positional arguments. Keyword arguments save you
-the trouble of remembering what order everything goes in. As we’ll see
-later, they also make it easier to swap out components of the model
-physics for your own customized versions.
-
-The ice shelf model object also has a prognostic solve methods that
-updates the ice thickness for a given timestep. The following code runs
-the model forward for a year with a timestep of one month, assuming a
-constant value of the accumulation rate.
+To project the state of the ice shelf forward in time, we’ll use the
+prognostic solve method. The prognostic solver updates the ice thickness
+forward by a given timestep given the accumulation rate and velocity. We
+then update the velocity using the diagnostic solver at each timestep.
+The following code runs the model forward for a year with a timestep of
+one month, assuming a constant value of the accumulation rate.
 
 .. code:: ipython3
 
@@ -238,25 +260,29 @@ constant value of the accumulation rate.
     for k in range(num_timesteps):
         h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u)
         u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
-    
-    icepack.plot(h)
-    icepack.plot(u)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(h, axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x113453b00>
+.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_19_0.png
 
 
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(u, axes=axes)
+    fig.colorbar(contours, label='meters/year')
+    plt.show(fig)
 
 
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_12_1.png
 
-
-
-.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_12_2.png
+.. image:: icepack.demo.synthetic-ice-shelf_files/icepack.demo.synthetic-ice-shelf_20_0.png
 
 
 Conclusion

@@ -195,12 +195,12 @@
 <code class="descclassname">icepack.adjoint.</code><code class="descname">derivative</code><span class="sig-paren">(</span><em>J</em>, <em>F</em>, <em>u</em>, <em>p</em>, <em>bc=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/adjoint.html#derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.adjoint.derivative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the sensitivity of a functional of the solution of a PDE
 with respect to a parameter</p>
-<p>Let <span class="math">\(G(p)\)</span> be the solution operator for the nonlinear equation</p>
-<div class="math">
+<p>Let <span class="math notranslate nohighlight">\(G(p)\)</span> be the solution operator for the nonlinear equation</p>
+<div class="math notranslate nohighlight">
 \[F(u, p) = 0,\]</div>
-<p>i.e. <span class="math">\(F(G(p), p) = 0\)</span> for all <span class="math">\(p\)</span>. Given a functional
-<span class="math">\(J(u)\)</span> of the solution, this function returns the derivative of
-<span class="math">\(J(G(p))\)</span> with respect to the parameter <span class="math">\(p\)</span> using the
+<p>i.e. <span class="math notranslate nohighlight">\(F(G(p), p) = 0\)</span> for all <span class="math notranslate nohighlight">\(p\)</span>. Given a functional
+<span class="math notranslate nohighlight">\(J(u)\)</span> of the solution, this function returns the derivative of
+<span class="math notranslate nohighlight">\(J(G(p))\)</span> with respect to the parameter <span class="math notranslate nohighlight">\(p\)</span> using the
 adjoint method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

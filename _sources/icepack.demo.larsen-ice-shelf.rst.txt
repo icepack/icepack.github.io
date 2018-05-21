@@ -6,7 +6,7 @@
     import matplotlib.pyplot as plt
     import numpy as np
     import firedrake
-    import icepack, icepack.models
+    import icepack, icepack.plot, icepack.models
 
 Larsen Ice Shelf
 ================
@@ -36,7 +36,7 @@ hard-code ``data_directory`` to the right location on your computer.
 
 .. parsed-literal::
 
-    /Volumes/Seagate Backup Plus Drive/icepack-data
+    /home/daniel/programs/icepack-data
 
 
 Geometry
@@ -67,19 +67,16 @@ Rise.
 .. code:: ipython3
 
     mesh = firedrake.Mesh(os.path.join(data_directory, "meshes/larsen/larsen.msh"))
-    icepack.plot(mesh)
+    
+    fig, axes = icepack.plot.subplots()
+    axes.set_xlabel('meters')
+    axes.grid()
+    icepack.plot.triplot(mesh, axes=axes, linewidth=2)
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x10e42fd68>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_4_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_4_0.png
 
 
 Input data
@@ -112,31 +109,35 @@ ice speed and plot that instead.
 
     from icepack.grid import arcinfo, GridData
     thickness = arcinfo.read(os.path.join(data_directory, "bedmap2/larsen-h.txt"))
-    icepack.plot(thickness, levels=[25 * n for n in range(26)])
-    
     vx = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vx.txt"))
     vy = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vy.txt"))
-    
-    x0, delta = vx._origin, vx._delta
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.contourf(thickness, levels=[25 * n for n in range(26)], axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_7_0.png
+
+
+.. code:: ipython3
+
+    x0, delta = vx.coordinate(0, 0), vx._delta
     with np.errstate(invalid='ignore'):
         speed = icepack.grid.GridData(x0, delta, np.sqrt(vx.data**2 + vy.data**2))
-    icepack.plot(speed, levels=[25 * n for n in range(31)])
+    
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.contourf(speed, levels=[25 * n for n in range(31)], axes=axes)
+    fig.colorbar(contours, label='meters/year')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x10f919a20>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_6_1.png
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_6_2.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_8_0.png
 
 
 Preprocessing
@@ -156,7 +157,7 @@ to see all the details.
     from preprocess import preprocess
     vx = preprocess(vx, mesh)
     vy = preprocess(vy, mesh)
-    thickness = preprocess(thickness, mesh, radius=8)
+    thickness = preprocess(thickness, mesh, radius=6)
 
 Modeling
 ~~~~~~~~
@@ -182,44 +183,38 @@ interpolate function and knows what to do with gridded data sets.
     
     h0 = icepack.interpolate(thickness, Q)
     u0 = icepack.interpolate(lambda x: (vx(x), vy(x)), V)
-    
-    icepack.plot(u0, method='streamline', resolution=1000, spacing=1500)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    streamlines = icepack.plot.streamplot(u0, precision=1000, density=2500, axes=axes)
+    fig.colorbar(streamlines, label='meters/year')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x110f19f28>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_10_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_13_0.png
 
 
 .. code:: ipython3
 
     T = 260
-    A = icepack.interpolate(lambda x: icepack.rate_factor(T), Q)
+    A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
     
     ice_shelf = icepack.models.IceShelf()
-    opts = {"dirichlet_ids": [3, 4, 5, 6, 7, 8], "tol": 1e-6}
+    opts = {'dirichlet_ids': [3, 4, 5, 6, 7, 8], 'tol': 1e-6}
     u = ice_shelf.diagnostic_solve(u0=u0, h=h0, A=A, **opts)
-    
-    icepack.plot(u, method='streamline', resolution=1000, spacing=1500)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    streamlines = icepack.plot.streamplot(u, precision=1000, density=2500, axes=axes)
+    fig.colorbar(streamlines, label='meters/year')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x10ded57b8>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_11_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_15_0.png
 
 
 We get a fairly reasonable approximation for the velocity even with a
@@ -232,7 +227,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.108881031496
+    0.10887612396929507
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -247,24 +242,19 @@ for this loop should be familiar from the previous example.
     
     dt = 0.5
     for n in range(int(10 / dt) + 1):
-        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u)
+        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h0)
         u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
 
 .. code:: ipython3
 
-    icepack.plot(h)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(h, 96, axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x10f04a278>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_16_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_20_0.png
 
 
 By plotting the difference between the modeled thickness after 10 years
@@ -276,19 +266,15 @@ that makes the 0-contour really obvious.
 
     δh = firedrake.Function(Q)
     δh.assign(h - h0)
-    icepack.plot(δh, cmap='RdBu')
+    
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(δh, 96, cmap='RdBu', axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x110debb00>
-
-
-
-
-.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_18_1.png
+.. image:: icepack.demo.larsen-ice-shelf_files/icepack.demo.larsen-ice-shelf_22_0.png
 
 
 The oscillatory pattern makes it less than obvious whether the ice shelf
@@ -303,7 +289,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.85592391301
+    -3.8577829503669614
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

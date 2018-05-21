@@ -179,15 +179,28 @@
 <span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
 <span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
 
+<span class="sd">&quot;&quot;&quot;Utilities for plotting gridded data, meshes, and finite element fields</span>
+
+<span class="sd">This module contains thin wrappers around functionality in matplotlib for</span>
+<span class="sd">plotting things. For example, `triplot`, `tricontourf`, and `streamplot`</span>
+<span class="sd">all call the equivalent matplotlib functions under the hood for plotting</span>
+<span class="sd">respectively an unstructured mesh, a scalar field on an unstructured mesh,</span>
+<span class="sd">and a vector field on an unstructured mesh.</span>
+
+<span class="sd">The return types should be the same as for the corresponding matplotlib</span>
+<span class="sd">function. Usually the return type is something that inherits from the</span>
+<span class="sd">class `ScalarMappable` so that you can make a colorbar out of it.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.cm</span>
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span><span class="o">,</span> <span class="nn">matplotlib.colors</span><span class="o">,</span> <span class="nn">matplotlib.tri</span><span class="o">,</span> \
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">streamplot</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span>
 <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">LineCollection</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
 <span class="kn">import</span> <span class="nn">icepack</span>
-<span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">GridData</span>
 
 <span class="k">def</span> <span class="nf">_get_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the coordinates of a mesh if the mesh is piecewise linear,</span>
@@ -211,21 +224,29 @@
     <span class="k">return</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgba_array</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_fix_axis_limits</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">setter</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s2">&quot;set_xlim&quot;</span><span class="p">,</span> <span class="s2">&quot;set_ylim&quot;</span><span class="p">,</span> <span class="s2">&quot;set_zlim&quot;</span><span class="p">],</span>
-                         <span class="nb">range</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
-        <span class="n">amin</span><span class="p">,</span> <span class="n">amax</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">coords</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="n">extra</span> <span class="o">=</span> <span class="p">(</span><span class="n">amax</span> <span class="o">-</span> <span class="n">amin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span>
-        <span class="n">amin</span> <span class="o">-=</span> <span class="n">extra</span>
-        <span class="n">amax</span> <span class="o">+=</span> <span class="n">extra</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">setter</span><span class="p">)(</span><span class="n">amin</span><span class="p">,</span> <span class="n">amax</span><span class="p">)</span>
+<div class="viewcode-block" id="subplots"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.subplots">[docs]</a><span class="k">def</span> <span class="nf">subplots</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">subplot_kw</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subplot_kw&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">subplot_kw</span><span class="p">[</span><span class="s1">&#39;adjustable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subplot_kw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;adjustable&#39;</span><span class="p">,</span> <span class="s1">&#39;box-forced&#39;</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;subplot_kw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subplot_kw</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">(</span><span class="n">useOffset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">set_powerlimits</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=-</span><span class="mi">30</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">axes</span>
+    <span class="k">def</span> <span class="nf">fmt</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">fmt</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">fmt</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span></div>
 
 
-<div class="viewcode-block" id="plot_mesh"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.plot_mesh">[docs]</a><span class="k">def</span> <span class="nf">plot_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="triplot"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.triplot">[docs]</a><span class="k">def</span> <span class="nf">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">bnd_colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot a mesh with a different color for each boundary segment&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">geometric_dimension</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">topological_dimension</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Plotting meshes only implemented for 2D&quot;</span><span class="p">)</span>
@@ -234,57 +255,90 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Plotting meshes only implemented for &quot;</span>
                                   <span class="s2">&quot;triangles&quot;</span><span class="p">)</span>
 
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
     <span class="n">mesh</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1"># Apprently this doesn&#39;t happen automatically?</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
-
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">figure</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># Add lines for all of the edges, internal or boundary</span>
-    <span class="n">cell</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">cell_node_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">vertices</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]]</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">triangles</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">cell_node_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">triangulation</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">tri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">triangulation</span><span class="o">.</span><span class="n">edges</span>
+
+    <span class="n">tri_lines_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">edges</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tri_lines_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">edges</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tri_lines</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tri_lines_x</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">tri_lines_y</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span>
+                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Add colored lines for the boundary edges</span>
     <span class="n">facets</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">exterior_facets</span>
     <span class="n">local_facet_id</span> <span class="o">=</span> <span class="n">facets</span><span class="o">.</span><span class="n">local_facet_dat</span><span class="o">.</span><span class="n">data_ro</span>
     <span class="n">markers</span> <span class="o">=</span> <span class="n">facets</span><span class="o">.</span><span class="n">unique_markers</span>
-    <span class="n">clrs</span> <span class="o">=</span> <span class="n">_get_colors</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
+    <span class="n">clrs</span> <span class="o">=</span> <span class="n">_get_colors</span><span class="p">(</span><span class="n">bnd_colors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span>
 
+    <span class="n">bnd_lines</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">marker</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">markers</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">facets</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">marker</span><span class="p">))</span><span class="o">.</span><span class="n">indices</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
         <span class="n">roll</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">local_facet_id</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">exterior_facet_node_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="p">:]</span>
         <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">k</span><span class="p">,:],</span> <span class="n">roll</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])[:,:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">edges</span><span class="p">]</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">clrs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
-                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">_fix_axis_limits</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span></div>
+        <span class="n">bnd_lines_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">edges</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bnd_lines_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">edges</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bnd_lines</span> <span class="o">+=</span> <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bnd_lines_x</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">bnd_lines_y</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span>
+                               <span class="n">color</span><span class="o">=</span><span class="n">clrs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tri_lines</span> <span class="o">+</span> <span class="n">bnd_lines</span></div>
 
 
-<div class="viewcode-block" id="plot_grid_data"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.plot_grid_data">[docs]</a><span class="k">def</span> <span class="nf">plot_grid_data</span><span class="p">(</span><span class="n">grid_data</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="contourf"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.contourf">[docs]</a><span class="k">def</span> <span class="nf">contourf</span><span class="p">(</span><span class="n">grid_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot a gridded data object&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">figure</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
 
     <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span><span class="n">ny</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nx</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x0</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ny</span><span class="p">)</span>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grid_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=-</span><span class="mi">30</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">axes</span></div>
+
+<div class="viewcode-block" id="tricontourf"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.tricontourf">[docs]</a><span class="k">def</span> <span class="nf">tricontourf</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot a finite element field&quot;&quot;&quot;</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">triangles</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">cell_node_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">triangulation</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">tri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">ufl_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">function</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">ufl_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">function</span>
+
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">axes</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">triangulation</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="quiver"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.quiver">[docs]</a><span class="k">def</span> <span class="nf">quiver</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a quiver plot of a vector field&quot;&quot;&quot;</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">U</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">axes</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="streamline"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.streamline">[docs]</a><span class="k">def</span> <span class="nf">streamline</span><span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="n">initial_point</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">max_num_points</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
@@ -376,130 +430,57 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hmin</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">_plot_vector_field_streamline</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                  <span class="n">max_num_points</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
+
+<div class="viewcode-block" id="StreamplotSet"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.StreamplotSet">[docs]</a><span class="k">class</span> <span class="nc">StreamplotSet</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">streamplot</span><span class="o">.</span><span class="n">StreamplotSet</span><span class="p">,</span>
+                    <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">streamplot</span><span class="o">.</span><span class="n">StreamplotSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">arrows</span><span class="p">)</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span></div>
+
+
+<div class="viewcode-block" id="streamplot"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.streamplot">[docs]</a><span class="k">def</span> <span class="nf">streamplot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw streamlines of a vector field&quot;&quot;&quot;</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">)</span>
+
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">resolution</span> <span class="o">=</span> <span class="n">_mesh_hmin</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">spacing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">spacing</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">resolution</span>
-
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="n">_mesh_hmin</span><span class="p">(</span><span class="n">coordinates</span><span class="p">))</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">_mesh_hmin</span><span class="p">(</span><span class="n">coordinates</span><span class="p">))</span>
+    <span class="n">max_num_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_num_points&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
+    <span class="n">max_speed</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="s1">&#39;Linfty&#39;</span><span class="p">)</span>
+
     <span class="n">tree</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">KDTree</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">figure</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-
-    <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cmap&quot;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">)</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;Linfty&#39;</span><span class="p">)</span>
-
     <span class="n">indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)))</span>
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">indices</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="p">:]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">streamline</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">max_num_points</span><span class="o">=</span><span class="n">max_num_points</span><span class="p">)</span>
-            <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="n">speeds</span> <span class="o">/</span> <span class="n">norm</span>
-            <span class="n">segments</span> <span class="o">=</span> <span class="p">[(</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span> <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">,:])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">cmap</span><span class="p">(</span><span class="n">colors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">spacing</span><span class="p">):</span>
+    <span class="n">trajectories</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">line_colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">indices</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="p">:]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">streamline</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">max_num_points</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
                     <span class="n">indices</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="n">points</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">trajectories</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
+
+            <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="n">speeds</span> <span class="o">/</span> <span class="n">max_speed</span>
+            <span class="n">line_colors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">colors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="k">return</span> <span class="n">_fix_axis_limits</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+    <span class="n">line_collection</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span><span class="n">trajectories</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line_colors</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">line_collection</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
 
-
-<span class="k">def</span> <span class="nf">_plot_vector_field_magnitude</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
-    <span class="n">element</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">family</span><span class="p">(),</span> <span class="n">element</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
-    <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
-    <span class="n">magnitude</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)))</span>
-
-    <span class="k">return</span> <span class="n">plot</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="plot_vector_field"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.plot_vector_field">[docs]</a><span class="k">def</span> <span class="nf">plot_vector_field</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plot the directions, streamlines, or magnitude of a vector field</span>
-
-<span class="sd">    The default method to plot a vector field is to compute the magnitude</span>
-<span class="sd">    at each point and make a contour plot of this scalar field. You can also</span>
-<span class="sd">    make a quiver plot by passing the keyword argument `method=&#39;quiver&#39;`.</span>
-<span class="sd">    Finally, the streamlines of the vector field can be plotted with colors</span>
-<span class="sd">    representing the magnitude by passing `method=&#39;streamline&#39;`, although</span>
-<span class="sd">    this is substantially more expensive and may require tweaking.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    v : firedrake.Function</span>
-<span class="sd">        The vector field to plot</span>
-<span class="sd">    axes : matplotlib.Axes, optional</span>
-<span class="sd">        The axis to draw the figure on</span>
-
-<span class="sd">    Other Parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    method : str, optional</span>
-<span class="sd">        Either &#39;magnitude&#39; (default), &#39;streamline&#39;, or &#39;quiver&#39;</span>
-<span class="sd">    resolution : float, optional</span>
-<span class="sd">        If using a streamline plot, the resolution along a streamline</span>
-<span class="sd">    spacing : float, optional</span>
-<span class="sd">        If using a streamline plot, the minimum spacing between seed points</span>
-<span class="sd">        for streamlines</span>
-<span class="sd">    max_num_points : int, optional</span>
-<span class="sd">        If using a streamline plot, the maximum number of points along a</span>
-<span class="sd">        streamline; this is probably necessary if the vector field has a</span>
-<span class="sd">        stable equilibrium</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">method_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;magnitude&#39;</span><span class="p">)</span>
-
-    <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="n">_plot_vector_field_magnitude</span><span class="p">,</span>
-               <span class="s2">&quot;streamline&quot;</span><span class="p">:</span> <span class="n">_plot_vector_field_streamline</span><span class="p">,</span>
-               <span class="s2">&quot;quiver&quot;</span><span class="p">:</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">}</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Method for plotting vector field must be either &quot;</span>
-                        <span class="s2">&quot;`magnitude`, `streamline`, or `quiver`!&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method_name</span><span class="p">](</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.plot">[docs]</a><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a visualization of a mesh or a field</span>
-
-<span class="sd">    This function overrides the usual firedrake plotting functions. When</span>
-<span class="sd">    plotting a mesh, the boundaries are shown with colors and a legend to</span>
-<span class="sd">    show the ID for each boundary segment. When plotting a scalar or vector</span>
-<span class="sd">    field, the default colormap is set to viridis. Finally, when plotting a</span>
-<span class="sd">    vector field, the default behavior is to instead plot the magnitude of</span>
-<span class="sd">    the vector, rather than a quiver plot. A quiver plot or a streamline</span>
-<span class="sd">    plot can instead be selected by passing the keyword argument `method`</span>
-<span class="sd">    with value `quiver` or `streamline` respectively.</span>
-
-<span class="sd">    .. seealso::</span>
-
-<span class="sd">       :py:func:`firedrake.plot.plot`</span>
-<span class="sd">          Documentation for the firedrake plot function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">MeshGeometry</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">plot_mesh</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="s1">&#39;viridis&#39;</span><span class="p">))</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">GridData</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">plot_grid_data</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="o">.</span><span class="n">ufl_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">plot_vector_field</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="n">axes</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mesh_or_function</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=-</span><span class="mi">30</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">axes</span></div>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">max_speed</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StreamplotSet</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="n">line_collection</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

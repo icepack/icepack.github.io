@@ -1,5 +1,5 @@
-icepack\.models package
-=======================
+icepack.models package
+======================
 
 .. automodule:: icepack.models
     :members:
@@ -11,6 +11,7 @@ Submodules
 
 .. toctree::
 
+   icepack.models.friction
    icepack.models.ice_shelf
    icepack.models.ice_stream
    icepack.models.mass_transport

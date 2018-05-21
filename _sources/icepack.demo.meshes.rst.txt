@@ -2,8 +2,9 @@
 .. code:: ipython3
 
     %matplotlib inline
+    import matplotlib.pyplot as plt
     import firedrake
-    import icepack
+    import icepack, icepack.plot
 
 Meshes, functions
 =================
@@ -31,6 +32,11 @@ available, you can type
 from the python interpreter. In this demo we’ll use a mesh of the unit
 square.
 
+.. code:: ipython3
+
+    nx, ny = 16, 16
+    mesh = firedrake.UnitSquareMesh(nx, ny)
+
 Mesh plots are shown with a different color for each segments of the
 boundary and a legend. This is useful to when applying different
 boundary conditions to different segments, for example, Dirichlet
@@ -39,21 +45,13 @@ conditions on the other part.
 
 .. code:: ipython3
 
-    nx, ny = 16, 16
-    mesh = firedrake.UnitSquareMesh(nx, ny)
-    icepack.plot(mesh)
+    fig, axes = icepack.plot.subplots()
+    icepack.plot.triplot(mesh, axes=axes)
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x1127eed30>
-
-
-
-
-.. image:: icepack.demo.meshes_files/icepack.demo.meshes_3_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_5_0.png
 
 
 Functions
@@ -93,19 +91,15 @@ and a function space, and returns a field from that function space.
     a, b = 0.5, 10.0
     expr = (a - x)**2 + b*(y - x**2)**2
     q = firedrake.interpolate(expr, Q)
-    icepack.plot(q, plot3d=True)
+    
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(q, 36, axes=axes)
+    fig.colorbar(contours)
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.Axes3DSubplot at 0x112a69fd0>
-
-
-
-
-.. image:: icepack.demo.meshes_files/icepack.demo.meshes_5_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_7_0.png
 
 
 We can make vector fields in much the same way as we make scalar fields,
@@ -120,19 +114,16 @@ graphics.
 
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
     v = firedrake.interpolate(firedrake.grad(expr), V)
-    icepack.plot(v, method='streamline', resolution=1/96, max_num_points=200)
+    
+    fig, axes = icepack.plot.subplots()
+    opts = {'precision': 1/128, 'density': 1/16, 'max_num_points': 128}
+    streamlines = icepack.plot.streamplot(v, axes=axes, **opts)
+    fig.colorbar(streamlines)
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.axes._subplots.AxesSubplot at 0x112d01128>
-
-
-
-
-.. image:: icepack.demo.meshes_files/icepack.demo.meshes_7_1.png
+.. image:: icepack.demo.meshes_files/icepack.demo.meshes_9_0.png
 
 
 Post-processing
@@ -152,8 +143,8 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.4582620195591153e-17
-    [  2.32893496e-15  -1.48980215e-15]
+    -2.6020852139652106e-17
+    [ 3.46901282e-15 -2.52175273e-15]
 
 
 Firedrake also provides a rich set of operations for evaluating integral
@@ -176,9 +167,9 @@ call the function ``firedrake.assemble`` to evaluate it.
 
 .. parsed-literal::
 
-    0.25
-    2.0833346049
-    172.016096698
+    0.25000000000000094
+    2.083334604899087
+    172.01609669791247
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary
@@ -207,9 +198,9 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
 
 .. parsed-literal::
 
-    14.6666692098
-    3.58333333333
-    42.0
+    14.666669209798192
+    3.5833333333333366
+    42.00000000000004
 
 
 Conclusion

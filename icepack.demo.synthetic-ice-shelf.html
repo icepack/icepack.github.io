@@ -172,9 +172,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+  <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.models</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
 </pre></div>
 </div>
 <div class="section" id="synthetic-ice-shelf">
@@ -201,34 +202,33 @@ the exact solution that we’ll use here. We’ll briefly review what these
 PDEs are below. The symbols and variable names we use will correspond
 exactly to the variable names used in the code that follows.</p>
 <p>The diagnostic equation for the velocity of an ice shelf is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\nabla\cdot hM - \frac{1}{2}\varrho g\nabla h^2 = 0\]</div>
-<p>where <span class="math">\(h\)</span> is the ice thickness, <span class="math">\(M\)</span> is the membrane stress
-tensor, <span class="math">\(g\)</span> is the acceleration due to gravity, and
-<span class="math">\(\varrho = \rho_I(1 - \rho_I/\rho_W)\)</span>. The membrane stress is
-defined as</p>
-<div class="math">
+<p>where <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness, <span class="math notranslate nohighlight">\(M\)</span> is the membrane stress
+tensor, <span class="math notranslate nohighlight">\(g\)</span> is the acceleration due to gravity, and
+<span class="math notranslate nohighlight">\(\varrho = \rho_I(1 - \rho_I/\rho_W)\)</span> is the buoyant density of
+ice over water. The membrane stress is defined as</p>
+<div class="math notranslate nohighlight">
 \[M = 2\mu(\dot\varepsilon + \text{tr}(\dot\varepsilon)I),\]</div>
-<p>where <span class="math">\(\mu\)</span> is the ice viscosity,
-<span class="math">\(\dot\varepsilon = (\nabla u + \nabla u^*)/2\)</span> is the 2D
-strain-rate tensor, and <span class="math">\(I\)</span> is the identity tensor. Note that
+<p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the ice viscosity,
+<span class="math notranslate nohighlight">\(\dot\varepsilon = (\nabla u + \nabla u^*)/2\)</span> is the 2D
+strain-rate tensor, and <span class="math notranslate nohighlight">\(I\)</span> is the identity tensor. Note that
 since we’re in 2D the trace of the strain rate tensor is no longer zero.
 Finally, the ice viscosity is a function of the strain rate tensor:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\mu = \frac{B}{2}\sqrt{\frac{\dot\varepsilon : \dot\varepsilon + \text{tr}(\dot\varepsilon)^2}{2}}^{1/n - 1}\]</div>
-<p>where <span class="math">\(n = 3\)</span>, and <span class="math">\(B\)</span> is the temperature-dependent rheology
+<p>where <span class="math notranslate nohighlight">\(n = 3\)</span>, and <span class="math notranslate nohighlight">\(B\)</span> is the temperature-dependent rheology
 coefficient.</p>
 <p>When we consider ice shelves with no variation in the
-<span class="math">\(y\)</span>-direction, these equations reduce to a 1D boundary value
-problem. Provided that the rheology coefficient is constant throughout
-the domain, we can integrate twice to get that</p>
-<div class="math">
+<span class="math notranslate nohighlight">\(y\)</span>-direction, these equations reduce to a 1D boundary value
+problem. We can integrate twice to get that</p>
+<div class="math notranslate nohighlight">
 \[u = u_0 + \int_0^x\left(\frac{\varrho g h(x')}{4B}\right)^n dx'.\]</div>
-<p>When <span class="math">\(h\)</span> is a linear function of <span class="math">\(x\)</span>, we can evaluate this
-integral exactly to arrive at an expression for <span class="math">\(u\)</span> which is a
-degree-4 polynomial.</p>
+<p>When <span class="math notranslate nohighlight">\(h\)</span> is a linear function of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(B\)</span> is
+constant, we can evaluate this integral exactly to arrive at an
+expression for <span class="math notranslate nohighlight">\(u\)</span> which is a degree-4 polynomial.</p>
 <p>First, let’s set up the geometry and some function spaces.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">20e3</span><span class="p">,</span> <span class="mf">20e3</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">20e3</span><span class="p">,</span> <span class="mf">20e3</span>
 <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
@@ -241,7 +241,7 @@ degree-4 polynomial.</p>
 <p>Next, we’ll interpolate the expressions for the exact fields to the
 finite element representation. This should all be familiar from the last
 demo.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">h0</span> <span class="o">-</span> <span class="n">δh</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> \
@@ -254,35 +254,47 @@ demo.</p>
 <span class="n">u0</span> <span class="o">=</span> <span class="mf">100.0</span>
 <span class="n">du</span> <span class="o">=</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">β</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span> <span class="o">/</span> <span class="n">δh</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here we’ll plot both the thickness and the exact solution for the
+velocity. Just to show off some of the matplotlib integration, we’ll
+make them as subplots of the same figure. The extra padding around the
+colorbars and the call to <code class="docutils literal notranslate"><span class="pre">fig.tight_layout()</span></code> are necessary for
+things to look nice.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Thickness&quot;</span><span class="p">)</span>
+<span class="n">contours_h</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours_h</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Velocity&quot;</span><span class="p">)</span>
+<span class="n">contours_v</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours_v</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x112369da0</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<img alt="_images/icepack.demo.synthetic-ice-shelf_5_1.png" src="_images/icepack.demo.synthetic-ice-shelf_5_1.png" />
-<img alt="_images/icepack.demo.synthetic-ice-shelf_5_2.png" src="_images/icepack.demo.synthetic-ice-shelf_5_2.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_7_0.png" src="_images/icepack.demo.synthetic-ice-shelf_7_0.png" />
 </div>
 <div class="section" id="modeling">
 <h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
-<p>To actually start solving things, we’ll make an <code class="docutils literal"><span class="pre">IceShelf</span></code> object that
+<p>To actually start solving things, we’ll make an <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code> object that
 represents the physical model we’re using. The model object stores a
 bunch of data about the individual physics components – viscosity,
 gravity, etc. These aren’t important for now but we’ll come back to them
 later.</p>
-<p>Each model type has two methods, <code class="docutils literal"><span class="pre">diagnostic_solve</span></code> and
-<code class="docutils literal"><span class="pre">prognostic_solve</span></code>, that solve the PDEs for the ice velocity and
+<p>Each model type has two methods, <code class="docutils literal notranslate"><span class="pre">diagnostic_solve</span></code> and
+<code class="docutils literal notranslate"><span class="pre">prognostic_solve</span></code>, that solve the PDEs for the ice velocity and
 thickness.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">()</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">()</span>
 <span class="n">help</span><span class="p">(</span><span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">)</span>
 </pre></div>
 </div>
 <pre class="literal-block">
 Help on method diagnostic_solve in module icepack.models.ice_shelf:
 
-diagnostic_solve(u0=None, h=None, dirichlet_ids=[], tol=1e-06, <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs) method of icepack.models.ice_shelf.IceShelf instance
+diagnostic_solve(u0, h, dirichlet_ids, tol=1e-06, <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs) method of icepack.models.ice_shelf.IceShelf instance
     Solve for the ice velocity from the thickness
 
     Parameters
@@ -313,12 +325,10 @@ diagnostic_solve(u0=None, h=None, dirichlet_ids=[], tol=1e-06, <a href="#id1"><s
 <p>To solve for the ice velocity, we pass in all the input fields as
 keyword arguments. To make things a little more interesting, we’ll use a
 value of the fluidity parameter that changes in the center of the
-domain.</p>
-<p>We also need to describe the boundary conditions we’re using and the
-tolerance for solving Newton’s method. Since the boundary conditions and
-convergence tolerance are usually the same throughout a simulation,
-we’ll pack them into a dictionary and reuse it throughout.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="n">Ly</span>
+domain. Since we’re using a value of the fluidity parameter that varies
+in both the <span class="math notranslate nohighlight">\(x\)</span>- and <span class="math notranslate nohighlight">\(y\)</span>-directions, the PDE will no longer
+have a nice closed-form solution.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="n">Ly</span>
 <span class="n">shape_x</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">px</span><span class="p">))</span>
 <span class="n">shape_y</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">py</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">py</span><span class="p">))</span>
 
@@ -327,29 +337,49 @@ we’ll pack them into a dictionary and reuse it throughout.</p>
 <span class="n">δA</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">δT</span><span class="p">)</span> <span class="o">-</span> <span class="n">A0</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">+</span> <span class="n">shape_x</span> <span class="o">*</span> <span class="n">shape_y</span> <span class="o">*</span> <span class="n">δA</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dirichlet_ids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">}</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;MPa$</span><span class="si">{}</span><span class="s1">^{-3}$ * years$</span><span class="si">{}</span><span class="s1">^{-1}$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.synthetic-ice-shelf_11_0.png" src="_images/icepack.demo.synthetic-ice-shelf_11_0.png" />
+<p>We also need to describe the boundary conditions we’re using and the
+tolerance for solving Newton’s method. Since the boundary conditions and
+convergence tolerance are usually the same throughout a simulation,
+we’ll pack them into a dictionary and reuse it throughout. To compute
+the velocity field that results from the values of the thickness and
+fluidity we’ve chosen, we invoke the diagnostic solve method of the ice
+shelf object, passing in the extra options as keyword arguments.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">}</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
-
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x11283a208</span><span class="o">&gt;</span>
+<p>Note how in the diagnostic solve procedure we passed everything in as a
+keyword argument. This convention will be used throughout all the demos.
+Keyword arguments are slightly more verbose, but they save you the
+trouble of remembering what order everything goes in. On top of that,
+many fields are <em>only</em> passed in as keyword arguments; for example, the
+fluidity parameter is not a positional argument of the diagnostic solve
+routine. The reason for this choice, as we’ll see later, is that it’s
+much easier to swap out components of the model physics for your own
+customized versions.</p>
+<p>The effect of using a different fluidity field can be seen in how the
+contour lines for the ice speed bend in the middle of the domain.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.synthetic-ice-shelf_9_1.png" src="_images/icepack.demo.synthetic-ice-shelf_9_1.png" />
-<img alt="_images/icepack.demo.synthetic-ice-shelf_9_2.png" src="_images/icepack.demo.synthetic-ice-shelf_9_2.png" />
-<p>The solve procedures take in all the physical fields as keyword
-arguments instead of positional arguments. Keyword arguments save you
-the trouble of remembering what order everything goes in. As we’ll see
-later, they also make it easier to swap out components of the model
-physics for your own customized versions.</p>
-<p>The ice shelf model object also has a prognostic solve methods that
-updates the ice thickness for a given timestep. The following code runs
-the model forward for a year with a timestep of one month, assuming a
-constant value of the accumulation rate.</p>
-<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mf">1.0</span>
+<img alt="_images/icepack.demo.synthetic-ice-shelf_16_0.png" src="_images/icepack.demo.synthetic-ice-shelf_16_0.png" />
+<p>To project the state of the ice shelf forward in time, we’ll use the
+prognostic solve method. The prognostic solver updates the ice thickness
+forward by a given timestep given the accumulation rate and velocity. We
+then update the velocity using the diagnostic solver at each timestep.
+The following code runs the model forward for a year with a timestep of
+one month, assuming a constant value of the accumulation rate.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">12</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="n">num_timesteps</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
@@ -357,16 +387,22 @@ constant value of the accumulation rate.</p>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span><span class="p">):</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
-
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_subplots</span><span class="o">.</span><span class="n">AxesSubplot</span> <span class="n">at</span> <span class="mh">0x113453b00</span><span class="o">&gt;</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.synthetic-ice-shelf_12_1.png" src="_images/icepack.demo.synthetic-ice-shelf_12_1.png" />
-<img alt="_images/icepack.demo.synthetic-ice-shelf_12_2.png" src="_images/icepack.demo.synthetic-ice-shelf_12_2.png" />
+<img alt="_images/icepack.demo.synthetic-ice-shelf_19_0.png" src="_images/icepack.demo.synthetic-ice-shelf_19_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.synthetic-ice-shelf_20_0.png" src="_images/icepack.demo.synthetic-ice-shelf_20_0.png" />
 </div>
 <div class="section" id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>

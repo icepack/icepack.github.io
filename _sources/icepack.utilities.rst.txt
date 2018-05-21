@@ -1,5 +1,5 @@
-icepack\.utilities module
-=========================
+icepack.utilities module
+========================
 
 .. automodule:: icepack.utilities
     :members:

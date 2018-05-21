@@ -1,5 +1,5 @@
-icepack\.plot module
-====================
+icepack.plot module
+===================
 
 .. automodule:: icepack.plot
     :members:
