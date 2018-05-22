@@ -1,5 +1,5 @@
-icepack.models.friction module
-==============================
+icepack\.models\.friction module
+================================
 
 .. automodule:: icepack.models.friction
     :members:

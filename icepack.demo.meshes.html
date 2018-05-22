@@ -106,6 +106,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-stream.html">Synthetic ice stream</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -173,7 +174,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+  <div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span>
@@ -194,12 +195,12 @@ analyze a function by evaluating some area and contour integrals.</p>
 <p>First, we need to make a mesh. Firedrake includes routines for
 generating meshes of simple domains; to see all of the meshes that are
 available, you can type</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">utility_meshes</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">utility_meshes</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>from the python interpreter. In this demo we’ll use a mesh of the unit
 square.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">UnitSquareMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -208,7 +209,7 @@ boundary and a legend. This is useful to when applying different
 boundary conditions to different segments, for example, Dirichlet
 boundary conditions on part of the domain and Neumann boundary
 conditions on the other part.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -220,25 +221,25 @@ conditions on the other part.</p>
 <p>We can make scalar and vector fields defined on this mesh by
 interpolating the values of an algebraic expression to some space of
 functions.</p>
-<p>First, we have to construct a function space <code class="docutils literal notranslate"><span class="pre">Q</span></code>. We already have a
+<p>First, we have to construct a function space <code class="docutils literal"><span class="pre">Q</span></code>. We already have a
 mesh, and we need to decide what element family and polynomial degree.
 In almost all the cases you’ll encounter, the element family consists of
 continuous piecewise-polynomial functions in each triangle, which is
-abbreviated to <code class="docutils literal notranslate"><span class="pre">CG</span></code> for “continuous Galerkin”.</p>
+abbreviated to <code class="docutils literal"><span class="pre">CG</span></code> for “continuous Galerkin”.</p>
 <p>Next, we have to make an expression for the function and interpolate it
-to the function space <code class="docutils literal notranslate"><span class="pre">Q</span></code>. The function
-<code class="docutils literal notranslate"><span class="pre">firedrake.SpatialCoordinate</span></code> returns two symbolic objects <code class="docutils literal notranslate"><span class="pre">x</span></code>,
-<code class="docutils literal notranslate"><span class="pre">y</span></code> for the coordinates of each point of the mesh. We can then use
+to the function space <code class="docutils literal"><span class="pre">Q</span></code>. The function
+<code class="docutils literal"><span class="pre">firedrake.SpatialCoordinate</span></code> returns two symbolic objects <code class="docutils literal"><span class="pre">x</span></code>,
+<code class="docutils literal"><span class="pre">y</span></code> for the coordinates of each point of the mesh. We can then use
 these symbols to define expressions for the function we’d like to
 analyze. In this case, I’ve chosen the <a class="reference external" href="https://en.wikipedia.org/wiki/Rosenbrock_function">Rosenbrock
 function</a>.
 Firedrake has built-in functions for evaluating various transcendental
 functions of the coordinates, for example the sine, cosine, exponential,
 logarithm, etc. To see all of the available functions, you can check the
-namespace <code class="docutils literal notranslate"><span class="pre">ufl.operators</span></code>.</p>
-<p>Finally, the function <code class="docutils literal notranslate"><span class="pre">firedrake.interpolate</span></code> takes in an expression
+namespace <code class="docutils literal"><span class="pre">ufl.operators</span></code>.</p>
+<p>Finally, the function <code class="docutils literal"><span class="pre">firedrake.interpolate</span></code> takes in an expression
 and a function space, and returns a field from that function space.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
@@ -260,7 +261,7 @@ the vector field, colored according to the magnitude of the vector. This
 method is expensive, especially if you set the resolution or spacing of
 the streamlines to be too small, but nonetheless it produces really nice
 graphics.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">expr</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -275,48 +276,48 @@ graphics.</p>
 <div class="section" id="post-processing">
 <h2>Post-processing<a class="headerlink" href="#post-processing" title="Permalink to this headline">¶</a></h2>
 <p>We’ve already seen about how to visualize a scalar or a vector field;
-this is just a call to the function <code class="docutils literal notranslate"><span class="pre">icepack.plot</span></code>. To analyze the
+this is just a call to the function <code class="docutils literal"><span class="pre">icepack.plot</span></code>. To analyze the
 results of a simulation, you might also want to evaluate scalar or
 vector fields at points in the domain:</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">2.6020852139652106e-17</span>
-<span class="p">[</span> <span class="mf">3.46901282e-15</span> <span class="o">-</span><span class="mf">2.52175273e-15</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">2.4582620195591153e-17</span>
+<span class="p">[</span>  <span class="mf">2.32893496e-15</span>  <span class="o">-</span><span class="mf">1.48980215e-15</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Firedrake also provides a rich set of operations for evaluating integral
 expressions of scalar and vector fields. Much like how the function
-<code class="docutils literal notranslate"><span class="pre">SpatialCoordinate</span></code> gives you two symbols <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> that represent
+<code class="docutils literal"><span class="pre">SpatialCoordinate</span></code> gives you two symbols <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code> that represent
 the coordinates of each point of the mesh, firedrake also provides an
-object <code class="docutils literal notranslate"><span class="pre">dx</span></code> that represents the differential area element.</p>
-<p>To define an integral, we multiply an expression by <code class="docutils literal notranslate"><span class="pre">dx</span></code>, and then
-call the function <code class="docutils literal notranslate"><span class="pre">firedrake.assemble</span></code> to evaluate it.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">assemble</span>
+object <code class="docutils literal"><span class="pre">dx</span></code> that represents the differential area element.</p>
+<p>To define an integral, we multiply an expression by <code class="docutils literal"><span class="pre">dx</span></code>, and then
+call the function <code class="docutils literal"><span class="pre">firedrake.assemble</span></code> to evaluate it.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">assemble</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="o">*</span><span class="n">dx</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">dx</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.25000000000000094</span>
-<span class="mf">2.083334604899087</span>
-<span class="mf">172.01609669791247</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">0.25</span>
+<span class="mf">2.0833346049</span>
+<span class="mf">172.016096698</span>
 </pre></div>
 </div>
 <p>We can also evaluate integrals over the boundary of the mesh. Boundary
-integrals are specified using the differential surface element <code class="docutils literal notranslate"><span class="pre">ds</span></code>
-instead of <code class="docutils literal notranslate"><span class="pre">dx</span></code>.</p>
+integrals are specified using the differential surface element <code class="docutils literal"><span class="pre">ds</span></code>
+instead of <code class="docutils literal"><span class="pre">dx</span></code>.</p>
 <p>Sometimes we need to integrate over only part of the boundary. We can
-specify which part by passing the right numeric ID to <code class="docutils literal notranslate"><span class="pre">ds</span></code>; these are
+specify which part by passing the right numeric ID to <code class="docutils literal"><span class="pre">ds</span></code>; these are
 the same IDs that are color-coded in the mesh plot above.</p>
 <p>Finally, you might also want to evaluate the flux of a vector field
 across the boundary. To evaluate a flux, we need to get the unit outward
 normal vector to the boundary. You can get a symbol representing the
-unit outward normal by calling the function <code class="docutils literal notranslate"><span class="pre">firedrake.FacetNormal</span></code>.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">ds</span>
+unit outward normal by calling the function <code class="docutils literal"><span class="pre">firedrake.FacetNormal</span></code>.</p>
+<div class="code ipython3 highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">ds</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">ds</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">ds</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
@@ -325,9 +326,9 @@ unit outward normal by calling the function <code class="docutils literal notran
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">14.666669209798192</span>
-<span class="mf">3.5833333333333366</span>
-<span class="mf">42.00000000000004</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">14.6666692098</span>
+<span class="mf">3.58333333333</span>
+<span class="mf">42.0</span>
 </pre></div>
 </div>
 </div>

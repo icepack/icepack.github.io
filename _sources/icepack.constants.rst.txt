@@ -1,5 +1,5 @@
-icepack.constants module
-========================
+icepack\.constants module
+=========================
 
 .. automodule:: icepack.constants
     :members:

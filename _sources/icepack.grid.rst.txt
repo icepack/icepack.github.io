@@ -1,5 +1,5 @@
-icepack.grid package
-====================
+icepack\.grid package
+=====================
 
 .. automodule:: icepack.grid
     :members:

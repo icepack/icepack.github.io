@@ -1,5 +1,5 @@
-icepack.norms module
-====================
+icepack\.norms module
+=====================
 
 .. automodule:: icepack.norms
     :members:

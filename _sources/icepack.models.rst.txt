@@ -1,5 +1,5 @@
-icepack.models package
-======================
+icepack\.models package
+=======================
 
 .. automodule:: icepack.models
     :members:

@@ -33,6 +33,7 @@ extensibility
    icepack.demo.meshes.rst
    icepack.demo.synthetic-ice-shelf.rst
    icepack.demo.larsen-ice-shelf.rst
+   icepack.demo.synthetic-ice-stream.rst
 
 
 .. toctree::

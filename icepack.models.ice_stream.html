@@ -101,6 +101,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.meshes.html">Meshes, functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-stream.html">Synthetic ice stream</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -190,14 +191,14 @@
 <dl class="class">
 <dt id="icepack.models.ice_stream.IceStream">
 <em class="property">class </em><code class="descclassname">icepack.models.ice_stream.</code><code class="descname">IceStream</code><span class="sig-paren">(</span><em>viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em>friction=&lt;function bed_friction&gt;</em>, <em>side_friction=&lt;function side_friction&gt;</em>, <em>gravity=&lt;function gravity&gt;</em>, <em>terminus=&lt;function terminus&gt;</em>, <em>penalty=&lt;function normal_flow_penalty&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class for modelling the flow of grounded ice streams</p>
 <p>This class provides functions that solve for the velocity, thickness,
 and surface elevation of a grounded, fast-flowing ice stream.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal notranslate"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
+<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
 <dd>Default implementation of the ice stream viscous action</dd>
 </dl>
 </div>
@@ -216,7 +217,7 @@ model as the Euler-Lagrange equations</p>
 <dd><p class="first">thickness and bathymetry</p>
 <p>If the bathymetry beneath a tidewater glacier is too low, the ice
 will go afloat. The surface elevation of a floating ice shelf is</p>
-<div class="last math notranslate nohighlight">
+<div class="last math">
 \[s = (1 -\]</div>
 </dd>
 </dl>
@@ -275,7 +276,7 @@ that were set when this model object was initialized</p>
 <code class="descclassname">icepack.models.ice_stream.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the ice stream action functional is</p>
-<div class="math notranslate nohighlight">
+<div class="math">
 \[E(u) = -\int_\Omega\rho_Igh\nabla s\cdot u\hspace{2pt}dx\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -296,13 +297,13 @@ that were set when this model object was initialized</p>
 <dt id="icepack.models.ice_stream.terminus">
 <code class="descclassname">icepack.models.ice_stream.</code><code class="descname">terminus</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminal stress part of the ice stream action functional</p>
-<p>The power exerted due to stress at the ice calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span>
+<p>The power exerted due to stress at the ice calving terminus <span class="math">\(\Gamma\)</span>
 is</p>
-<div class="math notranslate nohighlight">
+<div class="math">
 \[E(u) = \int_\Gamma\left(\frac{1}{2}\rho_Igh^2 - \rho_Wgd^2\right)
 u\cdot \nu\hspace{2pt}ds\]</div>
-<p>where <span class="math notranslate nohighlight">\(d\)</span> is the water depth at the terminus. We assume that sea
-level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for purposes of calculating the water depth.</p>
+<p>where <span class="math">\(d\)</span> is the water depth at the terminus. We assume that sea
+level is at <span class="math">\(z = 0\)</span> for purposes of calculating the water depth.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

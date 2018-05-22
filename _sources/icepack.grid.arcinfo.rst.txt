@@ -1,5 +1,5 @@
-icepack.grid.arcinfo module
-===========================
+icepack\.grid\.arcinfo module
+=============================
 
 .. automodule:: icepack.grid.arcinfo
     :members:

@@ -1,5 +1,5 @@
-icepack.grid.geotiff module
-===========================
+icepack\.grid\.geotiff module
+=============================
 
 .. automodule:: icepack.grid.geotiff
     :members:

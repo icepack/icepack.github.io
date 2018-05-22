@@ -143,8 +143,8 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.6020852139652106e-17
-    [ 3.46901282e-15 -2.52175273e-15]
+    -2.4582620195591153e-17
+    [  2.32893496e-15  -1.48980215e-15]
 
 
 Firedrake also provides a rich set of operations for evaluating integral
@@ -167,9 +167,9 @@ call the function ``firedrake.assemble`` to evaluate it.
 
 .. parsed-literal::
 
-    0.25000000000000094
-    2.083334604899087
-    172.01609669791247
+    0.25
+    2.0833346049
+    172.016096698
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary
@@ -198,9 +198,9 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
 
 .. parsed-literal::
 
-    14.666669209798192
-    3.5833333333333366
-    42.00000000000004
+    14.6666692098
+    3.58333333333
+    42.0
 
 
 Conclusion

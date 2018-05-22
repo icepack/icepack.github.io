@@ -101,6 +101,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.meshes.html">Meshes, functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.synthetic-ice-stream.html">Synthetic ice stream</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
@@ -197,14 +198,14 @@
 <p>Computes one of any number of norms of a scalar or vector field. The
 available options are:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">L2</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega|u|^2dx\)</span></li>
-<li><code class="docutils literal notranslate"><span class="pre">H01</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega|\nabla u|^2dx\)</span></li>
-<li><code class="docutils literal notranslate"><span class="pre">H1</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega\left(|u|^2 + L^2|\nabla u|^2\right)dx\)</span></li>
-<li><code class="docutils literal notranslate"><span class="pre">L1</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \int_\Omega|u|dx\)</span></li>
-<li><code class="docutils literal notranslate"><span class="pre">TV</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \int_\Omega|\nabla u|dx\)</span></li>
-<li><code class="docutils literal notranslate"><span class="pre">Linfty</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \max_{x\in\Omega}|u(x)|\)</span></li>
+<li><code class="docutils literal"><span class="pre">L2</span></code>: <span class="math">\(\|u\|^2 = \int_\Omega|u|^2dx\)</span></li>
+<li><code class="docutils literal"><span class="pre">H01</span></code>: <span class="math">\(\|u\|^2 = \int_\Omega|\nabla u|^2dx\)</span></li>
+<li><code class="docutils literal"><span class="pre">H1</span></code>: <span class="math">\(\|u\|^2 = \int_\Omega\left(|u|^2 + L^2|\nabla u|^2\right)dx\)</span></li>
+<li><code class="docutils literal"><span class="pre">L1</span></code>: <span class="math">\(\|u\| = \int_\Omega|u|dx\)</span></li>
+<li><code class="docutils literal"><span class="pre">TV</span></code>: <span class="math">\(\|u\| = \int_\Omega|\nabla u|dx\)</span></li>
+<li><code class="docutils literal"><span class="pre">Linfty</span></code>: <span class="math">\(\|u\| = \max_{x\in\Omega}|u(x)|\)</span></li>
 </ul>
-<p>The extra factor <span class="math notranslate nohighlight">\(L\)</span> in the <span class="math notranslate nohighlight">\(H^1\)</span> norm is the diameter of
+<p>The extra factor <span class="math">\(L\)</span> in the <span class="math">\(H^1\)</span> norm is the diameter of
 the domain in the infinity metric. This extra factor is included to
 make the norm scale appropriately with the size of the domain.</p>
 </dd></dl>

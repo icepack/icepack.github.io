@@ -1,5 +1,5 @@
-icepack.optimization module
-===========================
+icepack\.optimization module
+============================
 
 .. automodule:: icepack.optimization
     :members:

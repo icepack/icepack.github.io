@@ -1,5 +1,5 @@
-icepack.adjoint module
-======================
+icepack\.adjoint module
+=======================
 
 .. automodule:: icepack.adjoint
     :members:
