@@ -183,6 +183,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+
 <div class="viewcode-block" id="diameter"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.diameter">[docs]</a><span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the diameter of the mesh in the L-infinity metric&quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span>
@@ -190,17 +191,21 @@
     <span class="n">Ls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Ls</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="add_kwarg_wrapper"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.add_kwarg_wrapper">[docs]</a><span class="k">def</span> <span class="nf">add_kwarg_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;VAR_KEYWORD&#39;</span>
-           <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;VAR_KEYWORD&#39;</span>
+           <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">func</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span>
+
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">kwargs_</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">kwargs_</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">wrapper</span></div>
+
 </pre></div>
 
            </div>

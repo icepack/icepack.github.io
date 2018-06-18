@@ -193,10 +193,10 @@
 <code class="descclassname">icepack.models.friction.</code><code class="descname">bed_friction</code><span class="sig-paren">(</span><em>u</em>, <em>C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.bed_friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bed friction part of the ice stream action functional</p>
 <p>The frictional part of the ice stream action functional is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\hspace{2pt}dx\]</div>
-<p>where <span class="math">\(\tau(u, C)\)</span> is the basal shear stress</p>
-<div class="math">
+<p>where <span class="math notranslate nohighlight">\(\tau(u, C)\)</span> is the basal shear stress</p>
+<div class="math notranslate nohighlight">
 \[\tau(u, C) = -C|u|^{1/m - 1}u\]</div>
 </dd></dl>
 
@@ -216,10 +216,10 @@ flow to the action functional.</p>
 <dd><p>Return the side wall friction part of the action functional</p>
 <p>The component of the action functional due to friction along the side
 walls of the domain is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = -\frac{m}{m + 1}\int_\Gamma h\tau(u, C_s)\cdot u\hspace{2pt}ds\]</div>
-<p>where <span class="math">\(\tau(u, C_s)\)</span> is the side wall shear stress, <span class="math">\(ds\)</span>
-is the element of surface area and <span class="math">\(\Gamma\)</span> are the side walls.
+<p>where <span class="math notranslate nohighlight">\(\tau(u, C_s)\)</span> is the side wall shear stress, <span class="math notranslate nohighlight">\(ds\)</span>
+is the element of surface area and <span class="math notranslate nohighlight">\(\Gamma\)</span> are the side walls.
 Side wall friction is relevant for glaciers that flow through a fjord
 with rock walls on either side.</p>
 </dd></dl>

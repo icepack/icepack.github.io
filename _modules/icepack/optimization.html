@@ -180,98 +180,13 @@
 <span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
 <span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
 
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">derivative</span><span class="p">,</span> <span class="n">solve</span><span class="p">,</span> \
-    <span class="n">Function</span><span class="p">,</span> <span class="n">Constant</span>
-
-<div class="viewcode-block" id="compute_search_direction"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.compute_search_direction">[docs]</a><span class="k">def</span> <span class="nf">compute_search_direction</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Solve the linear system for the search direction in Newton&#39;s method</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    E : firedrake.Form</span>
-<span class="sd">        A functional to be optimized</span>
-<span class="sd">    u : firedrake.Function</span>
-<span class="sd">        The current guess for the optimizer of `E`</span>
-<span class="sd">    bc : firedrake.DirichletBC</span>
-<span class="sd">        Boundary conditions for the PDE</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    firedrake.Function</span>
-<span class="sd">        The solution of the PDE</span>
-
-<span class="sd">    .. math:: (d^2E)p = -dE</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
-    <span class="n">dF</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
-
-    <span class="n">p</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
-    <span class="n">solve</span><span class="p">(</span><span class="n">dF</span> <span class="o">==</span> <span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span>
-          <span class="n">solver_parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">})</span>
-    <span class="k">return</span> <span class="n">p</span></div>
+<span class="kn">import</span> <span class="nn">firedrake</span>
 
 
-<div class="viewcode-block" id="functional_along_line"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.functional_along_line">[docs]</a><span class="k">def</span> <span class="nf">functional_along_line</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Restrict a functional to a line in parameter space</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    E : firedrake.Form</span>
-<span class="sd">        The functional to be optimized</span>
-<span class="sd">    u : firedrake.Function</span>
-<span class="sd">        The current guess for the optimizer of `E`</span>
-<span class="sd">    p : firedrake.Function</span>
-<span class="sd">        The current search direction</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    callable</span>
-<span class="sd">        The function `f(z) = E(u0 + z * p)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">p</span><span class="p">})</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
-        <span class="n">alpha</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">assemble</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">f</span></div>
-
-
-<div class="viewcode-block" id="backtracking_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.backtracking_search">[docs]</a><span class="k">def</span> <span class="nf">backtracking_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">armijo</span><span class="o">=</span><span class="mf">1.0e-4</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Search for the minimum of a functional along a line</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    E : firedrake.Form</span>
-<span class="sd">        The functional to be minimized</span>
-<span class="sd">    u : firedrake.Function</span>
-<span class="sd">        The current guess for the minimizer of `E`</span>
-<span class="sd">    p : firedrake.Function</span>
-<span class="sd">        The direction from `u` where we are searching for a new minimizer</span>
-<span class="sd">    armijo : float, optional</span>
-<span class="sd">        The Armijo parameter used to determine when the line search has</span>
-<span class="sd">        found a sufficiently better guess</span>
-<span class="sd">    rho : float, optional</span>
-<span class="sd">        The backtracking parameter used to determine how much to shrink the</span>
-<span class="sd">        step length if the current value is too long</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        The distance along `p` of an approximate minimizer</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">functional_along_line</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-    <span class="n">f0</span><span class="p">,</span> <span class="n">df0</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">assemble</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">),</span> <span class="n">p</span><span class="p">))</span>
-    <span class="k">assert</span> <span class="n">df0</span> <span class="o">&lt;</span> <span class="mi">0</span>
-
-    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
-    <span class="k">while</span> <span class="n">f</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">f0</span> <span class="o">+</span> <span class="n">armijo</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">df0</span><span class="p">:</span>
-        <span class="n">alpha</span> <span class="o">*=</span> <span class="n">rho</span>
-
-    <span class="k">return</span> <span class="n">alpha</span></div>
-
-
-<div class="viewcode-block" id="newton_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.newton_search">[docs]</a><span class="k">def</span> <span class="nf">newton_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+<div class="viewcode-block" id="newton_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.newton_search">[docs]</a><span class="k">def</span> <span class="nf">newton_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
+                  <span class="n">max_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">armijo</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">contraction_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                  <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="p">{},</span>
+                  <span class="n">solver_parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">}):</span>
     <span class="sd">&quot;&quot;&quot;Find the minimizer of a convex functional</span>
 
 <span class="sd">    Parameters</span>
@@ -282,27 +197,56 @@
 <span class="sd">        Initial guess for the minimizer</span>
 <span class="sd">    tolerance : float</span>
 <span class="sd">        Stopping criterion for the optimization procedure</span>
+<span class="sd">    scale : firedrake.Form</span>
+<span class="sd">        A positive scale functional by which to measure the objective</span>
 <span class="sd">    max_iterations : int, optional</span>
 <span class="sd">        Optimization procedure will stop at this many iterations regardless</span>
 <span class="sd">        of convergence</span>
+<span class="sd">    armijo : float, optional</span>
+<span class="sd">        The constant in the Armijo condition (see Nocedal and Wright)</span>
+<span class="sd">    contraction_factor : float, optional</span>
+<span class="sd">        The amount by which to backtrack in the line search if the Armijo</span>
+<span class="sd">        condition is not satisfied</span>
+<span class="sd">    form_compiler_parameters : dict, optional</span>
+<span class="sd">        Extra options to pass to the firedrake form compiler</span>
+<span class="sd">    solver_parameters : dict, optional</span>
+<span class="sd">        Extra options to pass to the linear solver</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    firedrake.Function</span>
 <span class="sd">        The approximate minimizer of `E` to within tolerance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dE</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
+    <span class="n">dE_dp</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">assemble</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">compute_search_direction</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
-        <span class="n">dE_dp</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">dE</span><span class="p">,</span> <span class="n">p</span><span class="p">)))</span>
+        <span class="c1"># Compute a search direction</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">H</span> <span class="o">==</span> <span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span>
+                        <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">,</span>
+                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">dE_dp</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="n">max_iterations</span><span class="p">):</span>
+        <span class="c1"># Compute the directional derivative, check if we&#39;re done</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">assemble</span><span class="p">(</span><span class="n">dE_dp</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">slope</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">assemble</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">tolerance</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="n">max_iterations</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">u</span>
 
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">backtracking_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+        <span class="c1"># Backtracking search</span>
+        <span class="n">E0</span> <span class="o">=</span> <span class="n">assemble</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">α</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">Eα</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">p</span><span class="p">})</span>
+        <span class="k">while</span> <span class="n">assemble</span><span class="p">(</span><span class="n">Eα</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">E0</span> <span class="o">+</span> <span class="n">armijo</span> <span class="o">*</span> <span class="n">α</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">slope</span><span class="p">:</span>
+            <span class="n">α</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">α</span> <span class="o">*</span> <span class="n">contraction_factor</span><span class="p">)</span>
+
+        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 </pre></div>

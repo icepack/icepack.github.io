@@ -191,7 +191,7 @@
 <dl class="class">
 <dt id="icepack.models.ice_shelf.IceShelf">
 <em class="property">class </em><code class="descclassname">icepack.models.ice_shelf.</code><code class="descname">IceShelf</code><span class="sig-paren">(</span><em>viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em>side_friction=&lt;function side_friction&gt;</em>, <em>gravity=&lt;function gravity&gt;</em>, <em>terminus=&lt;function terminus&gt;</em>, <em>penalty=&lt;function normal_flow_penalty&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modelling the flow of floating ice shelves</p>
 <p>This class provides functions that solve for the velocity and
 thickness of a floating ice shelf. The relevant physics can be found
@@ -199,7 +199,7 @@ in ch. 6 of Greve and Blatter.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
+<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal notranslate"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
 <dd>Default implementation of the ice shelf viscous action</dd>
 </dl>
 </div>
@@ -209,11 +209,11 @@ in ch. 6 of Greve and Blatter.</p>
 <dd><p>Return the action functional that gives the ice shelf diagnostic
 model as the Euler-Lagrange equations</p>
 <p>The action functional for the ice shelf diagnostic model is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = \int_\Omega\left(\frac{n}{n + 1}hM:\dot\varepsilon
 - \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx\]</div>
-<p>where <span class="math">\(u\)</span> is the velocity, <span class="math">\(h\)</span> is the ice thickness,
-<span class="math">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math">\(M\)</span> is
+<p>where <span class="math notranslate nohighlight">\(u\)</span> is the velocity, <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness,
+<span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
 the membrane stress tensor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -300,6 +300,14 @@ model object was initialized</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="icepack.models.ice_shelf.IceShelf.scale">
+<code class="descname">scale</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the positive, convex part of the action functional</p>
+<p>The positive part of the action functional is used as a dimensional
+scale to determine when to terminate an optimization algorithm.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -307,8 +315,9 @@ model object was initialized</p>
 <code class="descclassname">icepack.models.ice_shelf.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u</em>, <em>h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice shelf action functional</p>
 <p>The gravitational part of the ice shelf action functional is</p>
-<div class="math">
-\[E(u) = -\frac{1}{2}\int_\Omega \varrho g\nabla h^2\cdot u\hspace{2pt}dx\]</div>
+<div class="math notranslate nohighlight">
+\[E(u) = -\frac{1}{2}\int_\Omega
+\varrho g\nabla h^2\cdot u\hspace{2pt}dx\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -333,10 +342,10 @@ model object was initialized</p>
 <dt id="icepack.models.ice_shelf.terminus">
 <code class="descclassname">icepack.models.ice_shelf.</code><code class="descname">terminus</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminus stress part of the ice shelf action functional</p>
-<p>The power exerted due to stress at the calving terminus <span class="math">\(\Gamma\)</span> is</p>
-<div class="math">
+<p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
+<div class="math notranslate nohighlight">
 \[E(u) = \int_\Gamma\varrho gh^2u\cdot\nu\hspace{2pt}ds\]</div>
-<p>We assume that sea level is at <span class="math">\(z = 0\)</span> for calculating the water
+<p>We assume that sea level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for calculating the water
 depth.</p>
 </dd></dl>
 

@@ -1,5 +1,5 @@
-icepack\.grid\.grid\_data module
-================================
+icepack.grid.grid\_data module
+==============================
 
 .. automodule:: icepack.grid.grid_data
     :members:

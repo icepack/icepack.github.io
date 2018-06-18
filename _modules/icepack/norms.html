@@ -184,6 +184,7 @@
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">assemble</span>
 <span class="kn">from</span> <span class="nn">icepack</span> <span class="k">import</span> <span class="n">utilities</span>
 
+
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../icepack.norms.html#icepack.norms.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="s1">&#39;L2&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the norm of a field</span>
 
@@ -230,6 +231,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">assemble</span><span class="p">(</span><span class="n">form</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">p</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

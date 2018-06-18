@@ -36,7 +36,7 @@ hard-code ``data_directory`` to the right location on your computer.
 
 .. parsed-literal::
 
-    /Volumes/Seagate Backup Plus Drive/icepack-data
+    /home/daniel/programs/icepack-data
 
 
 Geometry
@@ -227,7 +227,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.108876123946
+    0.10887471255642399
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -289,7 +289,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.88631040454
+    -3.8863180425070367
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

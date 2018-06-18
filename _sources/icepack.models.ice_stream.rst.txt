@@ -1,5 +1,5 @@
-icepack\.models\.ice\_stream module
-===================================
+icepack.models.ice\_stream module
+=================================
 
 .. automodule:: icepack.models.ice_stream
     :members:

@@ -1,5 +1,5 @@
-icepack\.interpolate module
-===========================
+icepack.interpolate module
+==========================
 
 .. automodule:: icepack.interpolate
     :members:

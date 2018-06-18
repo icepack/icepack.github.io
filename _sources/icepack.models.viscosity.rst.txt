@@ -1,5 +1,5 @@
-icepack\.models\.viscosity module
-=================================
+icepack.models.viscosity module
+===============================
 
 .. automodule:: icepack.models.viscosity
     :members:

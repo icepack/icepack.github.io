@@ -191,14 +191,14 @@
 <dl class="class">
 <dt id="icepack.models.ice_stream.IceStream">
 <em class="property">class </em><code class="descclassname">icepack.models.ice_stream.</code><code class="descname">IceStream</code><span class="sig-paren">(</span><em>viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em>friction=&lt;function bed_friction&gt;</em>, <em>side_friction=&lt;function side_friction&gt;</em>, <em>gravity=&lt;function gravity&gt;</em>, <em>terminus=&lt;function terminus&gt;</em>, <em>penalty=&lt;function normal_flow_penalty&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modelling the flow of grounded ice streams</p>
 <p>This class provides functions that solve for the velocity, thickness,
 and surface elevation of a grounded, fast-flowing ice stream.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
-<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
+<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal notranslate"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
 <dd>Default implementation of the ice stream viscous action</dd>
 </dl>
 </div>
@@ -212,19 +212,13 @@ model as the Euler-Lagrange equations</p>
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.compute_surface">
 <code class="descname">compute_surface</code><span class="sig-paren">(</span><em>h</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.compute_surface" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Return the ice surface elevation consistent with a given</dt>
-<dd><p class="first">thickness and bathymetry</p>
+<dd><p>Return the ice surface elevation consistent with a given
+thickness and bathymetry</p>
 <p>If the bathymetry beneath a tidewater glacier is too low, the ice
 will go afloat. The surface elevation of a floating ice shelf is</p>
-<div class="last math">
-\[s = (1 -\]</div>
-</dd>
-</dl>
-<p>ho_I /
-ho_W)h,</p>
-<blockquote>
-<div>provided everything is in hydrostatic balance.</div></blockquote>
+<div class="math notranslate nohighlight">
+\[s = (1 - \rho_I / \rho_W)h,\]</div>
+<p>provided everything is in hydrostatic balance.</p>
 </dd></dl>
 
 <dl class="method">
@@ -269,6 +263,14 @@ that were set when this model object was initialized</p>
 <dd><p>Propagate the ice thickness forward one timestep</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="icepack.models.ice_stream.IceStream.scale">
+<code class="descname">scale</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the positive, convex part of the action functional</p>
+<p>The positive part of the action functional is used as a dimensional
+scale to determine when to terminate an optimization algorithm.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -276,7 +278,7 @@ that were set when this model object was initialized</p>
 <code class="descclassname">icepack.models.ice_stream.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the ice stream action functional is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = -\int_\Omega\rho_Igh\nabla s\cdot u\hspace{2pt}dx\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -297,13 +299,13 @@ that were set when this model object was initialized</p>
 <dt id="icepack.models.ice_stream.terminus">
 <code class="descclassname">icepack.models.ice_stream.</code><code class="descname">terminus</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminal stress part of the ice stream action functional</p>
-<p>The power exerted due to stress at the ice calving terminus <span class="math">\(\Gamma\)</span>
+<p>The power exerted due to stress at the ice calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span>
 is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = \int_\Gamma\left(\frac{1}{2}\rho_Igh^2 - \rho_Wgd^2\right)
 u\cdot \nu\hspace{2pt}ds\]</div>
-<p>where <span class="math">\(d\)</span> is the water depth at the terminus. We assume that sea
-level is at <span class="math">\(z = 0\)</span> for purposes of calculating the water depth.</p>
+<p>where <span class="math notranslate nohighlight">\(d\)</span> is the water depth at the terminus. We assume that sea
+level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for purposes of calculating the water depth.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

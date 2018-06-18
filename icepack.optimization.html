@@ -192,88 +192,8 @@
   <div class="section" id="module-icepack.optimization">
 <span id="icepack-optimization-module"></span><h1>icepack.optimization module<a class="headerlink" href="#module-icepack.optimization" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="icepack.optimization.backtracking_search">
-<code class="descclassname">icepack.optimization.</code><code class="descname">backtracking_search</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>p</em>, <em>armijo=0.0001</em>, <em>rho=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#backtracking_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.backtracking_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for the minimum of a functional along a line</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be minimized</li>
-<li><strong>u</strong> (<em>firedrake.Function</em>) – The current guess for the minimizer of <cite>E</cite></li>
-<li><strong>p</strong> (<em>firedrake.Function</em>) – The direction from <cite>u</cite> where we are searching for a new minimizer</li>
-<li><strong>armijo</strong> (<em>float</em><em>, </em><em>optional</em>) – The Armijo parameter used to determine when the line search has
-found a sufficiently better guess</li>
-<li><strong>rho</strong> (<em>float</em><em>, </em><em>optional</em>) – The backtracking parameter used to determine how much to shrink the
-step length if the current value is too long</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The distance along <cite>p</cite> of an approximate minimizer</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.optimization.compute_search_direction">
-<code class="descclassname">icepack.optimization.</code><code class="descname">compute_search_direction</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>bc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#compute_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.compute_search_direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solve the linear system for the search direction in Newton’s method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>E</strong> (<em>firedrake.Form</em>) – A functional to be optimized</li>
-<li><strong>u</strong> (<em>firedrake.Function</em>) – The current guess for the optimizer of <cite>E</cite></li>
-<li><strong>bc</strong> (<em>firedrake.DirichletBC</em>) – Boundary conditions for the PDE</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><em>firedrake.Function</em> – The solution of the PDE</li>
-<li><em>.. math:: (d^2E)p = -dE</em></li>
-</ul>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.optimization.functional_along_line">
-<code class="descclassname">icepack.optimization.</code><code class="descname">functional_along_line</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#functional_along_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.functional_along_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Restrict a functional to a line in parameter space</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be optimized</li>
-<li><strong>u</strong> (<em>firedrake.Function</em>) – The current guess for the optimizer of <cite>E</cite></li>
-<li><strong>p</strong> (<em>firedrake.Function</em>) – The current search direction</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function <cite>f(z) = E(u0 + z * p)</cite></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">callable</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="icepack.optimization.newton_search">
-<code class="descclassname">icepack.optimization.</code><code class="descname">newton_search</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>bc</em>, <em>tolerance</em>, <em>max_iterations=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#newton_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.newton_search" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.optimization.</code><code class="descname">newton_search</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>bc</em>, <em>tolerance</em>, <em>scale</em>, <em>max_iterations=50</em>, <em>armijo=0.0001</em>, <em>contraction_factor=0.5</em>, <em>form_compiler_parameters={}</em>, <em>solver_parameters={'ksp_type': 'preonly'</em>, <em>'pc_type': 'lu'}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#newton_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.newton_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the minimizer of a convex functional</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -283,8 +203,14 @@ step length if the current value is too long</li>
 <li><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be minimized</li>
 <li><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the minimizer</li>
 <li><strong>tolerance</strong> (<em>float</em>) – Stopping criterion for the optimization procedure</li>
+<li><strong>scale</strong> (<em>firedrake.Form</em>) – A positive scale functional by which to measure the objective</li>
 <li><strong>max_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Optimization procedure will stop at this many iterations regardless
 of convergence</li>
+<li><strong>armijo</strong> (<em>float</em><em>, </em><em>optional</em>) – The constant in the Armijo condition (see Nocedal and Wright)</li>
+<li><strong>contraction_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The amount by which to backtrack in the line search if the Armijo
+condition is not satisfied</li>
+<li><strong>form_compiler_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the firedrake form compiler</li>
+<li><strong>solver_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the linear solver</li>
 </ul>
 </td>
 </tr>

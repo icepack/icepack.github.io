@@ -191,10 +191,10 @@
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">year</span><span class="p">,</span> <span class="n">ideal_gas</span> <span class="k">as</span> <span class="n">R</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 
-<span class="n">transition_temperature</span> <span class="o">=</span> <span class="mf">263.15</span>     <span class="c1"># K</span>
-<span class="n">A0_cold</span> <span class="o">=</span> <span class="mf">3.985e-13</span> <span class="o">*</span> <span class="n">year</span> <span class="o">*</span> <span class="mf">1.0e18</span> <span class="c1"># mPa**-3 yr**-1</span>
+<span class="n">transition_temperature</span> <span class="o">=</span> <span class="mf">263.15</span>      <span class="c1"># K</span>
+<span class="n">A0_cold</span> <span class="o">=</span> <span class="mf">3.985e-13</span> <span class="o">*</span> <span class="n">year</span> <span class="o">*</span> <span class="mf">1.0e18</span>  <span class="c1"># mPa**-3 yr**-1</span>
 <span class="n">A0_warm</span> <span class="o">=</span> <span class="mf">1.916e3</span> <span class="o">*</span> <span class="n">year</span> <span class="o">*</span> <span class="mf">1.0e18</span>
-<span class="n">Q_cold</span> <span class="o">=</span> <span class="mi">60</span>                         <span class="c1"># kJ / mol</span>
+<span class="n">Q_cold</span> <span class="o">=</span> <span class="mi">60</span>                          <span class="c1"># kJ / mol</span>
 <span class="n">Q_warm</span> <span class="o">=</span> <span class="mi">139</span>
 
 
@@ -271,6 +271,7 @@
 <span class="sd">    firedrake.Form</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">n</span><span class="o">/</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">M</span><span class="p">(</span><span class="n">eps</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">A</span><span class="p">),</span> <span class="n">eps</span><span class="p">(</span><span class="n">u</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span></div>
+
 </pre></div>
 
            </div>

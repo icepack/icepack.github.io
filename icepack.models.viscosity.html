@@ -208,16 +208,16 @@ Several flow models all have essentially the same viscous part.</p>
 <dt id="icepack.models.viscosity.rate_factor">
 <code class="descclassname">icepack.models.viscosity.</code><code class="descname">rate_factor</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#rate_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.rate_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the rate factor in Glen’s flow law for a given temperature</p>
-<p>The strain rate <span class="math">\(\dot\varepsilon\)</span> of ice resulting from a stress
-<span class="math">\(\tau\)</span> is</p>
-<div class="math">
+<p>The strain rate <span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> of ice resulting from a stress
+<span class="math notranslate nohighlight">\(\tau\)</span> is</p>
+<div class="math notranslate nohighlight">
 \[\dot\varepsilon = A(T)\tau^3\]</div>
-<p>where <span class="math">\(A(T)\)</span> is the temperature-dependent rate factor:</p>
-<div class="math">
+<p>where <span class="math notranslate nohighlight">\(A(T)\)</span> is the temperature-dependent rate factor:</p>
+<div class="math notranslate nohighlight">
 \[A(T) = A_0\exp(-Q/RT)\]</div>
-<p>where <span class="math">\(R\)</span> is the ideal gas constant, <span class="math">\(Q\)</span> has units of
-energy per mole, and <span class="math">\(A_0\)</span> is a prefactor with units of
-pressure <span class="math">\(\text{MPa}^{-3}\times\text{yr}^{-1}\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(R\)</span> is the ideal gas constant, <span class="math notranslate nohighlight">\(Q\)</span> has units of
+energy per mole, and <span class="math notranslate nohighlight">\(A_0\)</span> is a prefactor with units of
+pressure <span class="math notranslate nohighlight">\(\text{MPa}^{-3}\times\text{yr}^{-1}\)</span>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -225,11 +225,11 @@ pressure <span class="math">\(\text{MPa}^{-3}\times\text{yr}^{-1}\)</span>.</p>
 <code class="descclassname">icepack.models.viscosity.</code><code class="descname">viscosity_depth_averaged</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>A</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#viscosity_depth_averaged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.viscosity_depth_averaged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the viscous part of the action for depth-averaged models</p>
 <p>The viscous component of the action for depth-averaged ice flow is</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[E(u) = \frac{n}{n+1}\int_\Omega h\cdot
 M(\dot\varepsilon, A):\dot\varepsilon\hspace{2pt} dx\]</div>
-<p>where <span class="math">\(M(\dot\varepsilon, A)\)</span> is the membrane stress tensor</p>
-<div class="math">
+<p>where <span class="math notranslate nohighlight">\(M(\dot\varepsilon, A)\)</span> is the membrane stress tensor</p>
+<div class="math notranslate nohighlight">
 \[M(\dot\varepsilon, A) = A^{-1/n}|\dot\varepsilon|^{1/n - 1}
 (\dot\varepsilon + \text{tr}\dot\varepsilon\cdot I).\]</div>
 <p>This form assumes that we’re using the fluidity parameter instead
