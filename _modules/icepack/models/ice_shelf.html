@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="icepack 0.0.3 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -96,10 +87,11 @@
 </ul>
 <p class="caption"><span class="caption-text">Demos:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.meshes.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference:</span></p>
 <ul>
@@ -115,7 +107,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">icepack</a>
@@ -123,9 +115,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -154,8 +147,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -302,6 +293,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="IceShelf.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
+<span class="sd">        functional accurately</span>
+
+<span class="sd">        Firedrake uses a very conservative algorithm for estimating the</span>
+<span class="sd">        number of quadrature points necessary to integrate a given</span>
+<span class="sd">        expression. By exploiting known structure of the problem, we can</span>
+<span class="sd">        reduce the number of quadrature points while preserving accuracy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">degree_u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+        <span class="n">degree_h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">degree_u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_h</span></div>
+
 <div class="viewcode-block" id="IceShelf.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Solve for the ice velocity from the thickness</span>
 
@@ -338,10 +342,7 @@
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ice_front_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
             <span class="nb">set</span><span class="p">(</span><span class="n">boundary_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">dirichlet_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">side_wall_ids</span><span class="p">))</span>
         <span class="n">bcs</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dirichlet_ids</span><span class="p">)</span>
-
-        <span class="n">degree_u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
-        <span class="n">degree_h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_h</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">degree_u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)}</span>
 
         <span class="c1"># Solve the nonlinear optimization problem</span>
         <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -371,9 +372,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -386,7 +385,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -405,6 +404,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.0.3',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -418,19 +418,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

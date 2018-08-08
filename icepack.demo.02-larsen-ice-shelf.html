@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Larsen Ice Shelf &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Synthetic ice stream" href="icepack.demo.03-synthetic-ice-stream.html" />
+    <link rel="prev" title="Synthetic ice shelf" href="icepack.demo.01-synthetic-ice-shelf.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Demos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Larsen Ice Shelf</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#geometry">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-data">Input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeling">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Larsen Ice Shelf</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/icepack.demo.02-larsen-ice-shelf.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
+</pre></div>
+</div>
+<div class="section" id="larsen-ice-shelf">
+<h1>Larsen Ice Shelf<a class="headerlink" href="#larsen-ice-shelf" title="Permalink to this headline">¶</a></h1>
+<p>This demo will involve using real data for the Larsen Ice Shelf in the
+Antarctic Peninsula. So far as the actual modeling is concerned, most of
+what we’ll need was in the previous demo. What’s new here are the
+functions for reading in meshes from files, reading in gridded data
+sets, and ways to cope with the messiness of real data.</p>
+<p>The scripts I used to fetch and process all of this data are contained
+in <a class="reference external" href="https://github.com/icepack/icepack-data">this repo</a>. To use it,
+clone the repository and run <code class="docutils literal notranslate"><span class="pre">make</span></code> in each of the directories
+<code class="docutils literal notranslate"><span class="pre">bedmap2/</span></code>, <code class="docutils literal notranslate"><span class="pre">measures_antarctica/</span></code>, and <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code>. For this
+notebook, I’ll assume that the absolute path of the data repository on
+your computer is stored in a variable <code class="docutils literal notranslate"><span class="pre">data_directory</span></code>. In my case, I
+keep this in an environment variable called <code class="docutils literal notranslate"><span class="pre">ICEPACK_DATA</span></code>. If you
+modify this notebook for your own uses, you can use whatever works for
+you to get the path right; the easiest way would probably be to
+hard-code <code class="docutils literal notranslate"><span class="pre">data_directory</span></code> to the right location on your computer.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ICEPACK_DATA&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_directory</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">daniel</span><span class="o">/</span><span class="n">programs</span><span class="o">/</span><span class="n">icepack</span><span class="o">-</span><span class="n">data</span>
+</pre></div>
+</div>
+<div class="section" id="geometry">
+<h2>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
+<p>First, we need to make a mesh. I go about this by hand-drawing the
+domain boundary in <a class="reference external" href="https://www.qgis.org">QGIS</a> on top of satellite
+imagery and whatever other gridded data sets I’m working with. I always
+save these vector data in the <a class="reference external" href="http://geojson.org/">GeoJSON</a> format
+rather than, say, an ESRI shapefile. GeoJSON is human-readable and easy
+to keep in version control. The GeoJSON files for the outline of Larsen
+are in the directory of <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code> of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
+repo</a>. That said, this is my
+own peculiar workflow and yours might differ.</p>
+<p>The domain outline is then transformed into whatever file format your
+mesh generator of choice can read. For this example, I used
+<a class="reference external" href="http://gmsh.info/">gmsh</a>. Finally, we invoke the mesh generator to
+turn our description of the outline into a mesh of the interior of the
+domain.</p>
+<p>Firedrake has built-in functions for reading meshes in a variety of
+formats. The following code reads in the Larsen mesh and makes a plot of
+it so that we can see all the boundary IDs. Boundary segments 1 and 2
+correspond to the calving terminus; segment 3 borders the Gipps Ice
+Rise.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;meshes/larsen/larsen.msh&quot;</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_4_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_4_0.png" />
+</div>
+<div class="section" id="input-data">
+<h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h2>
+<p>Next, we have to load the input data. We’ll use ice thickness data from
+<a class="reference external" href="https://www.bas.ac.uk/project/bedmap-2/">Bedmap2</a> and velocity data
+from <a class="reference external" href="https://nsidc.org/data/measures/aiv">MEaSUREs</a>. These data sets
+are large and not all in the same format. The scripts in the <code class="docutils literal notranslate"><span class="pre">bedmap2</span></code>
+and <code class="docutils literal notranslate"><span class="pre">measures_antarctica</span></code> directories of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
+repo</a> fetch the data from
+the original sources, divide them up into subsets for several
+interesting regions in Antarctica, and save them as <a class="reference external" href="https://en.wikipedia.org/wiki/Esri_grid">Arc/Info ASCII
+grids</a>. This format isn’t
+especially compact, but it’s easy to write a parser for and all the
+common GIS programs can read it too.</p>
+<p>The module <code class="docutils literal notranslate"><span class="pre">icepack.grid.arcinfo</span></code> contains functions for reading and
+writing the Arc/Info ASCII grid format. The code below reads the
+thickness and velocity fields into a data structure called <code class="docutils literal notranslate"><span class="pre">GridData</span></code>.
+These objects can interpolate values to arbitrary points within the
+domain, and are designed to gracefully handle missing data.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">icepack.plot</span></code> function can also take in <code class="docutils literal notranslate"><span class="pre">GridData</span></code> objects as
+arguments. Since the individual components of the ice velocity aren’t
+that illuminating to look at, we first make a gridded data set of the
+ice speed and plot that instead.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">arcinfo</span><span class="p">,</span> <span class="n">GridData</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;bedmap2/larsen-h.txt&quot;</span><span class="p">))</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vx.txt&quot;</span><span class="p">))</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vy.txt&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span> <span class="o">*</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">)],</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_7_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_7_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x0</span><span class="p">,</span> <span class="n">delta</span> <span class="o">=</span> <span class="n">vx</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">vx</span><span class="o">.</span><span class="n">_delta</span>
+<span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+    <span class="n">speed</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">GridData</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vx</span><span class="o">.</span><span class="n">data</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">vy</span><span class="o">.</span><span class="n">data</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span> <span class="o">*</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">31</span><span class="p">)],</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_8_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_8_0.png" />
+</div>
+<div class="section" id="preprocessing">
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
+<p>It would be tempting at this point to interpolate the gridded data to
+the mesh and go model some ice flow, but unfortunately we can’t do that
+quite yet. There are just a few points in the domain that we can’t
+interpolate to because either the thickness or velocity data set is
+missing around that point. We can fill in these missing points in the
+gridded data by taking a weighted average of nearby points. The code for
+this preprocessing step is in the module <code class="docutils literal notranslate"><span class="pre">preprocess.py</span></code> if you want
+to see all the details.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preprocess</span> <span class="k">import</span> <span class="n">preprocess</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">vy</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modeling">
+<h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
+<p>Having done all the leg work to make a mesh and get a good set of input
+data, the modeling itself should be fairly familiar from the last step.
+We’ll assume that the ice temperature is a uniform <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
+<p>One thing is substantially different from previous examples. Before, we
+called the function <code class="docutils literal notranslate"><span class="pre">firedrake.SpatialCoordinate</span></code> to get some symbolic
+handles <code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y</span></code> for the mesh coordinates, and we created symbolic
+expressions to define the input data to our problem analytically. When
+we work with real data, we instead use icepack’s <code class="docutils literal notranslate"><span class="pre">GridData</span></code> object,
+which firedrake doesn’t know how to interpolate. The function
+<code class="docutils literal notranslate"><span class="pre">icepack.interpolate</span></code> works as a layer on top of the firedrake
+interpolate function and knows what to do with gridded data sets.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+
+<span class="n">h0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">vx</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">vy</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">streamlines</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">streamplot</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">streamlines</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">260</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
+
+<span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">()</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">streamlines</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">streamplot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">streamlines</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_15_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_15_0.png" />
+<p>We get a fairly reasonable approximation for the velocity even with a
+spatially homogeneous guess for the ice temperature.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.10887471255642399</span>
+</pre></div>
+</div>
+<p>Ballpark estimate, the surface and basal mass balance of Larsen C are
++30 and -30 cm/yr respectively, so we can take the total to be 0. Let’s
+simulate the evolution of the ice shelf for the next 10 years. The code
+for this loop should be familiar from the previous example.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h0</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" />
+<p>By plotting the difference between the modeled thickness after 10 years
+and the initial thickness, we can see the propagation of the rifts
+downstream. This effect is best visualized with a diverging colormap
+that makes the 0-contour really obvious.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">δh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="n">δh</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">δh</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_22_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_22_0.png" />
+<p>The oscillatory pattern makes it less than obvious whether the ice shelf
+gained or lost mass, so let’s evaluate the integral of the thickness
+change to see.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">dx</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.886318042507035</span>
+</pre></div>
+</div>
+<p>Seeing as the simulation ran for 10 years, this isn’t a wildly
+unrealistic number.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In the last demo, we showed how to simulate ice shelf flow using
+synthetic data. Here we showed how to load in a generated mesh and
+observational data, and we used this same functionality to simulate a
+real ice shelf.</p>
+<p>Many real data sets require some amount of preprocessing before they can
+be used for modeling. For example, many velocity data sets have missing
+pixels or patches due to noise in the optical or radar imagery, and
+these missing points have to be filled in somehow. The Bedmap2 thickness
+also contains processing artifacts that are visible as depressions
+running diagonally across the ice shelf. These artifacts could be
+removed by using a low-pass filter on the gridded data, although this
+might also wash out some real features like the many rifts in the ice.
+Most of this preprocessing can be done directly on the <code class="docutils literal notranslate"><span class="pre">GridData</span></code>
+object.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="icepack.demo.03-synthetic-ice-stream.html" class="btn btn-neutral float-right" title="Synthetic ice stream" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="icepack.demo.01-synthetic-ice-shelf.html" class="btn btn-neutral" title="Synthetic ice shelf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.3',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

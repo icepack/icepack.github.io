@@ -30,10 +30,11 @@ extensibility
    :maxdepth: 1
    :caption: Demos:
 
-   icepack.demo.meshes.rst
-   icepack.demo.synthetic-ice-shelf.rst
-   icepack.demo.larsen-ice-shelf.rst
-   icepack.demo.synthetic-ice-stream.rst
+   icepack.demo.00-meshes-functions.rst
+   icepack.demo.01-synthetic-ice-shelf.rst
+   icepack.demo.02-larsen-ice-shelf.rst
+   icepack.demo.03-synthetic-ice-stream.rst
+   icepack.demo.04-ice-shelf-inverse.rst
 
 
 .. toctree::

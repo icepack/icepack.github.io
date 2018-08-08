@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>icepack.inverse &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Demos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>icepack.inverse</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for icepack.inverse</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">bracket</span><span class="p">,</span> <span class="n">minimize_scalar</span>
+<span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">adjoint</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">ln</span><span class="p">,</span> <span class="n">dx</span>
+
+
+<span class="k">def</span> <span class="nf">_distance_to_boundary</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">grow_factor</span><span class="o">=</span><span class="mf">1.5</span><span class="p">):</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="p">[:]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="p">[:]</span>
+
+    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pmin</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">P</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">Q</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pmax</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">P</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">Q</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inside</span><span class="p">(</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">while</span> <span class="n">inside</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="n">grow_factor</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">*=</span> <span class="n">grow_factor</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">inside</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">/=</span> <span class="n">grow_factor</span>
+
+    <span class="k">return</span> <span class="n">t</span>
+
+
+<div class="viewcode-block" id="InverseProblem"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseProblem">[docs]</a><span class="k">class</span> <span class="nc">InverseProblem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stores data for estimating a parameter of a model from observed data</span>
+
+<span class="sd">    This object stores all of the data needed to estimate a parameter, such</span>
+<span class="sd">    as the rheology or friction coefficient of a glacier, from remote</span>
+<span class="sd">    sensing measurements. The parameter is estimated through an iterative</span>
+<span class="sd">    minimization process; the key variables that need to be stored are the</span>
+<span class="sd">    current guess for the parameter, the velocity field computed from that</span>
+<span class="sd">    parameter, and the adjoint state field.</span>
+
+<span class="sd">    At present, this class assumes that the model physics are an elliptic</span>
+<span class="sd">    PDE that arises from an action principle. It is not equipped to deal</span>
+<span class="sd">    with, say, the mass conservation equation, which is hyperbolic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">regularization</span><span class="p">,</span>
+                 <span class="n">state_name</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span>
+                 <span class="n">parameter_bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)),</span> <span class="n">barrier</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">model_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">dirichlet_ids</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the inverse problem</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model</span>
+<span class="sd">            The forward model physics</span>
+<span class="sd">        method</span>
+<span class="sd">            The method of `model` to solve the forward model physics</span>
+<span class="sd">        objective : firedrake.Form</span>
+<span class="sd">            A functional of the state variable; this is what we will</span>
+<span class="sd">            minimize</span>
+<span class="sd">        regularization : firedrake.Form</span>
+<span class="sd">            A functional of the parameter variable that penalizes</span>
+<span class="sd">            unphysical behavior</span>
+<span class="sd">        state_name : str</span>
+<span class="sd">            The name of the state variable as expected by `model.solve`</span>
+<span class="sd">        state : firedrake.Function</span>
+<span class="sd">            The initial value of the state variable</span>
+<span class="sd">        parameter_name : str</span>
+<span class="sd">            The name of the parameter variable as expected by `model.solve`</span>
+<span class="sd">        parameter : firedrake.Function</span>
+<span class="sd">            The initial value of the parameter variable</span>
+<span class="sd">        model_args : dict, optional</span>
+<span class="sd">            Any additional arguments to `model.solve`</span>
+<span class="sd">        dirichlet_ids : list of int, optional</span>
+<span class="sd">            IDs of points on the domain boundary where Dirichlet conditions</span>
+<span class="sd">            are applied</span>
+
+<span class="sd">        The state variable must be an argument of the objective functional,</span>
+<span class="sd">        and the parameter variable must be an argument of the</span>
+<span class="sd">        regularization functional.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirichlet_ids</span> <span class="o">=</span> <span class="n">dirichlet_ids</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_name</span> <span class="o">=</span> <span class="n">parameter_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_name</span> <span class="o">=</span> <span class="n">state_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regularization</span> <span class="o">=</span> <span class="n">regularization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_bounds</span> <span class="o">=</span> <span class="n">parameter_bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barrier</span> <span class="o">=</span> <span class="n">barrier</span></div>
+
+
+<div class="viewcode-block" id="InverseSolver"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver">[docs]</a><span class="k">class</span> <span class="nc">InverseSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iteratively approximates the solution of an inverse problem&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the inverse solver with the right functionals and</span>
+<span class="sd">        auxiliary fields</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        problem : InverseProblem</span>
+<span class="sd">            The instance of the problem to be solved</span>
+<span class="sd">        callback : callable, optional</span>
+<span class="sd">            Function to call at the end of every iteration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span> <span class="o">=</span> <span class="n">problem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">problem</span><span class="o">.</span><span class="n">model_args</span><span class="p">,</span>
+                                <span class="n">dirichlet_ids</span><span class="o">=</span><span class="n">problem</span><span class="o">.</span><span class="n">dirichlet_ids</span><span class="p">)</span>
+        <span class="n">u_name</span><span class="p">,</span> <span class="n">p_name</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">state_name</span><span class="p">,</span> <span class="n">problem</span><span class="o">.</span><span class="n">parameter_name</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_args</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">u_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span> <span class="n">p_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">})</span>
+
+        <span class="c1"># Make the form compiler use a reasonable number of quadrature points</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">}</span>
+
+        <span class="c1"># Create the error, regularization, and barrier functionals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="p">{</span><span class="n">problem</span><span class="o">.</span><span class="n">state</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">regularization</span><span class="p">,</span> <span class="p">{</span><span class="n">problem</span><span class="o">.</span><span class="n">parameter</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">})</span>
+        <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">parameter_bounds</span>
+        <span class="n">β</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">barrier</span><span class="p">)</span>
+        <span class="n">δp</span> <span class="o">=</span> <span class="n">pmax</span> <span class="o">-</span> <span class="n">pmin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">=</span> <span class="o">-</span><span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">ln</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">-</span> <span class="n">pmin</span><span class="p">)</span><span class="o">/</span><span class="n">δp</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="n">ln</span><span class="p">((</span><span class="n">pmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span><span class="o">/</span><span class="n">δp</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_B</span>
+
+        <span class="c1"># Create the weak form of the forward model, the adjoint state, and</span>
+        <span class="c1"># the derivative of the objective functional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_F</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dF_du</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+
+        <span class="c1"># Create a search direction and a linear solver for projecting the</span>
+        <span class="c1"># gradient of the objective back into the primal space</span>
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
+        <span class="n">dB</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">}</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+        <span class="c1"># Create the adjoint state variable</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_λ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+        <span class="n">dF_dp</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
+
+        <span class="c1"># Create Dirichlet BCs where they apply for the adjoint solve</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_λ</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">num_sub_elements</span><span class="p">()</span>
+        <span class="n">zero</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">*</span> <span class="n">rank</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">zero</span><span class="p">,</span> <span class="n">problem</span><span class="o">.</span><span class="n">dirichlet_ids</span><span class="p">)</span>
+
+        <span class="c1"># Create the derivative of the objective functional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dE</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
+        <span class="n">dB</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dJ</span> <span class="o">=</span> <span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">adjoint</span><span class="p">(</span><span class="n">dF_dp</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_λ</span><span class="p">)</span> <span class="o">+</span> <span class="n">dR</span> <span class="o">+</span> <span class="n">dB</span><span class="p">)</span>
+
+        <span class="c1"># Get the solver object into a consistent internal state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_adjoint_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_search_direction</span><span class="p">()</span>
+
+        <span class="c1"># Call the post-iteration function for the first time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The instance of the inverse problem we&#39;re solving&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The current value of the parameter we&#39;re estimating&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The state variable computed from the current value of the</span>
+<span class="sd">        parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">adjoint_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The adjoint state variable computed from the current value of</span>
+<span class="sd">        the parameters and the primal state&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_λ</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">search_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the direction along which we&#39;ll search for a new value of</span>
+<span class="sd">        the parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The functional of the state variable that we&#39;re minimizing&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">regularization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The regularization functional, which penalizes unphysical modes</span>
+<span class="sd">        in the inferred parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">barrier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The barrier functional, which keeps the parameter between the</span>
+<span class="sd">        upper and lower bounds&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_B</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The derivative of the Lagrangian (objective + regularization +</span>
+<span class="sd">        physics constraints) with respect to the parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dJ</span>
+
+    <span class="k">def</span> <span class="nf">_forward_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">method</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">model</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_args</span>
+        <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">parameter_name</span><span class="p">:</span> <span class="n">p</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_assemble</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                                  <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fc_params</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InverseSolver.update_state"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.update_state">[docs]</a>    <span class="k">def</span> <span class="nf">update_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span>
+        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_forward_solve</span><span class="p">(</span><span class="n">p</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="InverseSolver.update_adjoint_state"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.update_adjoint_state">[docs]</a>    <span class="k">def</span> <span class="nf">update_adjoint_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">λ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjoint_state</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">adjoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dF_du</span><span class="p">)</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">L</span> <span class="o">==</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_dE</span><span class="p">,</span> <span class="n">λ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span><span class="p">,</span>
+                        <span class="n">solver_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver_params</span><span class="p">,</span>
+                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fc_params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InverseSolver.update_search_direction"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.update_search_direction">[docs]</a>    <span class="k">def</span> <span class="nf">update_search_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the search direction given the gradient of the objective</span>
+<span class="sd">        function</span>
+
+<span class="sd">        The default implementation is to multiply the gradient of the</span>
+<span class="sd">        objective by the inverse of the mass matrix; this is essentially</span>
+<span class="sd">        gradient descent. For more sophisticated approaches like BFGS, you</span>
+<span class="sd">        can override this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">dJ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">M</span> <span class="o">==</span> <span class="o">-</span><span class="n">dJ</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span>
+                        <span class="n">solver_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver_params</span><span class="p">,</span>
+                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fc_params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InverseSolver.line_search"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.line_search">[docs]</a>    <span class="k">def</span> <span class="nf">line_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a line search along the descent direction to get a new</span>
+<span class="sd">        value of the parameter&quot;&quot;&quot;</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_direction</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">p_s</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="n">u_s</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">u_s</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_forward_solve</span><span class="p">(</span><span class="n">p_s</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble</span><span class="p">(</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_J</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u_s</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">p_s</span><span class="p">}))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">bracket</span><span class="p">(</span><span class="n">f</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;brent&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AssertionError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">fudge</span> <span class="o">=</span> <span class="mf">0.995</span>
+            <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">parameter_bounds</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">fudge</span> <span class="o">*</span> <span class="n">_distance_to_boundary</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bounded&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Line search failed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span></div>
+
+<div class="viewcode-block" id="InverseSolver.step"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a line search along the current descent direction to get</span>
+<span class="sd">        a new value of the parameters, then compute the new state, adjoint</span>
+<span class="sd">        and descent direction.&quot;&quot;&quot;</span>
+        <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_direction</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_search</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_adjoint_state</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_search_direction</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InverseSolver.solve"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Search for a new value of the parameters, stopping once either</span>
+<span class="sd">        the objective functional gets below a threshold value or stops</span>
+<span class="sd">        improving.&quot;&quot;&quot;</span>
+        <span class="n">max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">J_initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">):</span>
+            <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_J</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">J_initial</span> <span class="o">-</span> <span class="n">J</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="o">*</span> <span class="n">J_initial</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">J</span> <span class="o">&lt;=</span> <span class="n">atol</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">iteration</span>
+            <span class="n">J_initial</span> <span class="o">=</span> <span class="n">J</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">max_iterations</span></div></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.3',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,315 @@
+
+.. code:: ipython3
+
+    %matplotlib inline
+    import os, os.path
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import firedrake
+    import icepack, icepack.plot, icepack.models
+
+Larsen Ice Shelf
+================
+
+This demo will involve using real data for the Larsen Ice Shelf in the
+Antarctic Peninsula. So far as the actual modeling is concerned, most of
+what we’ll need was in the previous demo. What’s new here are the
+functions for reading in meshes from files, reading in gridded data
+sets, and ways to cope with the messiness of real data.
+
+The scripts I used to fetch and process all of this data are contained
+in `this repo <https://github.com/icepack/icepack-data>`__. To use it,
+clone the repository and run ``make`` in each of the directories
+``bedmap2/``, ``measures_antarctica/``, and ``meshes/larsen/``. For this
+notebook, I’ll assume that the absolute path of the data repository on
+your computer is stored in a variable ``data_directory``. In my case, I
+keep this in an environment variable called ``ICEPACK_DATA``. If you
+modify this notebook for your own uses, you can use whatever works for
+you to get the path right; the easiest way would probably be to
+hard-code ``data_directory`` to the right location on your computer.
+
+.. code:: ipython3
+
+    data_directory = os.environ['ICEPACK_DATA']
+    print(data_directory)
+
+
+.. parsed-literal::
+
+    /home/daniel/programs/icepack-data
+
+
+Geometry
+~~~~~~~~
+
+First, we need to make a mesh. I go about this by hand-drawing the
+domain boundary in `QGIS <https://www.qgis.org>`__ on top of satellite
+imagery and whatever other gridded data sets I’m working with. I always
+save these vector data in the `GeoJSON <http://geojson.org/>`__ format
+rather than, say, an ESRI shapefile. GeoJSON is human-readable and easy
+to keep in version control. The GeoJSON files for the outline of Larsen
+are in the directory of ``meshes/larsen/`` of the `data
+repo <https://github.com/icepack/icepack-data>`__. That said, this is my
+own peculiar workflow and yours might differ.
+
+The domain outline is then transformed into whatever file format your
+mesh generator of choice can read. For this example, I used
+`gmsh <http://gmsh.info/>`__. Finally, we invoke the mesh generator to
+turn our description of the outline into a mesh of the interior of the
+domain.
+
+Firedrake has built-in functions for reading meshes in a variety of
+formats. The following code reads in the Larsen mesh and makes a plot of
+it so that we can see all the boundary IDs. Boundary segments 1 and 2
+correspond to the calving terminus; segment 3 borders the Gipps Ice
+Rise.
+
+.. code:: ipython3
+
+    mesh = firedrake.Mesh(os.path.join(data_directory, "meshes/larsen/larsen.msh"))
+    
+    fig, axes = icepack.plot.subplots()
+    axes.set_xlabel('meters')
+    axes.grid()
+    icepack.plot.triplot(mesh, axes=axes, linewidth=2)
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_4_0.png
+
+
+Input data
+~~~~~~~~~~
+
+Next, we have to load the input data. We’ll use ice thickness data from
+`Bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ and velocity data
+from `MEaSUREs <https://nsidc.org/data/measures/aiv>`__. These data sets
+are large and not all in the same format. The scripts in the ``bedmap2``
+and ``measures_antarctica`` directories of the `data
+repo <https://github.com/icepack/icepack-data>`__ fetch the data from
+the original sources, divide them up into subsets for several
+interesting regions in Antarctica, and save them as `Arc/Info ASCII
+grids <https://en.wikipedia.org/wiki/Esri_grid>`__. This format isn’t
+especially compact, but it’s easy to write a parser for and all the
+common GIS programs can read it too.
+
+The module ``icepack.grid.arcinfo`` contains functions for reading and
+writing the Arc/Info ASCII grid format. The code below reads the
+thickness and velocity fields into a data structure called ``GridData``.
+These objects can interpolate values to arbitrary points within the
+domain, and are designed to gracefully handle missing data.
+
+The ``icepack.plot`` function can also take in ``GridData`` objects as
+arguments. Since the individual components of the ice velocity aren’t
+that illuminating to look at, we first make a gridded data set of the
+ice speed and plot that instead.
+
+.. code:: ipython3
+
+    from icepack.grid import arcinfo, GridData
+    thickness = arcinfo.read(os.path.join(data_directory, "bedmap2/larsen-h.txt"))
+    vx = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vx.txt"))
+    vy = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vy.txt"))
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.contourf(thickness, levels=[25 * n for n in range(26)], axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_7_0.png
+
+
+.. code:: ipython3
+
+    x0, delta = vx.coordinate(0, 0), vx._delta
+    with np.errstate(invalid='ignore'):
+        speed = icepack.grid.GridData(x0, delta, np.sqrt(vx.data**2 + vy.data**2))
+    
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.contourf(speed, levels=[25 * n for n in range(31)], axes=axes)
+    fig.colorbar(contours, label='meters/year')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_8_0.png
+
+
+Preprocessing
+~~~~~~~~~~~~~
+
+It would be tempting at this point to interpolate the gridded data to
+the mesh and go model some ice flow, but unfortunately we can’t do that
+quite yet. There are just a few points in the domain that we can’t
+interpolate to because either the thickness or velocity data set is
+missing around that point. We can fill in these missing points in the
+gridded data by taking a weighted average of nearby points. The code for
+this preprocessing step is in the module ``preprocess.py`` if you want
+to see all the details.
+
+.. code:: ipython3
+
+    from preprocess import preprocess
+    vx = preprocess(vx, mesh)
+    vy = preprocess(vy, mesh)
+    thickness = preprocess(thickness, mesh, radius=6)
+
+Modeling
+~~~~~~~~
+
+Having done all the leg work to make a mesh and get a good set of input
+data, the modeling itself should be fairly familiar from the last step.
+We’ll assume that the ice temperature is a uniform :math:`-13^\circ`\ C.
+
+One thing is substantially different from previous examples. Before, we
+called the function ``firedrake.SpatialCoordinate`` to get some symbolic
+handles ``x, y`` for the mesh coordinates, and we created symbolic
+expressions to define the input data to our problem analytically. When
+we work with real data, we instead use icepack’s ``GridData`` object,
+which firedrake doesn’t know how to interpolate. The function
+``icepack.interpolate`` works as a layer on top of the firedrake
+interpolate function and knows what to do with gridded data sets.
+
+.. code:: ipython3
+
+    degree = 2
+    Q = firedrake.FunctionSpace(mesh, 'CG', degree)
+    V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
+    
+    h0 = icepack.interpolate(thickness, Q)
+    u0 = icepack.interpolate(lambda x: (vx(x), vy(x)), V)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    streamlines = icepack.plot.streamplot(u0, precision=1000, density=2500, axes=axes)
+    fig.colorbar(streamlines, label='meters/year')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_13_0.png
+
+
+.. code:: ipython3
+
+    T = 260
+    A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
+    
+    ice_shelf = icepack.models.IceShelf()
+    opts = {'dirichlet_ids': [3, 4, 5, 6, 7, 8], 'tol': 1e-6}
+    u = ice_shelf.diagnostic_solve(u0=u0, h=h0, A=A, **opts)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    streamlines = icepack.plot.streamplot(u, precision=1000, density=2500, axes=axes)
+    fig.colorbar(streamlines, label='meters/year')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_15_0.png
+
+
+We get a fairly reasonable approximation for the velocity even with a
+spatially homogeneous guess for the ice temperature.
+
+.. code:: ipython3
+
+    print(icepack.norm(u - u0) / icepack.norm(u0))
+
+
+.. parsed-literal::
+
+    0.10887471255642399
+
+
+Ballpark estimate, the surface and basal mass balance of Larsen C are
++30 and -30 cm/yr respectively, so we can take the total to be 0. Let’s
+simulate the evolution of the ice shelf for the next 10 years. The code
+for this loop should be familiar from the previous example.
+
+.. code:: ipython3
+
+    a = firedrake.Function(Q)
+    h = h0.copy(deepcopy=True)
+    
+    dt = 0.5
+    for n in range(int(10 / dt) + 1):
+        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h0)
+        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(h, 96, axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_20_0.png
+
+
+By plotting the difference between the modeled thickness after 10 years
+and the initial thickness, we can see the propagation of the rifts
+downstream. This effect is best visualized with a diverging colormap
+that makes the 0-contour really obvious.
+
+.. code:: ipython3
+
+    δh = firedrake.Function(Q)
+    δh.assign(h - h0)
+    
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(δh, 96, cmap='RdBu', axes=axes)
+    fig.colorbar(contours, label='meters')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_22_0.png
+
+
+The oscillatory pattern makes it less than obvious whether the ice shelf
+gained or lost mass, so let’s evaluate the integral of the thickness
+change to see.
+
+.. code:: ipython3
+
+    from firedrake import assemble, dx
+    print(assemble(δh * dx) / assemble(1 * dx(mesh)))
+
+
+.. parsed-literal::
+
+    -3.886318042507035
+
+
+Seeing as the simulation ran for 10 years, this isn’t a wildly
+unrealistic number.
+
+Conclusion
+~~~~~~~~~~
+
+In the last demo, we showed how to simulate ice shelf flow using
+synthetic data. Here we showed how to load in a generated mesh and
+observational data, and we used this same functionality to simulate a
+real ice shelf.
+
+Many real data sets require some amount of preprocessing before they can
+be used for modeling. For example, many velocity data sets have missing
+pixels or patches due to noise in the optical or radar imagery, and
+these missing points have to be filled in somehow. The Bedmap2 thickness
+also contains processing artifacts that are visible as depressions
+running diagonally across the ice shelf. These artifacts could be
+removed by using a low-pass filter on the gridded data, although this
+might also wash out some real features like the many rifts in the ice.
+Most of this preprocessing can be done directly on the ``GridData``
+object.
