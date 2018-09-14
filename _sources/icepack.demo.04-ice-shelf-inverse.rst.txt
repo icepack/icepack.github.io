@@ -21,34 +21,51 @@ value of the fluidity coefficient and computed a velocity field by
 solving an elliptic partial differential equation. The fluidity
 coefficient is roughly a known function of the ice temperature, together
 with some fudge factors for crystal fabric or large-scale damage, so we
-know a rough range of values that it could take. Nonetheless, we don’t
-have large-scale measurements of the fluidity coefficient from remote
-sensing like we do for ice velocity and thickness.
+know an approximate range of values that it could take. Nonetheless, we
+don’t have large-scale measurements of the fluidity coefficient from
+remote sensing like we do for ice velocity and thickness.
 
 Instead, we can try to come up with a value of :math:`A` that gives a
-velocity field closest to what we observed. This rough idea can be
-turned into a constrained optimization problem. The quantity we wish to
-optimize is the misfit between the computed velocity :math:`u` and the
-observed velocity :math:`u^o`:
+velocity field closest to what we observed. This idea can be turned into
+a constrained optimization problem. The quantity we wish to optimize is
+the misfit between the computed velocity :math:`u` and the observed
+velocity :math:`u^o`:
 
 .. math:: E(u) = \frac{1}{2}\int_\Omega\left(\frac{u - u^o}{\sigma}\right)^2dx,
 
-where :math:`\sigma` are the standard deviations of the measurements. In
-addition to minimizing the misfit, we also want to have a relatively
-smooth value of :math:`A`. The regularization functional :math:`R` is
-included to penalize oscillations over a given length scale :math:`L`:
+where :math:`\sigma` are the standard deviations of the measurements.
 
-.. math:: R(A) = \frac{L^2}{2}\int_\Omega|\nabla A|^2dx.
+One constraint is that the fluidity field has to be positive. Inequality
+constraints can require substantially more sophisticated numerical
+methods. To avoid this problem, we’ll cheat our way out by
+reparameterizing :math:`A` in terms of a new variable :math:`\theta`:
 
-Finally, let :math:`F(u, A)` be the weak form of the shallow shelf
-equations; the constraint is that :math:`F(u, A) = 0`. We can enforce
-this constraint by introducing the Lagrange multiplier :math:`\lambda`,
-in which case the combined objective functional is
+.. math:: A = A_0e^{-\theta/n},
 
-.. math:: J(u, A; \lambda) = E(u) + R(A) + \langle F(u, A), \lambda\rangle.
+where :math:`n` is the Glen flow law exponent. No matter the value of
+:math:`\theta`, :math:`A` is always positive. To make this change, we’ll
+give the ``IceShelf`` object our own custom-made function for
+calculating the viscous part of the action functional, just like we did
+for the friction in the last demo.
+
+In addition to minimizing the misfit, we also want to have a relatively
+smooth value of the parameter field :math:`\theta`. The regularization
+functional :math:`R` is included to penalize oscillations over a given
+length scale :math:`L`:
+
+.. math:: R(\theta) = \frac{L^2}{2}\int_\Omega|\nabla \theta|^2dx.
+
+Finally, let :math:`F(u, \theta)` be the weak form of the shallow shelf
+equations, again using the new parameter :math:`\theta` instead of the
+fluidity :math:`A`. The physics constraint for our problem is that
+:math:`F(u, \theta) = 0`. We can enforce this constraint by introducing
+the Lagrange multiplier :math:`\lambda`, in which case the combined
+objective functional is
+
+.. math:: J(u, \theta; \lambda) = E(u) + R(\theta) + \langle F(u, \theta), \lambda\rangle.
 
 We can calculate the derivative of this functional with respect to
-:math:`A` by using the *adjoint method*. We can then use a descent
+:math:`\theta` by using the *adjoint method*. We can then use a descent
 method to iterate towards a critical point, which is hopefully close to
 the true value of the fluidity coefficient.
 
@@ -124,23 +141,46 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 
 .. code:: ipython3
 
-    T = 260
-    A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
+    T0 = 260
+    A0 = icepack.rate_factor(T0)
+    from icepack.constants import glen_flow_law as n
+    def viscosity(u, h, θ):
+        A = A0 * firedrake.exp(-θ / n)
+        return icepack.models.viscosity.viscosity_depth_averaged(u, h, A)
     
-    ice_shelf = icepack.models.IceShelf()
+    θ = firedrake.Function(Q)
+    
+    ice_shelf = icepack.models.IceShelf(viscosity=viscosity)
     opts = {'dirichlet_ids': [3, 4, 5, 6, 7, 8], 'tol': 1e-6}
-    u = ice_shelf.diagnostic_solve(u0=u_obs, h=h, A=A, **opts)
+    u = ice_shelf.diagnostic_solve(u0=u_obs, h=h, θ=θ, **opts)
+
+.. code:: ipython3
+
+    fig, ax = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(u, 20, axes=ax)
+    fig.colorbar(contours)
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_12_0.png
+
 
 Inferring the fluidity
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Solving an inverse problem has lots of moving parts, so we have an
-object called ``InverseProblem`` in icepack to manage everything for
-you. Hopefully this class saves you from too many low-level details, but
-still provides a good amount of flexibility and transparency. There are
-five parts that go into an inverse problem: \* a physics model \* an
-initial guess for the parameter and state \* an error metric \* a
-smoothness metric \* a priori bounds on the parameter
+Solving an inverse problem has lots of moving parts, all of which are
+wrapped in a class that inherits from ``icepack.inverse.InverseSolver``.
+In our case, we’ll be using the gradient descent method, which is
+implemented in ``GradientDescentSolver``. Using this class should save
+you from worrying about too many low-level details, but still provide a
+good amount of flexibility and transparency. There are five parts that
+go into an inverse problem:
+
+-  a physics model
+-  an initial guess for the parameter and state
+-  an error metric
+-  a smoothness metric
 
 We already have the first two, so it remains to decide how we’ll measure
 the misfit and smoothness. Here we’ll use the :math:`L^2`-norm error for
@@ -155,25 +195,7 @@ respectively.
     objective = 0.5 * (inner(u - u_obs, u - u_obs)) / σ**2 * dx
     
     L = 5e3
-    regularization = 0.5 * L**2 * inner(grad(A), grad(A)) * dx
-
-The ice temperature is certainly above :math:`-25^\circ`\ C and below
-:math:`0^\circ`\ C. However, the actual value of the fluidity parameter
-might instead be consistent with a temperature above 0 in the case of
-ice that has experienced lots of damage from crevassing. With that in
-mind, we’ll take a maximum value for :math:`A` to be consistent with a
-temperature of :math:`+5^\circ`\ C.
-
-.. code:: ipython3
-
-    Amin, Amax = icepack.rate_factor(248.0), icepack.rate_factor(278.0)
-    print(f'Min, max values of the fluidity: {Amin}, {Amax}')
-
-
-.. parsed-literal::
-
-    Min, max values of the fluidity: 2.899781982418514, 462.04873328802495
-
+    regularization = 0.5 * L**2 * inner(grad(θ), grad(θ)) * dx
 
 As a convenience, the inverse problem object allows you to call a
 function of your choice at the end of every iteration. For this
@@ -188,8 +210,7 @@ algorithm progresses.
     def print_error_and_regularization(inverse_problem):
         E = firedrake.assemble(inverse_problem.objective)
         R = firedrake.assemble(inverse_problem.regularization)
-        B = firedrake.assemble(inverse_problem.barrier)
-        print(f'{E/area:g}, {R/area:g}, {B/area:g}')
+        print('{:g}, {:g}'.format(E/area, R/area))
 
 Next, we’ll create the ``InverseProblem`` object. We’ve already
 mentioned several objects that the inverse problem needs – the model,
@@ -204,11 +225,6 @@ inverse problem, we need to know where Dirichlet boundary conditions are
 to be applied, as this affects how one solves for the Lagrange
 multiplier field :math:`\lambda`.
 
-Once we’ve created the problem, we then create a solver object that will
-iteratively search for a good value of the parameters. The solver object
-is distinct from the problem so that it’s easier to customize how the
-solver works.
-
 .. code:: ipython3
 
     problem = icepack.inverse.InverseProblem(
@@ -218,21 +234,51 @@ solver works.
         regularization=regularization,
         state_name='u',
         state=u,
-        parameter_name='A',
-        parameter=A,
-        parameter_bounds=(Amin, Amax),
-        barrier=1e-8,
+        parameter_name='θ',
+        parameter=θ,
         model_args={'h': h, 'u0': u, 'tol': 1e-6},
         dirichlet_ids=[3, 4, 5, 6, 7, 8]
     )
-    
-    solver = icepack.inverse.InverseSolver(problem, print_error_and_regularization)
+
+Once we’ve created the problem, we then create a solver object that will
+iteratively search for a good value of the parameters. The solver object
+is distinct from the problem so that it’s easier to customize how the
+solver works. In this case, we’ll use the gradient descent method.
+Gradient descent is quite slow, but it’s the easiest to implement and
+can serve as a reference by which to judge other method.
+
+.. code:: ipython3
+
+    solver = icepack.inverse.GradientDescentSolver(problem, print_error_and_regularization)
 
 
 .. parsed-literal::
 
-    53.604, 6.0721e-26, 4.04233e-08
+    53.604, 0
 
+
+Before setting the solver loose, let’s look at the initial search
+direction.
+
+.. code:: ipython3
+
+    fig, ax = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(solver.search_direction, 20, axes=ax)
+    fig.colorbar(contours)
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_22_0.png
+
+
+The search direction is obtained by multiplying the inverse of the
+finite element mass matrix :math:`M` by the gradient :math:`dJ` of the
+objective function, which has the virtue of simplicity. Keeping in mind
+that these values will be exponentiated to obtain the fluidity field
+:math:`A` in Glen’s flow law, we can see that this search direction is
+very badly scaled. Consequently, the algorithm has to do lots of
+backtracking to find a good interval in which to search.
 
 The solve method takes in a relative convergence tolerance, an absolute
 tolerance, and a maximum number of iterations, and it returns the total
@@ -240,8 +286,8 @@ number of iterations necessary to achieve the given tolerances. In our
 case, we’ll stop once the relative decrease in the objective function
 from one iteration to the next is less than 1/200.
 
-The algorithm takes a few minutes to run. Now would be the time to put
-on a fresh pot of coffee.
+The algorithm takes a while to run. Now would be the time to put on a
+fresh pot of coffee.
 
 .. code:: ipython3
 
@@ -254,11 +300,36 @@ on a fresh pot of coffee.
 
 .. parsed-literal::
 
-    45.4018, 0.181637, 4.02681e-08
-    44.3359, 0.230409, 4.02543e-08
-    43.9561, 0.286732, 4.02499e-08
-    43.7825, 0.206585, 4.02479e-08
-    43.5489, 0.245128, 4.02455e-08
+    32.6945, 0.231031
+    25.88, 0.344001
+    23.0028, 1.03505
+    22.5158, 0.326027
+    21.7641, 0.458918
+    21.3827, 0.307835
+    20.8308, 0.409415
+    20.5176, 0.311763
+    20.1265, 0.369253
+    19.8888, 0.308608
+    19.5769, 0.352873
+    19.3575, 0.313232
+    19.0636, 0.355386
+    18.8556, 0.318274
+    18.5767, 0.358317
+    18.3792, 0.323115
+    18.1142, 0.361195
+    17.9264, 0.327758
+    17.6726, 0.36398
+    17.4939, 0.332204
+    17.254, 0.366713
+    17.0839, 0.336479
+    16.8554, 0.369376
+    16.6932, 0.340594
+    16.4754, 0.371974
+    16.3208, 0.344558
+    16.1131, 0.37451
+    15.9656, 0.348382
+    15.7673, 0.376988
+    15.6265, 0.352075
 
 
 Analysis
@@ -283,7 +354,7 @@ velocity. You can see all the publicly visible properties by typing
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_23_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_26_0.png
 
 
 The fluidity is much higher around areas of heavy crevassing, and much
@@ -302,7 +373,7 @@ explaining the observed velocities.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_25_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_28_0.png
 
 
 The computed ice velocity is mostly similar to observations, but doesn’t
@@ -312,7 +383,7 @@ of the fluidity parameter. As a consequence, we won’t be able to see
 sharp changes that might result from features like crevasses or rifts.
 We might instead try to use the total variation functional
 
-.. math:: R(A) = L\int_\Omega|\nabla A|dx
+.. math:: R(\theta) = L\int_\Omega|\nabla\theta|dx
 
 if we were interested in features like this.
 
@@ -325,44 +396,51 @@ if we were interested in features like this.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_27_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_30_0.png
 
 
 Plotting the adjoint state field directly can give us some idea of what
 areas of the ice shelf make the biggest difference for the total error.
 
-Finally, let’s try and see how different the inferred fluidity is from
+Finally, let’s try and see how different the inferred parameter is from
 our naive guess:
 
 .. code:: ipython3
 
-    print(icepack.norm(solver.parameter - A) / icepack.norm(A))
+    print(icepack.norm(solver.parameter) / np.sqrt(area))
     print(firedrake.assemble(solver.objective) / area)
 
 
 .. parsed-literal::
 
-    0.04525101214449915
-    43.548908638222294
+    0.8249965041091297
+    15.626544187144006
 
 
-Our final approximation departs quite substantially from the initial
-guess. This suggests that we can’t get away with using simple guesses
-for making projections and that a data assimilation procedure is
-warranted. Additionally, the value of the misfit functional divided by
-the ice shelf area should be around 1/2, provided that we had a good
-value of the fluidity parameter. While the approximation we’ve found is
-an improvement over a naive guess, it leaves much to be desired still.
+The objective function has been reduced by more than 3 throughout this
+iteration, and our final approximation departs quite substantially from
+the initial guess. This suggests data assimilation gives a substantial
+benefit compared to picking a sensible constant value.
+
+The value of the misfit functional divided by the ice shelf area should
+be around 1/2, provided that we had a good value of the fluidity
+parameter. While the approximation we’ve found is an improvement over a
+naive guess, it leaves much to be desired still.
 
 Conclusion
 ~~~~~~~~~~
 
 In this demo, we’ve shown how to back out the fluidity of an ice shelf
-from remote sensing observations. The value we find is not at all
-spatially homogeneous, so we probably couldn’t have somehow
-parameterized it to get a reasonable guess. We could then use this
-value, together with some sort of closure assumption for how the
-fluidity evolves, to initialize a prognostic model of the ice shelf.
+from remote sensing observations. We could then use this value, together
+with a description of how the fluidity evolves, to initialize a
+prognostic model of the ice shelf. For example, we might assume that the
+fluidity is a function of ice temperature and damage. The evolution
+equations for these fields are fairly simple hyperbolic PDE for which we
+can write solvers using firedrake.
+
+The value of the fluidity that we obtained is not at all spatially
+homogeneous. Unless we were very clever, we probably couldn’t have come
+up with some way to parameterize it to get a reasonable guess.
 
 We would expect from statistical estimation theory that the misfit
 functional divided by the shelf area will be around 1/2, since a sum of
@@ -376,7 +454,8 @@ might happen.
 -  We regularized the problem too much.
 -  The ice shelf becomes grounded on some pinning point and we didn’t
    add basal drag.
--  I implemented the algorithm wrong.
+-  The numerical optimization algorithm we used converges slowly.
+-  I implemented the numerical optimization algorithm incorrectly.
 
 It’s probably a superposition of all of the above. In any case, there’s
 quite a bit of improvement possible on what we’ve shown here.

@@ -187,30 +187,44 @@ value of the fluidity coefficient and computed a velocity field by
 solving an elliptic partial differential equation. The fluidity
 coefficient is roughly a known function of the ice temperature, together
 with some fudge factors for crystal fabric or large-scale damage, so we
-know a rough range of values that it could take. Nonetheless, we don’t
-have large-scale measurements of the fluidity coefficient from remote
-sensing like we do for ice velocity and thickness.</p>
+know an approximate range of values that it could take. Nonetheless, we
+don’t have large-scale measurements of the fluidity coefficient from
+remote sensing like we do for ice velocity and thickness.</p>
 <p>Instead, we can try to come up with a value of <span class="math notranslate nohighlight">\(A\)</span> that gives a
-velocity field closest to what we observed. This rough idea can be
-turned into a constrained optimization problem. The quantity we wish to
-optimize is the misfit between the computed velocity <span class="math notranslate nohighlight">\(u\)</span> and the
-observed velocity <span class="math notranslate nohighlight">\(u^o\)</span>:</p>
+velocity field closest to what we observed. This idea can be turned into
+a constrained optimization problem. The quantity we wish to optimize is
+the misfit between the computed velocity <span class="math notranslate nohighlight">\(u\)</span> and the observed
+velocity <span class="math notranslate nohighlight">\(u^o\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \frac{1}{2}\int_\Omega\left(\frac{u - u^o}{\sigma}\right)^2dx,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> are the standard deviations of the measurements. In
-addition to minimizing the misfit, we also want to have a relatively
-smooth value of <span class="math notranslate nohighlight">\(A\)</span>. The regularization functional <span class="math notranslate nohighlight">\(R\)</span> is
-included to penalize oscillations over a given length scale <span class="math notranslate nohighlight">\(L\)</span>:</p>
+<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> are the standard deviations of the measurements.</p>
+<p>One constraint is that the fluidity field has to be positive. Inequality
+constraints can require substantially more sophisticated numerical
+methods. To avoid this problem, we’ll cheat our way out by
+reparameterizing <span class="math notranslate nohighlight">\(A\)</span> in terms of a new variable <span class="math notranslate nohighlight">\(\theta\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[R(A) = \frac{L^2}{2}\int_\Omega|\nabla A|^2dx.\]</div>
-<p>Finally, let <span class="math notranslate nohighlight">\(F(u, A)\)</span> be the weak form of the shallow shelf
-equations; the constraint is that <span class="math notranslate nohighlight">\(F(u, A) = 0\)</span>. We can enforce
-this constraint by introducing the Lagrange multiplier <span class="math notranslate nohighlight">\(\lambda\)</span>,
-in which case the combined objective functional is</p>
+\[A = A_0e^{-\theta/n},\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the Glen flow law exponent. No matter the value of
+<span class="math notranslate nohighlight">\(\theta\)</span>, <span class="math notranslate nohighlight">\(A\)</span> is always positive. To make this change, we’ll
+give the <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code> object our own custom-made function for
+calculating the viscous part of the action functional, just like we did
+for the friction in the last demo.</p>
+<p>In addition to minimizing the misfit, we also want to have a relatively
+smooth value of the parameter field <span class="math notranslate nohighlight">\(\theta\)</span>. The regularization
+functional <span class="math notranslate nohighlight">\(R\)</span> is included to penalize oscillations over a given
+length scale <span class="math notranslate nohighlight">\(L\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[J(u, A; \lambda) = E(u) + R(A) + \langle F(u, A), \lambda\rangle.\]</div>
+\[R(\theta) = \frac{L^2}{2}\int_\Omega|\nabla \theta|^2dx.\]</div>
+<p>Finally, let <span class="math notranslate nohighlight">\(F(u, \theta)\)</span> be the weak form of the shallow shelf
+equations, again using the new parameter <span class="math notranslate nohighlight">\(\theta\)</span> instead of the
+fluidity <span class="math notranslate nohighlight">\(A\)</span>. The physics constraint for our problem is that
+<span class="math notranslate nohighlight">\(F(u, \theta) = 0\)</span>. We can enforce this constraint by introducing
+the Lagrange multiplier <span class="math notranslate nohighlight">\(\lambda\)</span>, in which case the combined
+objective functional is</p>
+<div class="math notranslate nohighlight">
+\[J(u, \theta; \lambda) = E(u) + R(\theta) + \langle F(u, \theta), \lambda\rangle.\]</div>
 <p>We can calculate the derivative of this functional with respect to
-<span class="math notranslate nohighlight">\(A\)</span> by using the <em>adjoint method</em>. We can then use a descent
+<span class="math notranslate nohighlight">\(\theta\)</span> by using the <em>adjoint method</em>. We can then use a descent
 method to iterate towards a critical point, which is hopefully close to
 the true value of the fluidity coefficient.</p>
 <div class="section" id="input-data">
@@ -265,24 +279,43 @@ platform.</p>
 <p>We need to make an initial guess for the fluidity parameter. In this
 case, we’ll use the same value as in the second demo – a constant
 fluidity assuming a temperature of <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">260</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="mi">260</span>
+<span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
+<span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">viscosity</span><span class="o">.</span><span class="n">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 
-<span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">()</span>
+<span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+<span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_12_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_12_0.png" />
 </div>
 <div class="section" id="inferring-the-fluidity">
 <h2>Inferring the fluidity<a class="headerlink" href="#inferring-the-fluidity" title="Permalink to this headline">¶</a></h2>
-<p>Solving an inverse problem has lots of moving parts, so we have an
-object called <code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> in icepack to manage everything for
-you. Hopefully this class saves you from too many low-level details, but
-still provides a good amount of flexibility and transparency. There are
-five parts that go into an inverse problem: * a physics model * an
-initial guess for the parameter and state * an error metric * a
-smoothness metric * a priori bounds on the parameter</p>
+<p>Solving an inverse problem has lots of moving parts, all of which are
+wrapped in a class that inherits from <code class="docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code>.
+In our case, we’ll be using the gradient descent method, which is
+implemented in <code class="docutils literal notranslate"><span class="pre">GradientDescentSolver</span></code>. Using this class should save
+you from worrying about too many low-level details, but still provide a
+good amount of flexibility and transparency. There are five parts that
+go into an inverse problem:</p>
+<ul class="simple">
+<li>a physics model</li>
+<li>an initial guess for the parameter and state</li>
+<li>an error metric</li>
+<li>a smoothness metric</li>
+</ul>
 <p>We already have the first two, so it remains to decide how we’ll measure
 the misfit and smoothness. Here we’ll use the <span class="math notranslate nohighlight">\(L^2\)</span>-norm error for
 the velocities and the mean-square gradient for the fluidity,
@@ -293,20 +326,7 @@ respectively.</p>
 <span class="n">objective</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">,</span> <span class="n">u</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">))</span> <span class="o">/</span> <span class="n">σ</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span>
 
 <span class="n">L</span> <span class="o">=</span> <span class="mf">5e3</span>
-<span class="n">regularization</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
-</pre></div>
-</div>
-<p>The ice temperature is certainly above <span class="math notranslate nohighlight">\(-25^\circ\)</span>C and below
-<span class="math notranslate nohighlight">\(0^\circ\)</span>C. However, the actual value of the fluidity parameter
-might instead be consistent with a temperature above 0 in the case of
-ice that has experienced lots of damage from crevassing. With that in
-mind, we’ll take a maximum value for <span class="math notranslate nohighlight">\(A\)</span> to be consistent with a
-temperature of <span class="math notranslate nohighlight">\(+5^\circ\)</span>C.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Amin</span><span class="p">,</span> <span class="n">Amax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="mf">248.0</span><span class="p">),</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="mf">278.0</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Min, max values of the fluidity: </span><span class="si">{Amin}</span><span class="s1">, </span><span class="si">{Amax}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Min</span><span class="p">,</span> <span class="nb">max</span> <span class="n">values</span> <span class="n">of</span> <span class="n">the</span> <span class="n">fluidity</span><span class="p">:</span> <span class="mf">2.899781982418514</span><span class="p">,</span> <span class="mf">462.04873328802495</span>
+<span class="n">regularization</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
 </pre></div>
 </div>
 <p>As a convenience, the inverse problem object allows you to call a
@@ -319,8 +339,7 @@ algorithm progresses.</p>
 <span class="k">def</span> <span class="nf">print_error_and_regularization</span><span class="p">(</span><span class="n">inverse_problem</span><span class="p">):</span>
     <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_problem</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_problem</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_problem</span><span class="o">.</span><span class="n">barrier</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{E/area:g}, {R/area:g}, {B/area:g}&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">area</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">area</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Next, we’ll create the <code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> object. We’ve already
@@ -335,10 +354,6 @@ velocity, and the forward solver tolerance. Finally, to specify the
 inverse problem, we need to know where Dirichlet boundary conditions are
 to be applied, as this affects how one solves for the Lagrange
 multiplier field <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
-<p>Once we’ve created the problem, we then create a solver object that will
-iteratively search for a good value of the parameters. The solver object
-is distinct from the problem so that it’s easier to customize how the
-solver works.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">InverseProblem</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="n">ice_shelf</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">,</span>
@@ -346,27 +361,48 @@ solver works.</p>
     <span class="n">regularization</span><span class="o">=</span><span class="n">regularization</span><span class="p">,</span>
     <span class="n">state_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span>
     <span class="n">state</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-    <span class="n">parameter_name</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span>
-    <span class="n">parameter</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
-    <span class="n">parameter_bounds</span><span class="o">=</span><span class="p">(</span><span class="n">Amin</span><span class="p">,</span> <span class="n">Amax</span><span class="p">),</span>
-    <span class="n">barrier</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
+    <span class="n">parameter_name</span><span class="o">=</span><span class="s1">&#39;θ&#39;</span><span class="p">,</span>
+    <span class="n">parameter</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span>
     <span class="n">model_args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s1">&#39;u0&#39;</span><span class="p">:</span> <span class="n">u</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">},</span>
     <span class="n">dirichlet_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 <span class="p">)</span>
-
-<span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">InverseSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">53.604</span><span class="p">,</span> <span class="mf">6.0721e-26</span><span class="p">,</span> <span class="mf">4.04233e-08</span>
+<p>Once we’ve created the problem, we then create a solver object that will
+iteratively search for a good value of the parameters. The solver object
+is distinct from the problem so that it’s easier to customize how the
+solver works. In this case, we’ll use the gradient descent method.
+Gradient descent is quite slow, but it’s the easiest to implement and
+can serve as a reference by which to judge other method.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GradientDescentSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">53.604</span><span class="p">,</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>Before setting the solver loose, let’s look at the initial search
+direction.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">search_direction</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_22_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_22_0.png" />
+<p>The search direction is obtained by multiplying the inverse of the
+finite element mass matrix <span class="math notranslate nohighlight">\(M\)</span> by the gradient <span class="math notranslate nohighlight">\(dJ\)</span> of the
+objective function, which has the virtue of simplicity. Keeping in mind
+that these values will be exponentiated to obtain the fluidity field
+<span class="math notranslate nohighlight">\(A\)</span> in Glen’s flow law, we can see that this search direction is
+very badly scaled. Consequently, the algorithm has to do lots of
+backtracking to find a good interval in which to search.</p>
 <p>The solve method takes in a relative convergence tolerance, an absolute
 tolerance, and a maximum number of iterations, and it returns the total
 number of iterations necessary to achieve the given tolerances. In our
 case, we’ll stop once the relative decrease in the objective function
 from one iteration to the next is less than 1/200.</p>
-<p>The algorithm takes a few minutes to run. Now would be the time to put
-on a fresh pot of coffee.</p>
+<p>The algorithm takes a while to run. Now would be the time to put on a
+fresh pot of coffee.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iterations</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
     <span class="n">rtol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span>
     <span class="n">atol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -374,11 +410,36 @@ on a fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">45.4018</span><span class="p">,</span> <span class="mf">0.181637</span><span class="p">,</span> <span class="mf">4.02681e-08</span>
-<span class="mf">44.3359</span><span class="p">,</span> <span class="mf">0.230409</span><span class="p">,</span> <span class="mf">4.02543e-08</span>
-<span class="mf">43.9561</span><span class="p">,</span> <span class="mf">0.286732</span><span class="p">,</span> <span class="mf">4.02499e-08</span>
-<span class="mf">43.7825</span><span class="p">,</span> <span class="mf">0.206585</span><span class="p">,</span> <span class="mf">4.02479e-08</span>
-<span class="mf">43.5489</span><span class="p">,</span> <span class="mf">0.245128</span><span class="p">,</span> <span class="mf">4.02455e-08</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">32.6945</span><span class="p">,</span> <span class="mf">0.231031</span>
+<span class="mf">25.88</span><span class="p">,</span> <span class="mf">0.344001</span>
+<span class="mf">23.0028</span><span class="p">,</span> <span class="mf">1.03505</span>
+<span class="mf">22.5158</span><span class="p">,</span> <span class="mf">0.326027</span>
+<span class="mf">21.7641</span><span class="p">,</span> <span class="mf">0.458918</span>
+<span class="mf">21.3827</span><span class="p">,</span> <span class="mf">0.307835</span>
+<span class="mf">20.8308</span><span class="p">,</span> <span class="mf">0.409415</span>
+<span class="mf">20.5176</span><span class="p">,</span> <span class="mf">0.311763</span>
+<span class="mf">20.1265</span><span class="p">,</span> <span class="mf">0.369253</span>
+<span class="mf">19.8888</span><span class="p">,</span> <span class="mf">0.308608</span>
+<span class="mf">19.5769</span><span class="p">,</span> <span class="mf">0.352873</span>
+<span class="mf">19.3575</span><span class="p">,</span> <span class="mf">0.313232</span>
+<span class="mf">19.0636</span><span class="p">,</span> <span class="mf">0.355386</span>
+<span class="mf">18.8556</span><span class="p">,</span> <span class="mf">0.318274</span>
+<span class="mf">18.5767</span><span class="p">,</span> <span class="mf">0.358317</span>
+<span class="mf">18.3792</span><span class="p">,</span> <span class="mf">0.323115</span>
+<span class="mf">18.1142</span><span class="p">,</span> <span class="mf">0.361195</span>
+<span class="mf">17.9264</span><span class="p">,</span> <span class="mf">0.327758</span>
+<span class="mf">17.6726</span><span class="p">,</span> <span class="mf">0.36398</span>
+<span class="mf">17.4939</span><span class="p">,</span> <span class="mf">0.332204</span>
+<span class="mf">17.254</span><span class="p">,</span> <span class="mf">0.366713</span>
+<span class="mf">17.0839</span><span class="p">,</span> <span class="mf">0.336479</span>
+<span class="mf">16.8554</span><span class="p">,</span> <span class="mf">0.369376</span>
+<span class="mf">16.6932</span><span class="p">,</span> <span class="mf">0.340594</span>
+<span class="mf">16.4754</span><span class="p">,</span> <span class="mf">0.371974</span>
+<span class="mf">16.3208</span><span class="p">,</span> <span class="mf">0.344558</span>
+<span class="mf">16.1131</span><span class="p">,</span> <span class="mf">0.37451</span>
+<span class="mf">15.9656</span><span class="p">,</span> <span class="mf">0.348382</span>
+<span class="mf">15.7673</span><span class="p">,</span> <span class="mf">0.376988</span>
+<span class="mf">15.6265</span><span class="p">,</span> <span class="mf">0.352075</span>
 </pre></div>
 </div>
 </div>
@@ -399,7 +460,7 @@ velocity. You can see all the publicly visible properties by typing
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_23_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_23_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" />
 <p>The fluidity is much higher around areas of heavy crevassing, and much
 lower around the northern edge of the ice shelf. It’s possible that some
 of the ice is actually grounded here, and the velocities are actually a
@@ -412,7 +473,7 @@ explaining the observed velocities.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_25_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_25_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_28_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_28_0.png" />
 <p>The computed ice velocity is mostly similar to observations, but doesn’t
 quite capture the sharp change in velocity near the big rift by Gipps
 Ice Rise. We regularized the problem by looking only for smooth values
@@ -420,7 +481,7 @@ of the fluidity parameter. As a consequence, we won’t be able to see
 sharp changes that might result from features like crevasses or rifts.
 We might instead try to use the total variation functional</p>
 <div class="math notranslate nohighlight">
-\[R(A) = L\int_\Omega|\nabla A|dx\]</div>
+\[R(\theta) = L\int_\Omega|\nabla\theta|dx\]</div>
 <p>if we were interested in features like this.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ctr</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">adjoint_state</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
@@ -428,35 +489,40 @@ We might instead try to use the total variation functional</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" />
 <p>Plotting the adjoint state field directly can give us some idea of what
 areas of the ice shelf make the biggest difference for the total error.</p>
-<p>Finally, let’s try and see how different the inferred fluidity is from
+<p>Finally, let’s try and see how different the inferred parameter is from
 our naive guess:</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">area</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.04525101214449915</span>
-<span class="mf">43.548908638222294</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8249965041091297</span>
+<span class="mf">15.626544187144006</span>
 </pre></div>
 </div>
-<p>Our final approximation departs quite substantially from the initial
-guess. This suggests that we can’t get away with using simple guesses
-for making projections and that a data assimilation procedure is
-warranted. Additionally, the value of the misfit functional divided by
-the ice shelf area should be around 1/2, provided that we had a good
-value of the fluidity parameter. While the approximation we’ve found is
-an improvement over a naive guess, it leaves much to be desired still.</p>
+<p>The objective function has been reduced by more than 3 throughout this
+iteration, and our final approximation departs quite substantially from
+the initial guess. This suggests data assimilation gives a substantial
+benefit compared to picking a sensible constant value.</p>
+<p>The value of the misfit functional divided by the ice shelf area should
+be around 1/2, provided that we had a good value of the fluidity
+parameter. While the approximation we’ve found is an improvement over a
+naive guess, it leaves much to be desired still.</p>
 </div>
 <div class="section" id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>In this demo, we’ve shown how to back out the fluidity of an ice shelf
-from remote sensing observations. The value we find is not at all
-spatially homogeneous, so we probably couldn’t have somehow
-parameterized it to get a reasonable guess. We could then use this
-value, together with some sort of closure assumption for how the
-fluidity evolves, to initialize a prognostic model of the ice shelf.</p>
+from remote sensing observations. We could then use this value, together
+with a description of how the fluidity evolves, to initialize a
+prognostic model of the ice shelf. For example, we might assume that the
+fluidity is a function of ice temperature and damage. The evolution
+equations for these fields are fairly simple hyperbolic PDE for which we
+can write solvers using firedrake.</p>
+<p>The value of the fluidity that we obtained is not at all spatially
+homogeneous. Unless we were very clever, we probably couldn’t have come
+up with some way to parameterize it to get a reasonable guess.</p>
 <p>We would expect from statistical estimation theory that the misfit
 functional divided by the shelf area will be around 1/2, since a sum of
 squared normal random variables has a <span class="math notranslate nohighlight">\(\chi^2\)</span>-distribution. We
@@ -469,7 +535,8 @@ are substantial.</li>
 <li>We regularized the problem too much.</li>
 <li>The ice shelf becomes grounded on some pinning point and we didn’t
 add basal drag.</li>
-<li>I implemented the algorithm wrong.</li>
+<li>The numerical optimization algorithm we used converges slowly.</li>
+<li>I implemented the numerical optimization algorithm incorrectly.</li>
 </ul>
 <p>It’s probably a superposition of all of the above. In any case, there’s
 quite a bit of improvement possible on what we’ve shown here.</p>

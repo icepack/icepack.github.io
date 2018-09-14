@@ -198,9 +198,9 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
 
 .. parsed-literal::
 
-    14.666669209798192
-    3.5833333333333366
-    42.00000000000004
+    14.66666920979819
+    3.583333333333336
+    42.000000000000036
 
 
 Conclusion

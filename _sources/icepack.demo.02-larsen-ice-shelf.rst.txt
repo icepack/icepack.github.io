@@ -227,7 +227,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.10887471255642399
+    0.10887471255643236
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -289,7 +289,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.886318042507035
+    -3.8863180425071584
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

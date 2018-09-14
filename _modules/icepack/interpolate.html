@@ -177,6 +177,10 @@
 <div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../icepack.interpolate.html#icepack.interpolate.interpolate">[docs]</a><span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Interpolate an analytically-defined function to a function space</span>
 
+<span class="sd">    The function space `Q` must be of the right rank for the type of the</span>
+<span class="sd">    range of `f`. For example, if `f` is a vector-valued function, then `Q`</span>
+<span class="sd">    must be a vector function space, likewise for tensors or scalars.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    f : firedrake.Expression, firedrake.Function, or a callable object</span>
@@ -184,10 +188,6 @@
 <span class="sd">        space and return either scalar/vector/tensor values</span>
 <span class="sd">    Q : firedrake.FunctionSpace</span>
 <span class="sd">        The function space to interpolate to</span>
-
-<span class="sd">    The function space `Q` must be of the right rank for the type of the</span>
-<span class="sd">    range of `f`. For example, if `f` is a vector-valued function, then `Q`</span>
-<span class="sd">    must be a vector function space, likewise for tensors or scalars.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
