@@ -185,6 +185,50 @@
   <div class="section" id="module-icepack.inverse">
 <span id="icepack-inverse-module"></span><h1>icepack.inverse module<a class="headerlink" href="#module-icepack.inverse" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
+<dt id="icepack.inverse.GaussNewtonSolver">
+<em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">GaussNewtonSolver</code><span class="sig-paren">(</span><em>problem</em>, <em>callback=&lt;function GaussNewtonSolver.&lt;lambda&gt;&gt;</em>, <em>search_tolerance=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#icepack.inverse.InverseSolver" title="icepack.inverse.InverseSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code></a></p>
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.gauss_newton_energy_norm">
+<code class="descname">gauss_newton_energy_norm</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.gauss_newton_energy_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.gauss_newton_energy_norm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.gauss_newton_mult">
+<code class="descname">gauss_newton_mult</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.gauss_newton_mult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.gauss_newton_mult" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.line_search">
+<code class="descname">line_search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.line_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.line_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a line search along the descent direction to get a new
+value of the parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>atol=0.0</em>, <em>rtol=1e-06</em>, <em>max_iterations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for a new value of the parameters, stopping once either
+the objective functional gets below a threshold value or stops
+improving.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.step">
+<code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a line search along the current descent direction to get
+a new value of the parameters, then compute the new state, adjoint
+and descent direction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.GaussNewtonSolver.update_search_direction">
+<code class="descname">update_search_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.update_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.update_search_direction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="icepack.inverse.GradientDescentSolver">
 <em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">GradientDescentSolver</code><span class="sig-paren">(</span><em>problem</em>, <em>callback=&lt;function GradientDescentSolver.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#icepack.inverse.InverseSolver" title="icepack.inverse.InverseSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code></a></p>
