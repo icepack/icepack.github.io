@@ -285,14 +285,12 @@ ice speed and plot that instead.</p>
 <p>It would be tempting at this point to interpolate the gridded data to
 the mesh and go model some ice flow, but unfortunately we can’t do that
 quite yet. There are just a few points in the domain that we can’t
-interpolate to because either the thickness or velocity data set is
-missing around that point. We can fill in these missing points in the
-gridded data by taking a weighted average of nearby points. The code for
-this preprocessing step is in the module <code class="docutils literal notranslate"><span class="pre">preprocess.py</span></code> if you want
-to see all the details.</p>
+interpolate to because the thickness data set is missing around that
+point. We can fill in these missing points in the gridded data by taking
+a weighted average of nearby points. The code for this preprocessing
+step is in the module <code class="docutils literal notranslate"><span class="pre">preprocess.py</span></code> if you want to see all the
+details.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preprocess</span> <span class="k">import</span> <span class="n">preprocess</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">vy</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span>
 <span class="n">thickness</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -345,7 +343,7 @@ spatially homogeneous guess for the ice temperature.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.10887471255643236</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1139846970345316</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -389,7 +387,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.8863180425071584</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.8359449951364435</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

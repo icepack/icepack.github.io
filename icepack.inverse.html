@@ -184,47 +184,88 @@
             
   <div class="section" id="module-icepack.inverse">
 <span id="icepack-inverse-module"></span><h1>icepack.inverse module<a class="headerlink" href="#module-icepack.inverse" title="Permalink to this headline">¶</a></h1>
+<p>Solvers for inverse problems</p>
+<p>This module contains objects for specifying and solving inverse problems, where
+some unobservable field is estimated based on observations of an observable
+field and a physical model that connects the two. The class <cite>InverseProblem</cite> is
+used to specify the problem to be solved, while the classes that inherit from
+<cite>InverseSolver</cite> are used to solve it.</p>
+<dl class="class">
+<dt id="icepack.inverse.BFGSSolver">
+<em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">BFGSSolver</code><span class="sig-paren">(</span><em>problem</em>, <em>callback=&lt;function BFGSSolver.&lt;lambda&gt;&gt;</em>, <em>memory=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#BFGSSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.BFGSSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#icepack.inverse.InverseSolver" title="icepack.inverse.InverseSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code></a></p>
+<p>Implementation of <cite>InverseSolver</cite> using the limited-memory BFGS method
+to compute a search direction</p>
+<p>This implementation of inverse solvers uses a search direction based on the
+last <cite>m</cite> values of the parameter and objective gradient to construct a low-
+rank approximation to the inverse of the Hessian of the objective. The
+resulting iteration exhibits superlinear convergence, while the search
+direction is only marginally more expensive to compute than the steepest
+descent direction.</p>
+<p>See chapters 6-7 of Nocedal and Wright, Numerical Optimization, 2nd ed.</p>
+<dl class="attribute">
+<dt id="icepack.inverse.BFGSSolver.memory">
+<code class="descname">memory</code><a class="headerlink" href="#icepack.inverse.BFGSSolver.memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of previous iterations used to construct the low-
+rank approximation to the Hessian</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.BFGSSolver.update_search_direction">
+<code class="descname">update_search_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#BFGSSolver.update_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.BFGSSolver.update_search_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the low-rank approximation of the Hessian inverse</p>
+<p>This procedure implements the two-loop recursion algorithm to apply the
+low-rank approximation of the Hessian inverse to the derivative of the
+objective functional. See Nocedal and Wright, Numerical Optimization,
+2nd ed., algorithm 7.4.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="icepack.inverse.GaussNewtonSolver">
 <em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">GaussNewtonSolver</code><span class="sig-paren">(</span><em>problem</em>, <em>callback=&lt;function GaussNewtonSolver.&lt;lambda&gt;&gt;</em>, <em>search_tolerance=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#icepack.inverse.InverseSolver" title="icepack.inverse.InverseSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code></a></p>
+<p>Implementation of <cite>InverseSolver</cite> using an approximation to the Hessian
+of the objective functional to approach Newton-like efficiency</p>
+<p>This implementation of inverse solvers uses the search direction</p>
+<div class="math notranslate nohighlight">
+\[q = -H^{-1}dJ\]</div>
+<p>where <span class="math notranslate nohighlight">\(H\)</span> is the Gauss-Newton approximation to the Hessian of the
+objective functional. If <span class="math notranslate nohighlight">\(E\)</span> is the model-data misfit, <span class="math notranslate nohighlight">\(R\)</span> is
+the regularization, and <span class="math notranslate nohighlight">\(G\)</span> is the linearization of the parameter-to-
+observation map, then the Gauss-Newton matrix is</p>
+<div class="math notranslate nohighlight">
+\[H = dG^*\cdot d^2E\cdot dG + d^2R.\]</div>
+<p>This matrix consists of only those terms in the Hessian of the full
+objective functional that are of “first order”, i.e. any terms involving
+<span class="math notranslate nohighlight">\(d^2G\)</span> are dropped. This search direction is more expensive to solve
+for than in, say, gradient descent. However, it is almost always properly
+scaled to the dimensions of the problem and converges in far fewer
+iterations.</p>
 <dl class="method">
 <dt id="icepack.inverse.GaussNewtonSolver.gauss_newton_energy_norm">
 <code class="descname">gauss_newton_energy_norm</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.gauss_newton_energy_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.gauss_newton_energy_norm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute the energy norm of a field w.r.t. the Gauss-Newton operator</p>
+<p>The energy norm of a field <span class="math notranslate nohighlight">\(q\)</span> w.r.t. the Gauss-Newton operator
+<span class="math notranslate nohighlight">\(H\)</span> can be computed using one fewer linear solve than if we were
+to calculate the action of <span class="math notranslate nohighlight">\(H\cdot q\)</span> on <span class="math notranslate nohighlight">\(q\)</span>. This saves
+computation when using the conjugate gradient method to solve for the
+search direction.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="icepack.inverse.GaussNewtonSolver.gauss_newton_mult">
 <code class="descname">gauss_newton_mult</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.gauss_newton_mult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.gauss_newton_mult" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="icepack.inverse.GaussNewtonSolver.line_search">
-<code class="descname">line_search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.line_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.line_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a line search along the descent direction to get a new
-value of the parameter</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="icepack.inverse.GaussNewtonSolver.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>atol=0.0</em>, <em>rtol=1e-06</em>, <em>max_iterations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for a new value of the parameters, stopping once either
-the objective functional gets below a threshold value or stops
-improving.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="icepack.inverse.GaussNewtonSolver.step">
-<code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a line search along the current descent direction to get
-a new value of the parameters, then compute the new state, adjoint
-and descent direction.</p>
+<dd><p>Multiply a field by the Gauss-Newton operator</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="icepack.inverse.GaussNewtonSolver.update_search_direction">
 <code class="descname">update_search_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.update_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.update_search_direction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Solve the Gauss-Newton system for the new search direction using the
+preconditioned conjugate gradient method</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -232,54 +273,39 @@ and descent direction.</p>
 <dt id="icepack.inverse.GradientDescentSolver">
 <em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">GradientDescentSolver</code><span class="sig-paren">(</span><em>problem</em>, <em>callback=&lt;function GradientDescentSolver.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#icepack.inverse.InverseSolver" title="icepack.inverse.InverseSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code></a></p>
-<p>Uses line search along the objective function gradient</p>
-<dl class="method">
-<dt id="icepack.inverse.GradientDescentSolver.line_search">
-<code class="descname">line_search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver.line_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver.line_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a line search along the descent direction to get a new
-value of the parameter</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="icepack.inverse.GradientDescentSolver.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>atol=0.0</em>, <em>rtol=1e-06</em>, <em>max_iterations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver.solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for a new value of the parameters, stopping once either
-the objective functional gets below a threshold value or stops
-improving.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="icepack.inverse.GradientDescentSolver.step">
-<code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a line search along the current descent direction to get
-a new value of the parameters, then compute the new state, adjoint
-and descent direction.</p>
-</dd></dl>
-
+<p>Implementation of <cite>InverseSolver</cite> using the objective function gradient
+directly for a search direction</p>
+<p>This implementation of inverse solvers uses the search direction</p>
+<div class="math notranslate nohighlight">
+\[q = -M^{-1}dJ\]</div>
+<p>where <span class="math notranslate nohighlight">\(M\)</span> is the finite element mass matrix and <span class="math notranslate nohighlight">\(dJ\)</span> is the
+gradient of the objective functional. The search direction is easy to
+compute using this method, but is often poorly scaled, resulting in more
+expensive bracketing and line search phases.</p>
 <dl class="method">
 <dt id="icepack.inverse.GradientDescentSolver.update_search_direction">
 <code class="descname">update_search_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GradientDescentSolver.update_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GradientDescentSolver.update_search_direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the search direction given the gradient of the objective
-function</p>
-<p>The default implementation is to multiply the gradient of the
-objective by the inverse of the mass matrix; this is essentially
-gradient descent. For more sophisticated approaches like BFGS, you
-can override this method.</p>
+<dd><p>Set the search direction to be the inverse of the mass matrix times
+the gradient of the objective</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="icepack.inverse.InverseProblem">
-<em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">InverseProblem</code><span class="sig-paren">(</span><em>model</em>, <em>method</em>, <em>objective</em>, <em>regularization</em>, <em>state_name</em>, <em>state</em>, <em>parameter_name</em>, <em>parameter</em>, <em>model_args={}</em>, <em>dirichlet_ids=[]</em>, <em>callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseProblem" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">InverseProblem</code><span class="sig-paren">(</span><em>model</em>, <em>method</em>, <em>objective</em>, <em>regularization</em>, <em>state_name</em>, <em>state</em>, <em>parameter_name</em>, <em>parameter</em>, <em>model_args={}</em>, <em>dirichlet_ids=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseProblem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Stores data for estimating a parameter of a model from observed data</p>
-<p>This object stores all of the data needed to estimate a parameter, such
-as the rheology or friction coefficient of a glacier, from remote
-sensing measurements. The parameter is estimated through an iterative
-minimization process; the key variables that need to be stored are the
-current guess for the parameter, the velocity field computed from that
-parameter, and the adjoint state field.</p>
+<p>Specifies an inverse problem</p>
+<p>This object is used to specify an inverse problem, i.e. estimating a
+parameter <span class="math notranslate nohighlight">\(p\)</span> from measurements of a field <span class="math notranslate nohighlight">\(u\)</span>, where the two
+are linked by some model physics. It consists mainly of a description of
+the physics model, the model-data misfit and regularization functionals,
+the initial state and parameters, and any auxiliary data such as extra
+fields or boundary conditions.</p>
+<p>This object merely specifies what problem to solve, not how to solve it.
+That functionality is contained in the class <cite>InverseSolver</cite> and the
+classes that inherit from it, such as <cite>GradientDescentSolver</cite> and
+<cite>GaussNewtonSolver</cite>.</p>
 <p>At present, this class assumes that the model physics are an elliptic
 PDE that arises from an action principle. It is not equipped to deal
 with, say, the mass conservation equation, which is hyperbolic.</p>
@@ -290,6 +316,21 @@ with, say, the mass conservation equation, which is hyperbolic.</p>
 <em class="property">class </em><code class="descclassname">icepack.inverse.</code><code class="descname">InverseSolver</code><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for approximating the solution of an inverse problem</p>
+<p>This object stores most of the data needed to iteratively optimize the
+value of some parameter of a model, such as the rheology or friction of a
+glacier, to match remote sensing observations. The key variables that need
+to be stored are the current guess for the parameter, the observable state
+computed from that parameter, the adjoint state, and the search direction.</p>
+<p>The optimization problem is solved using a line search method; at each step
+the parameter <span class="math notranslate nohighlight">\(p_k\)</span> is updated by finding a value <span class="math notranslate nohighlight">\(\alpha_k\)</span>
+such that</p>
+<div class="math notranslate nohighlight">
+\[p_{k + 1} = p_k + \alpha_k\cdot q_k\]</div>
+<p>reduces the value of the objective function, where <span class="math notranslate nohighlight">\(q_k\)</span> is the
+search direction. This object implements most of the procedures necessary
+for keeping the parameter, state, and adjoint consistent. Objects that
+inherit from this one only need to define how the search direction is
+computed.</p>
 <dl class="attribute">
 <dt id="icepack.inverse.InverseSolver.adjoint_state">
 <code class="descname">adjoint_state</code><a class="headerlink" href="#icepack.inverse.InverseSolver.adjoint_state" title="Permalink to this definition">¶</a></dt>
@@ -302,6 +343,13 @@ the parameters and the primal state</p>
 <code class="descname">gradient</code><a class="headerlink" href="#icepack.inverse.InverseSolver.gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>The derivative of the Lagrangian (objective + regularization +
 physics constraints) with respect to the parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.inverse.InverseSolver.line_search">
+<code class="descname">line_search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.line_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.line_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a line search along the descent direction to get a new
+value of the parameter</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -336,6 +384,14 @@ in the inferred parameter</p>
 the parameters</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="icepack.inverse.InverseSolver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>atol=0.0</em>, <em>rtol=1e-06</em>, <em>max_iterations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for a new value of the parameters, stopping once either
+the objective functional gets below a threshold value or stops
+improving.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="icepack.inverse.InverseSolver.state">
 <code class="descname">state</code><a class="headerlink" href="#icepack.inverse.InverseSolver.state" title="Permalink to this definition">¶</a></dt>
@@ -344,14 +400,25 @@ parameter</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="icepack.inverse.InverseSolver.step">
+<code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a line search along the current descent direction to get
+a new value of the parameters, then compute the new state, adjoint,
+and descent direction.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="icepack.inverse.InverseSolver.update_adjoint_state">
 <code class="descname">update_adjoint_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.update_adjoint_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.update_adjoint_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Update the adjoint state for new values of the observable state and
+parameters so that we can calculate derivatives</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="icepack.inverse.InverseSolver.update_state">
 <code class="descname">update_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.update_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Update the observable state for a new value of the parameters</p>
+</dd></dl>
 
 </dd></dl>
 
