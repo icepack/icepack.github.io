@@ -115,7 +115,7 @@ Shelf, but we also need to use the error estimates for the velocities.
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
     
     h = icepack.interpolate(thickness, Q)
-    u_obs = icepack.interpolate(lambda x: (vx(x), vy(x)), V)
+    u_obs = icepack.interpolate((vx, vy), V)
     σx = icepack.interpolate(stdx, Q)
     σy = icepack.interpolate(stdy, Q)
 

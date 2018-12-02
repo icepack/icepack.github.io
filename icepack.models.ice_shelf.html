@@ -272,25 +272,7 @@ model object was initialized</p>
 <dt id="icepack.models.ice_shelf.IceShelf.prognostic_solve">
 <code class="descname">prognostic_solve</code><span class="sig-paren">(</span><em>dt</em>, <em>h0</em>, <em>a</em>, <em>u</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.prognostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the ice thickness forward one timestep</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dt</strong> (<em>float</em>) – The timestep length</li>
-<li><strong>a</strong> (<em>h0</em><em>,</em>) – The initial ice thickness and the accumulation rate</li>
-<li><strong>u</strong> (<em>firedrake.Function</em>) – The ice velocity</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>h</strong> – The new ice thickness at <cite>t + dt</cite></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Function</p>
-</td>
-</tr>
-</tbody>
-</table>
+<p>See <a class="reference internal" href="icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport.solve" title="icepack.models.mass_transport.MassTransport.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">icepack.models.mass_transport.MassTransport.solve()</span></code></a></p>
 </dd></dl>
 
 <dl class="method">

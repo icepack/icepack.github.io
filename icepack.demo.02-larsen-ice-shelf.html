@@ -313,7 +313,7 @@ interpolate function and knows what to do with gridded data sets.</p>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 
 <span class="n">h0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
-<span class="n">u0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">vx</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">vy</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -387,7 +387,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.8359449951364435</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.835944995136447</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

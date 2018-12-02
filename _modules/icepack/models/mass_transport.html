@@ -183,29 +183,57 @@
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">inner</span>
 
-
 <div class="viewcode-block" id="MassTransport"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">[docs]</a><span class="k">class</span> <span class="nc">MassTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <div class="viewcode-block" id="MassTransport.solve"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Propagate the thickness forward by one timestep</span>
+
+<span class="sd">        This function uses the implicit Euler timestepping scheme to avoid</span>
+<span class="sd">        the stability issues associated to using continuous finite elements</span>
+<span class="sd">        for advection-type equations. The implicit Euler scheme is stable</span>
+<span class="sd">        for any timestep; you do not need to ensure that the CFL condition</span>
+<span class="sd">        is satisfied in order to get an answer. Nonetheless, keeping the</span>
+<span class="sd">        timestep within the CFL bound is a good idea for accuracy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dt : float</span>
+<span class="sd">            Timestep</span>
+<span class="sd">        h0 : firedrake.Function</span>
+<span class="sd">            Initial ice thickness</span>
+<span class="sd">        a : firedrake.Function</span>
+<span class="sd">            Sum of accumulation and melt rates</span>
+<span class="sd">        u : firedrake.Function</span>
+<span class="sd">            Ice velocity</span>
+<span class="sd">        h_inflow : firedrake.Function</span>
+<span class="sd">            Thickness of the upstream ice that advects into the domain</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        h : firedrake.Function</span>
+<span class="sd">            Ice thickness at `t + dt`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">h_inflow</span> <span class="k">if</span> <span class="n">h_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">h0</span>
 
-        <span class="n">Q</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">ufl_function_space</span><span class="p">()</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
-        <span class="n">mesh</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">φ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
-        <span class="n">n</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">())</span>
         <span class="n">outflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">inflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span> <span class="o">*</span> <span class="n">dx</span>
-             <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">outflow</span> <span class="o">*</span> <span class="n">ds</span><span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">h0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">h_inflow</span> <span class="o">*</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">inflow</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">flux_cells</span> <span class="o">=</span> <span class="o">-</span><span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">φ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">flux_out</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">outflow</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_out</span><span class="p">)</span>
+
+        <span class="n">accumulation</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">flux_in</span> <span class="o">=</span> <span class="o">-</span><span class="n">h_inflow</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">inflow</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">h0</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">accumulation</span> <span class="o">+</span> <span class="n">flux_in</span><span class="p">)</span>
 
         <span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">solver_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">}</span>
         <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">F</span> <span class="o">==</span> <span class="n">A</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">h</span></div></div>
-
 </pre></div>
 
            </div>

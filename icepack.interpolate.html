@@ -187,23 +187,20 @@
 <dl class="function">
 <dt id="icepack.interpolate.interpolate">
 <code class="descclassname">icepack.interpolate.</code><code class="descname">interpolate</code><span class="sig-paren">(</span><em>f</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/interpolate.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.interpolate.interpolate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolate an analytically-defined function to a function space</p>
-<p>The function space <cite>Q</cite> must be of the right rank for the type of the
-range of <cite>f</cite>. For example, if <cite>f</cite> is a vector-valued function, then <cite>Q</cite>
-must be a vector function space, likewise for tensors or scalars.</p>
+<dd><p>Interpolate an expression or a gridded data set to a function space</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>f</strong> (<em>firedrake.Expression</em><em>, </em><em>firedrake.Function</em><em>, or </em><em>a callable object</em>) – If callable, must take in values of the dimension of the function
-space and return either scalar/vector/tensor values</li>
-<li><strong>Q</strong> (<em>firedrake.FunctionSpace</em>) – The function space to interpolate to</li>
+<li><strong>f</strong> (<em>icepack.grid.GridData</em><em> or </em><em>tuple of icepack.grid.GridData</em>) – The gridded data set for scalar fields or the tuple of gridded data
+sets for each component</li>
+<li><strong>Q</strong> (<em>firedrake.FunctionSpace</em>) – The function space where the result will live</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A finite element function defined on <cite>Q</cite> with the same nodal values
-as the function <cite>f</cite></p>
+as the data <cite>f</cite></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Function</p>

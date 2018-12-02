@@ -180,7 +180,7 @@ interpolate function and knows what to do with gridded data sets.
     V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
     
     h0 = icepack.interpolate(thickness, Q)
-    u0 = icepack.interpolate(lambda x: (vx(x), vy(x)), V)
+    u0 = icepack.interpolate((vx, vy), V)
 
 .. code:: ipython3
 
@@ -287,7 +287,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.8359449951364435
+    -3.835944995136447
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

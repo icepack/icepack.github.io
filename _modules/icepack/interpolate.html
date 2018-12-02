@@ -172,52 +172,49 @@
 <span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">firedrake</span>
-
+<span class="kn">import</span> <span class="nn">icepack.grid</span>
 
 <div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../icepack.interpolate.html#icepack.interpolate.interpolate">[docs]</a><span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Interpolate an analytically-defined function to a function space</span>
-
-<span class="sd">    The function space `Q` must be of the right rank for the type of the</span>
-<span class="sd">    range of `f`. For example, if `f` is a vector-valued function, then `Q`</span>
-<span class="sd">    must be a vector function space, likewise for tensors or scalars.</span>
+    <span class="sd">&quot;&quot;&quot;Interpolate an expression or a gridded data set to a function space</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    f : firedrake.Expression, firedrake.Function, or a callable object</span>
-<span class="sd">        If callable, must take in values of the dimension of the function</span>
-<span class="sd">        space and return either scalar/vector/tensor values</span>
+<span class="sd">    f : icepack.grid.GridData or tuple of icepack.grid.GridData</span>
+<span class="sd">        The gridded data set for scalar fields or the tuple of gridded data</span>
+<span class="sd">        sets for each component</span>
 <span class="sd">    Q : firedrake.FunctionSpace</span>
-<span class="sd">        The function space to interpolate to</span>
+<span class="sd">        The function space where the result will live</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    firedrake.Function</span>
 <span class="sd">        A finite element function defined on `Q` with the same nodal values</span>
-<span class="sd">        as the function `f`</span>
+<span class="sd">        as the data `f`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Expression</span><span class="p">,</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
-        <span class="n">domain</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
-        <span class="n">element</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
+    <span class="n">element</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
 
-        <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">icepack</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">GridData</span><span class="p">):</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">f</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span> <span class="n">icepack</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">GridData</span><span class="p">)</span> <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">f</span><span class="p">):</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fi</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument must be a GridData or a tuple of GridData!&#39;</span><span class="p">)</span>
 
-        <span class="c1"># TODO: make this work for vectorized things &amp; get rid of the loop</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-            <span class="n">q</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
 
-        <span class="k">return</span> <span class="n">q</span>
-
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument must be callable!&#39;</span><span class="p">)</span></div>
-
+    <span class="k">return</span> <span class="n">q</span></div>
 </pre></div>
 
            </div>

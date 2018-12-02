@@ -353,19 +353,7 @@
 <div class="viewcode-block" id="IceShelf.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        dt : float</span>
-<span class="sd">            The timestep length</span>
-<span class="sd">        h0, a : firedrake.Function</span>
-<span class="sd">            The initial ice thickness and the accumulation rate</span>
-<span class="sd">        u : firedrake.Function</span>
-<span class="sd">            The ice velocity</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        h : firedrake.Function</span>
-<span class="sd">            The new ice thickness at `t + dt`</span>
+<span class="sd">        See :meth:`icepack.models.mass_transport.MassTransport.solve`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 

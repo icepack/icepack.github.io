@@ -173,7 +173,6 @@
 
 <span class="kn">import</span> <span class="nn">firedrake</span>
 
-
 <div class="viewcode-block" id="newton_search"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.newton_search">[docs]</a><span class="k">def</span> <span class="nf">newton_search</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
                   <span class="n">max_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">armijo</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">contraction_factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                   <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="p">{},</span>
@@ -210,22 +209,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
     <span class="n">H</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
-    <span class="n">dE_dp</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
+    <span class="n">dE_dv</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">assemble</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
 
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span>
+                  <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">,</span>
+                  <span class="n">constant_jacobian</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span>
+                 <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">)</span>
+
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># Compute a search direction</span>
-        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">H</span> <span class="o">==</span> <span class="o">-</span><span class="n">F</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span>
-                        <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">,</span>
-                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
+        <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
         <span class="c1"># Compute the directional derivative, check if we&#39;re done</span>
-        <span class="n">slope</span> <span class="o">=</span> <span class="n">assemble</span><span class="p">(</span><span class="n">dE_dp</span><span class="p">)</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">assemble</span><span class="p">(</span><span class="n">dE_dv</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">slope</span> <span class="o">&lt;</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">assemble</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">tolerance</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="n">max_iterations</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">u</span>
@@ -233,11 +236,11 @@
         <span class="c1"># Backtracking search</span>
         <span class="n">E0</span> <span class="o">=</span> <span class="n">assemble</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
         <span class="n">α</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">Eα</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">p</span><span class="p">})</span>
+        <span class="n">Eα</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="p">{</span><span class="n">u</span><span class="p">:</span> <span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">v</span><span class="p">})</span>
         <span class="k">while</span> <span class="n">assemble</span><span class="p">(</span><span class="n">Eα</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">E0</span> <span class="o">+</span> <span class="n">armijo</span> <span class="o">*</span> <span class="n">α</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">slope</span><span class="p">:</span>
             <span class="n">α</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">α</span> <span class="o">*</span> <span class="n">contraction_factor</span><span class="p">)</span>
 
-        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 </pre></div>
