@@ -234,12 +234,11 @@
 <span class="sd">            The forward model physics</span>
 <span class="sd">        method</span>
 <span class="sd">            The method of `model` to solve the forward model physics</span>
-<span class="sd">        objective : firedrake.Form</span>
-<span class="sd">            A functional of the state variable; this is what we will</span>
-<span class="sd">            minimize</span>
-<span class="sd">        regularization : firedrake.Form</span>
-<span class="sd">            A functional of the parameter variable that penalizes</span>
-<span class="sd">            unphysical behavior</span>
+<span class="sd">        objective</span>
+<span class="sd">            A python function that returns the model-data misfit functional</span>
+<span class="sd">        regularization</span>
+<span class="sd">            A python function that returns the regularization functional,</span>
+<span class="sd">            i.e. the penalty for unphysical parameter fields</span>
 <span class="sd">        state_name : str</span>
 <span class="sd">            The name of the state variable as expected by `model.solve`</span>
 <span class="sd">        state : firedrake.Function</span>
@@ -312,8 +311,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">}</span>
 
         <span class="c1"># Create the error, regularization, and barrier functionals</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="p">{</span><span class="n">problem</span><span class="o">.</span><span class="n">state</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="n">replace</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">regularization</span><span class="p">,</span> <span class="p">{</span><span class="n">problem</span><span class="o">.</span><span class="n">parameter</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">regularization</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span>
 
         <span class="c1"># Create the weak form of the forward model, the adjoint state, and</span>

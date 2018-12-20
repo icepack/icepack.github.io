@@ -2,7 +2,7 @@
 .. code:: ipython3
 
     %matplotlib inline
-    import os, os.path
+    import os
     import matplotlib.pyplot as plt
     import numpy as np
     import firedrake
@@ -170,53 +170,34 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 Inferring the fluidity
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Solving an inverse problem has lots of moving parts, all of which are
-wrapped in a class that inherits from ``icepack.inverse.InverseSolver``.
-In our case, we’ll be using the Gauss-Newton method, which is
-implemented in ``GaussNewtonSolver``. Using this class should save you
-from worrying about too many low-level details, but still provide a good
-amount of flexibility and transparency. There are four parts that go
-into an inverse problem:
+There are four parts that go into an inverse problem:
 
 -  a physics model
 -  an initial guess for the parameter and state
 -  an error metric
 -  a smoothness metric
 
-We already have the first two, so it remains to decide how we’ll measure
-the misfit and smoothness. Here we’ll use the :math:`L^2`-norm error for
-the velocities and the mean-square gradient for the fluidity,
-respectively.
+We already have the physics model and some initial guesses. The next
+step is to write a pair of Python functions that will create the
+model-data misfit functional and the regularization functional. We’ll
+pass these functions to the inverse problem when we create it.
 
 .. code:: ipython3
 
     from firedrake import inner, grad, dx
     import icepack.inverse
     
-    objective = 0.5 * (((u[0] - u_obs[0]) / σx)**2 + ((u[1] - u_obs[1]) / σy)**2) * dx
+    def objective(u):
+        return 0.5 * (((u[0] - u_obs[0]) / σx)**2 + ((u[1] - u_obs[1]) / σy)**2) * dx
     
     L = 5e3
-    regularization = 0.5 * L**2 * inner(grad(θ), grad(θ)) * dx
+    def regularization(θ):
+        return 0.5 * L**2 * inner(grad(θ), grad(θ)) * dx
 
-As a convenience, the inverse problem object allows you to call a
-function of your choice at the end of every iteration. For this
-demonstration, we’ll have it print out the values of the misfit and
-regularization functionals. You could also, say, make a plot of the
-state and parameter guess at every iteration to make a movie of how the
-algorithm progresses.
-
-.. code:: ipython3
-
-    area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
-    def print_error_and_regularization(inverse_problem):
-        E = firedrake.assemble(inverse_problem.objective)
-        R = firedrake.assemble(inverse_problem.regularization)
-        print('{:g}, {:g}'.format(E/area, R/area))
-
-Next, we’ll create the ``InverseProblem`` object. We’ve already
-mentioned several objects that the inverse problem needs – the model,
-the initial guess, some functionals, etc. Additionally, it needs to know
-the name of the observed field and the parameter (the ``state_name`` and
+Now we create the ``InverseProblem`` object. We’ve already mentioned
+several objects that the inverse problem needs – the model, the initial
+guess, some functionals, etc. Additionally, it needs to know the name of
+the observed field and the parameter (the ``state_name`` and
 ``parameter_name``) arguments, since these values are passed to the
 forward solver as keyword arguments.
 
@@ -243,10 +224,36 @@ how one solves for the Lagrange multiplier field :math:`\lambda`.
     )
 
 Once we’ve created the problem, we then create a solver object that will
-iteratively search for a good value of the parameters. The solver object
-is distinct from the problem so that it’s easier to customize how the
-solver works. In this case, we’ll use a solver based on the Gauss-Newton
-approximation to the second derivative of the objective functional.
+iteratively search for a good value of the parameters. The inverse
+solver has lots of moving parts, all of which are wrapped in a class
+that inherits from ``icepack.inverse.InverseSolver``. In our case, we’ll
+be using the Gauss-Newton method, which is implemented in
+``GaussNewtonSolver``. Using this class should save you from worrying
+about too many low-level details, but still provide a good amount of
+flexibility and transparency.
+
+As a convenience, the inverse solver can take in a function that it will
+call at the end of every iteration. For this demonstration, we’ll have
+it print out the values of the misfit and regularization functionals.
+You could also, say, make a plot of the state and parameter guess at
+every iteration to make a movie of how the algorithm progresses.
+
+.. code:: ipython3
+
+    area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
+    def print_error_and_regularization(solver):
+        E = firedrake.assemble(solver.objective)
+        R = firedrake.assemble(solver.regularization)
+        print('{:g}, {:g}'.format(E/area, R/area))
+
+To create the solver object, we only need to give it a problem and
+optionally the function it will call on each iteration. (In programming
+parlance this is called a *callback function*.)
+
+As a general principle, it’s a good idea to separate out the
+*specification* of a problem, in this case represented by the
+``InverseProblem`` class, from the method used to solve the problem,
+represented by the ``GaussNewtonSolver`` class.
 
 .. code:: ipython3
 
@@ -375,7 +382,7 @@ difference between the computed and observed velocities.
 
     fig, ax = icepack.plot.subplots()
     δu = firedrake.interpolate((solver.state - u_obs)**2/(2*σ**2), Q)
-    ctr = icepack.plot.tricontourf(δu, levels=np.linspace(0, 50, 51), extend='both', axes=ax)
+    ctr = icepack.plot.tricontourf(δu, levels=np.linspace(0, 25, 51), extend='both', axes=ax)
     fig.colorbar(ctr)
     plt.show(fig)
 

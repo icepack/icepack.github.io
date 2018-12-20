@@ -169,7 +169,7 @@
            <div itemprop="articleBody">
             
   <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
@@ -304,49 +304,32 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 </div>
 <div class="section" id="inferring-the-fluidity">
 <h2>Inferring the fluidity<a class="headerlink" href="#inferring-the-fluidity" title="Permalink to this headline">¶</a></h2>
-<p>Solving an inverse problem has lots of moving parts, all of which are
-wrapped in a class that inherits from <code class="docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code>.
-In our case, we’ll be using the Gauss-Newton method, which is
-implemented in <code class="docutils literal notranslate"><span class="pre">GaussNewtonSolver</span></code>. Using this class should save you
-from worrying about too many low-level details, but still provide a good
-amount of flexibility and transparency. There are four parts that go
-into an inverse problem:</p>
+<p>There are four parts that go into an inverse problem:</p>
 <ul class="simple">
 <li>a physics model</li>
 <li>an initial guess for the parameter and state</li>
 <li>an error metric</li>
 <li>a smoothness metric</li>
 </ul>
-<p>We already have the first two, so it remains to decide how we’ll measure
-the misfit and smoothness. Here we’ll use the <span class="math notranslate nohighlight">\(L^2\)</span>-norm error for
-the velocities and the mean-square gradient for the fluidity,
-respectively.</p>
+<p>We already have the physics model and some initial guesses. The next
+step is to write a pair of Python functions that will create the
+model-data misfit functional and the regularization functional. We’ll
+pass these functions to the inverse problem when we create it.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span>
 <span class="kn">import</span> <span class="nn">icepack.inverse</span>
 
-<span class="n">objective</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(((</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">σx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">σy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(((</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">σx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">σy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
 
 <span class="n">L</span> <span class="o">=</span> <span class="mf">5e3</span>
-<span class="n">regularization</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="k">def</span> <span class="nf">regularization</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
 </pre></div>
 </div>
-<p>As a convenience, the inverse problem object allows you to call a
-function of your choice at the end of every iteration. For this
-demonstration, we’ll have it print out the values of the misfit and
-regularization functionals. You could also, say, make a plot of the
-state and parameter guess at every iteration to make a movie of how the
-algorithm progresses.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">print_error_and_regularization</span><span class="p">(</span><span class="n">inverse_problem</span><span class="p">):</span>
-    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_problem</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_problem</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">area</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">area</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Next, we’ll create the <code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> object. We’ve already
-mentioned several objects that the inverse problem needs – the model,
-the initial guess, some functionals, etc. Additionally, it needs to know
-the name of the observed field and the parameter (the <code class="docutils literal notranslate"><span class="pre">state_name</span></code> and
+<p>Now we create the <code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> object. We’ve already mentioned
+several objects that the inverse problem needs – the model, the initial
+guess, some functionals, etc. Additionally, it needs to know the name of
+the observed field and the parameter (the <code class="docutils literal notranslate"><span class="pre">state_name</span></code> and
 <code class="docutils literal notranslate"><span class="pre">parameter_name</span></code>) arguments, since these values are passed to the
 forward solver as keyword arguments.</p>
 <p>All the additional arguments to the forward model are passed as a
@@ -370,10 +353,32 @@ how one solves for the Lagrange multiplier field <span class="math notranslate n
 </pre></div>
 </div>
 <p>Once we’ve created the problem, we then create a solver object that will
-iteratively search for a good value of the parameters. The solver object
-is distinct from the problem so that it’s easier to customize how the
-solver works. In this case, we’ll use a solver based on the Gauss-Newton
-approximation to the second derivative of the objective functional.</p>
+iteratively search for a good value of the parameters. The inverse
+solver has lots of moving parts, all of which are wrapped in a class
+that inherits from <code class="docutils literal notranslate"><span class="pre">icepack.inverse.InverseSolver</span></code>. In our case, we’ll
+be using the Gauss-Newton method, which is implemented in
+<code class="docutils literal notranslate"><span class="pre">GaussNewtonSolver</span></code>. Using this class should save you from worrying
+about too many low-level details, but still provide a good amount of
+flexibility and transparency.</p>
+<p>As a convenience, the inverse solver can take in a function that it will
+call at the end of every iteration. For this demonstration, we’ll have
+it print out the values of the misfit and regularization functionals.
+You could also, say, make a plot of the state and parameter guess at
+every iteration to make a movie of how the algorithm progresses.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">print_error_and_regularization</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">area</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">area</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>To create the solver object, we only need to give it a problem and
+optionally the function it will call on each iteration. (In programming
+parlance this is called a <em>callback function</em>.)</p>
+<p>As a general principle, it’s a good idea to separate out the
+<em>specification</em> of a problem, in this case represented by the
+<code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> class, from the method used to solve the problem,
+represented by the <code class="docutils literal notranslate"><span class="pre">GaussNewtonSolver</span></code> class.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -466,7 +471,7 @@ direction.</p>
 difference between the computed and observed velocities.</p>
 <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">state</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">σ</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
-<span class="n">ctr</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">δu</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ctr</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">δu</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ctr</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
