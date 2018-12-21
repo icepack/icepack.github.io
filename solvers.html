@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack &mdash; icepack 0.0.3 documentation</title>
+  <title>Physics solvers &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -28,7 +28,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="overview.html" /> 
+    <link rel="next" title="Inverse solvers" href="inverse.html" />
+    <link rel="prev" title="Design" href="design.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -47,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home"> icepack
           
 
           
@@ -96,10 +97,14 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="design.html">Design</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Physics solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse.html">Inverse solvers</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -118,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">icepack</a>
+          <a href="index.html">icepack</a>
         
       </nav>
 
@@ -147,15 +152,17 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>icepack</li>
+          <li><a href="design.html">Design</a> &raquo;</li>
+        
+      <li>Physics solvers</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/solvers.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,58 +175,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="icepack">
-<h1>icepack<a class="headerlink" href="#icepack" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the documentation for <cite>icepack</cite>, a python library for modeling the flow of ice sheets and glaciers!
-The main design goals for icepack are:</p>
-<dl class="docutils">
-<dt>interactivity</dt>
-<dd>You can run simulations and visualize the results from the python interpreter.</dd>
-<dt>robustness</dt>
-<dd>The numerical solvers should “just work” with little or no tweaking on the part of you, the user.</dd>
-<dt>transparency</dt>
-<dd>Each physics solver returns the relevant field and you can analyze or post-process it any way you want.</dd>
-<dt>extensibility</dt>
-<dd>Different parts of the model physics are relatively orthogonal to each other, and can be swapped out with little effort.</dd>
-</dl>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-</ul>
+  <div class="section" id="physics-solvers">
+<h1>Physics solvers<a class="headerlink" href="#physics-solvers" title="Permalink to this headline">¶</a></h1>
+<p>The solver for the diagnostic equations of glacier flow is one of the most important components of icepack.
+Since ice is shear-thinning, the elliptic PDE for the ice velocity is nonlinear.
+The diagnostic equations, however, are actually the derivative of a nonlinear scalar functional, the <em>action</em>.
+Moreover, the action functionals for most glacier models are convex, so the velocity is the unique minimizer.
+We can exploit this special structure to define nonlinear solvers that require less hand-tuning than a solver for an arbitrary nonlinear system of equations would.</p>
+<p>Let <span class="math notranslate nohighlight">\(u\)</span>, <span class="math notranslate nohighlight">\(h\)</span> be the ice velocity and thickness respectively.
+The <em>strain rate tensor</em> is the symmetrized gradient of the ice velocity:</p>
+<div class="math notranslate nohighlight">
+\[\dot\varepsilon = \frac{1}{2}\left(\nabla u + \nabla u^\top\right)\]</div>
+<p>The <em>membrane stress tensor</em> <span class="math notranslate nohighlight">\(M\)</span> represents the traction around an infinitesimal area element.
+It is defined in terms of the the strain rate:</p>
+<div class="math notranslate nohighlight">
+\[M = 2\mu(\dot\varepsilon + \text{tr}(\dot\varepsilon)\cdot I)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the ice viscosity.
+The shallow shelf equations are:</p>
+<div class="math notranslate nohighlight">
+\[\nabla\cdot hM - \frac{1}{2}\varrho g\nabla h^2 = 0\]</div>
+<p>where <span class="math notranslate nohighlight">\(\varrho\)</span> is the reduced density of ice over seawater and <span class="math notranslate nohighlight">\(g\)</span> is the acceleration due to gravity.</p>
+<p>The <em>action functional</em> for the shallow shelf equations is:</p>
+<div class="math notranslate nohighlight">
+\[E(u) = \int_\Omega\left(\frac{n}{n + 1}h M : \dot\varepsilon - \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx.\]</div>
+<p>Using the usual methods of the variational calculus, one can show that the shallow shelf equations are the functional derivative of <span class="math notranslate nohighlight">\(E\)</span>.
+Moreover, with a bit more calcuation, one can also show that <span class="math notranslate nohighlight">\(E\)</span> is <em>convex</em> – the second derivative is positive-definite.
+This means that it has a unique minimizer.</p>
+<p>Since the solution of the shallow shelf equations minimizes the action, we can make a convergence criterion for our solver based on the value of the action rather than on, say, the norm of the residual.
+Internally, icepack uses Newton’s method to solve the minimization problem:</p>
+<div class="math notranslate nohighlight">
+\[u_{k + 1} = u_k - d^2E(u_k)^{-1}dE(u_k).\]</div>
+<p>The <em>Newton decrement</em> is the quantity</p>
+<div class="math notranslate nohighlight">
+\[\Delta = \frac{1}{2}\langle dE(u_k), d^2E(u_k)^{-1}dE(u_k)\rangle.\]</div>
+<p>The Newton decrement is always positive, and it approximates the difference between the current value of the action functional and the minimum value.
+By evaluating the ratio of the Newton decrement to that of some positive scale functional – in icepack we use just the first term of the action – we can get a dimensionless measure of how much relative improvement there is to be had by doing one more iteration of Newton’s method.
+When this ratio is sufficiently small, the iteration has converged.
+Empirically, I’ve found that even with a very small tolerances like 10<sup>-12</sup> the method converges in 8-10 iterations.</p>
+<p>The nice part about setting a convergence tolerance this way is that the action is an “objective” quantity – whether you use finite element methods or finite volume methods, piecewise linear or quadratic basis functions, etc., you’re always computing the same thing.
+The 2-norm of the residual, however, depends on how you discretize the problem.</p>
 </div>
 
 
@@ -230,8 +224,10 @@ The main design goals for icepack are:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overview.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="inverse.html" class="btn btn-neutral float-right" title="Inverse solvers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="design.html" class="btn btn-neutral" title="Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

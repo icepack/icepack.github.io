@@ -21,14 +21,15 @@ extensibility
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Basics
 
    overview.rst
    installation.rst
+   reading.rst
 
 .. toctree::
    :maxdepth: 1
-   :caption: Demos:
+   :caption: Tutorials
 
    icepack.demo.00-meshes-functions.rst
    icepack.demo.01-synthetic-ice-shelf.rst
@@ -39,7 +40,15 @@ extensibility
 
 .. toctree::
    :maxdepth: 1
-   :caption: API Reference:
+   :caption: Development
+
+   contributing.rst
+   testing.rst
+   design.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
 
    modules.rst
 

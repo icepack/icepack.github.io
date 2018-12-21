@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack &mdash; icepack 0.0.3 documentation</title>
+  <title>Reading &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -28,7 +28,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="overview.html" /> 
+    <link rel="next" title="Meshes, functions" href="icepack.demo.00-meshes-functions.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -47,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home"> icepack
           
 
           
@@ -82,10 +83,10 @@
             
             
               <p class="caption"><span class="caption-text">Basics</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reading</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -118,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">icepack</a>
+          <a href="index.html">icepack</a>
         
       </nav>
 
@@ -147,15 +148,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>icepack</li>
+      <li>Reading</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/reading.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,58 +169,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="icepack">
-<h1>icepack<a class="headerlink" href="#icepack" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the documentation for <cite>icepack</cite>, a python library for modeling the flow of ice sheets and glaciers!
-The main design goals for icepack are:</p>
-<dl class="docutils">
-<dt>interactivity</dt>
-<dd>You can run simulations and visualize the results from the python interpreter.</dd>
-<dt>robustness</dt>
-<dd>The numerical solvers should “just work” with little or no tweaking on the part of you, the user.</dd>
-<dt>transparency</dt>
-<dd>Each physics solver returns the relevant field and you can analyze or post-process it any way you want.</dd>
-<dt>extensibility</dt>
-<dd>Different parts of the model physics are relatively orthogonal to each other, and can be swapped out with little effort.</dd>
-</dl>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-</ul>
+  <div class="section" id="reading">
+<h1>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h1>
+<p>Doug MacAyeal’s <a class="reference external" href="http://geosci.uchicago.edu/pdfs/macayeal/lessons.pdf">Lessons on Ice Sheet Modeling</a> is a great reference with plenty of example code.
+The standard textbook on glaciology is <em>The Physics of Glaicers</em> <a class="reference internal" href="#cuffey2010physics" id="id1">[1]</a>.
+For more of a focus on modeling, see <em>Dynamics of Ice Sheets and Glaciers</em> <a class="reference internal" href="#greve2009dynamics" id="id2">[2]</a>.
+<em>Understanding and Implementing the Finite Element Method</em> is a good introduction <a class="reference internal" href="#gockenbach2006understanding" id="id3">[3]</a> while <em>Finite Elements: Theory, Fast Solvers, and Applications in Solid Mechanics</em> <a class="reference internal" href="#braess2007finite" id="id4">[4]</a> is a more advanced treatment on numerically solving partial differential equations.</p>
+<p id="bibtex-bibliography-reading-0"><table class="docutils citation" frame="void" id="cuffey2010physics" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Kurt&nbsp;M Cuffey and William Stanley&nbsp;Bryce Paterson. <em>The physics of glaciers</em>. Academic Press, 2010.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="greve2009dynamics" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Ralf Greve and Heinz Blatter. <em>Dynamics of ice sheets and glaciers</em>. Springer Science &amp; Business Media, 2009.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="gockenbach2006understanding" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Mark&nbsp;S Gockenbach. <em>Understanding and implementing the finite element method</em>. Volume&nbsp;97. SIAM, 2006.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="braess2007finite" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Dietrich Braess. <em>Finite elements: Theory, fast solvers, and applications in solid mechanics</em>. Cambridge University Press, 2007.</td></tr>
+</tbody>
+</table>
+</p>
 </div>
 
 
@@ -230,8 +210,10 @@ The main design goals for icepack are:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overview.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.demo.00-meshes-functions.html" class="btn btn-neutral float-right" title="Meshes, functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

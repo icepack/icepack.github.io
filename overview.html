@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; icepack 0.0.3 documentation</title>
+  <title>Introduction &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -82,12 +82,17 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-involved">Getting involved</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Demos:</span></p>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
@@ -95,7 +100,13 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
 </ul>
@@ -143,7 +154,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Overview</li>
+      <li>Introduction</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -162,48 +173,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p>Icepack uses the library <a class="reference external" href="https://www.firedrakeproject.org">firedrake</a> for finite element analysis.
-The important objects from firedrake that you’ll be using are:</p>
-<dl class="docutils">
-<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.mesh.Mesh" title="(in Firedrake v0.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">Mesh()</span></code></a></dt>
-<dd>Create the geometry for the domain</dd>
-<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.functionspace.FunctionSpace" title="(in Firedrake v0.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">FunctionSpace()</span></code></a></dt>
-<dd>Create a finite element basis over a given mesh for representing fields</dd>
-<dt><a class="reference external" href="https://www.firedrakeproject.org/firedrake.html#firedrake.function.Function" title="(in Firedrake v0.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Function</span></code></a></dt>
-<dd>Represents a scalar, vector, or tensor field defined on some function space</dd>
-</dl>
-<p>Icepack consists of routines that solve for various quantities encountered in ice sheet physics.
-For example, the class <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf" title="icepack.models.ice_shelf.IceShelf"><code class="xref py py-class docutils literal notranslate"><span class="pre">IceShelf</span></code></a> has methods <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="icepack.models.ice_shelf.IceShelf.diagnostic_solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">diagnostic_solve()</span></code></a> and <a class="reference internal" href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve" title="icepack.models.ice_shelf.IceShelf.prognostic_solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prognostic_solve()</span></code></a> that compute (respectively) the ice velocity and thickness.
-The computed velocity and thickness are <cite>firedrake.Function</cite> objects that you can plot or analyze using the various routines in firedrake.</p>
-<p>For a thorough reference on ice sheet physics, see <a class="reference internal" href="#greve2009dynamics" id="id1">[1]</a> and <a class="reference internal" href="#cuffey2010physics" id="id2">[2]</a>.
-For an introduction to the finite element method, see <a class="reference internal" href="#gockenbach2006understanding" id="id3">[3]</a> and <a class="reference internal" href="#braess2007finite" id="id4">[4]</a>.</p>
-<p id="bibtex-bibliography-overview-0"><table class="docutils citation" frame="void" id="greve2009dynamics" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ralf Greve and Heinz Blatter. <em>Dynamics of ice sheets and glaciers</em>. Springer Science &amp; Business Media, 2009.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="cuffey2010physics" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Kurt&nbsp;M Cuffey and William Stanley&nbsp;Bryce Paterson. <em>The physics of glaciers</em>. Academic Press, 2010.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="gockenbach2006understanding" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Mark&nbsp;S Gockenbach. <em>Understanding and implementing the finite element method</em>. Volume&nbsp;97. SIAM, 2006.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="braess2007finite" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Dietrich Braess. <em>Finite elements: Theory, fast solvers, and applications in solid mechanics</em>. Cambridge University Press, 2007.</td></tr>
-</tbody>
-</table>
-</p>
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Icepack is a Python library for modeling the flow of glaciers and ice sheets.
+The main functionality it provides is a set of routines for solving certain nonlinear partial differential equations that describe the ice thickness, velocity, temperature, and other fields.
+To implement these solvers, icepack uses the finite element analysis package <a class="reference external" href="https://firedrakeproject.org">firedrake</a>.</p>
+<div class="section" id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>To use icepack, you’ll need to have some familiarity with Python.
+If you’ve never used Python, <a class="reference external" href="https://en.wikibooks.org/wiki/Python_Programming">this wikibook</a> is a good resource.
+If you’re mainly familiar with Matlab, <a class="reference external" href="https://docs.scipy.org/doc/numpy/user/numpy-for-matlab-users.html">this guide</a> will help you get acquainted with NumPy.</p>
+<p>We do not expect that most users are already familiar with firedrake, which icepack is built on.
+See the <a class="reference external" href="https://firedrakeproject.org/documentation.html">firedrake documentation</a> and especially the tutorial notebooks for an introduction.
+Firedrake makes it very easy to do computational physics, even if you’re not an expert in numerical methods.</p>
+<p>See the <a class="reference internal" href="installation.html"><span class="doc">installation</span></a> page for how to build icepack on your computer.
+From there you can read and run our tutorials to see all the things icepack can do.
+The tutorials are all interactive <a class="reference external" href="https://jupyter.org/">jupyter notebooks</a>.
+The code samples on this website are taken directly from the demos in the icepack source directory, so you can run them interactively on your own machine too.
+Some of the tutorials use real data, for which you’ll also need <a class="reference external" href="https://github.com/icepack/icepack-data/">this repository</a>.</p>
+<p>For more background on glacier physics or finite element methods, we have some suggested <a class="reference internal" href="reading.html"><span class="doc">reading material</span></a>.</p>
+</div>
+<div class="section" id="getting-involved">
+<h2>Getting involved<a class="headerlink" href="#getting-involved" title="Permalink to this headline">¶</a></h2>
+<p>Icepack is free software and developed publicly on <a class="reference external" href="https://github.com/icepack/icepack">GitHub</a>.
+If you have a bug to report or a new feature to request, please don’t hesitate to <a class="reference external" href="https://github.com/icepack/icepack/issues">raise an issue</a> on our project page.
+You can also email me at the address listed on my <a class="reference external" href="http://psc.apl.uw.edu/people/post-docs/daniel-shapero/">website</a>.
+If you have questions that aren’t answered here, or you want to get involved and don’t know how, please reach out.
+See the Development section for more background on the internals of icepack.</p>
+</div>
 </div>
 
 

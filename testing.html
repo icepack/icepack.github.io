@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack &mdash; icepack 0.0.3 documentation</title>
+  <title>Testing &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -28,7 +28,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="overview.html" /> 
+    <link rel="next" title="Design" href="design.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -47,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home"> icepack
           
 
           
@@ -96,9 +97,9 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -118,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">icepack</a>
+          <a href="index.html">icepack</a>
         
       </nav>
 
@@ -147,15 +148,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>icepack</li>
+      <li>Testing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/testing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,58 +169,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="icepack">
-<h1>icepack<a class="headerlink" href="#icepack" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the documentation for <cite>icepack</cite>, a python library for modeling the flow of ice sheets and glaciers!
-The main design goals for icepack are:</p>
-<dl class="docutils">
-<dt>interactivity</dt>
-<dd>You can run simulations and visualize the results from the python interpreter.</dd>
-<dt>robustness</dt>
-<dd>The numerical solvers should “just work” with little or no tweaking on the part of you, the user.</dd>
-<dt>transparency</dt>
-<dd>Each physics solver returns the relevant field and you can analyze or post-process it any way you want.</dd>
-<dt>extensibility</dt>
-<dd>Different parts of the model physics are relatively orthogonal to each other, and can be swapped out with little effort.</dd>
-</dl>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-</ul>
+  <div class="section" id="testing">
+<h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
+<p>All of the physics solvers in icepack are subject to a battery of tests.
+These aim to check the correctness of the various algorithms on simplified problems in the hopes of detecting errors in the implementation.
+For example, for a floating ice shelf where the fluidity is constant and the ice thickness decreases linearly towards the ice front, the shallow shelf equations can be solved analytically.
+To check that the diagnostic solver is working correctly, the numerically computed solution is compared against the exact solution, and a significant departure indicates a mistake.</p>
+<p>Designing effective unit tests for scientific software is more difficult in some respects than for other types of software.
+The outputs of numerical solvers are only approximations, and will not match analytical solutions perfectly.
+At what point should this mismatch be considered a failure?
+This breakdown point can be calculated only for the simplest PDEs and spatial domains.</p>
+<p>Instead, we know from finite element theory that the solutions should converge as <span class="math notranslate nohighlight">\(\mathcal{O}(\delta x^p)\)</span> where <span class="math notranslate nohighlight">\(\delta x\)</span> is the mesh spacing and <span class="math notranslate nohighlight">\(p\)</span> is some exponent depending on the problem and discretization.
+We can then take a sequence of meshes and do a log-log fit of the errors against <span class="math notranslate nohighlight">\(\delta x\)</span> to check that this asymptotic behavior is indeed achieved.
+But the asymptotic estimates never quite hold exactly.
+For example, using piecewise linear finite elements and the backward Euler scheme to solve the mass transport equation should give errors that decrease as <span class="math notranslate nohighlight">\(\mathcal{O}(\delta x)\)</span>.
+What if, instead, you find that the errors decay like <span class="math notranslate nohighlight">\(\delta x^{0.95}\)</span>?
+Should that indicate failure, even if it suggests that the numerical solutions do get more accurate?
+There isn’t really a good answer for this – we just have to do our best and be as critical as we can.</p>
+<p>Another difficult issue is whether the accuracy of a solver on simplified problems is a good indication that it will also be accurate on harder problems.
+When no analytical solution is available at all, how should one design a useful test?
+The best we can hope for in this situation is to rely on properties of the solution, such as conservation laws or variational principles.
+Rather than check against an analytical solution, these properties serve as sanity checks.
+For example, given an approximate solution to the shallow shelf equations, one can take a random perturbation to it and check that this perturbation has a higher value of the action functional due to the minimization property.</p>
 </div>
 
 
@@ -230,8 +201,10 @@ The main design goals for icepack are:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overview.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="design.html" class="btn btn-neutral float-right" title="Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="contributing.html" class="btn btn-neutral" title="Contributing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
