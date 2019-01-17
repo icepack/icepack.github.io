@@ -185,7 +185,8 @@
 <span class="sd">Several flow models all have essentially the same viscous part.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">exp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">year</span><span class="p">,</span> <span class="n">ideal_gas</span> <span class="k">as</span> <span class="n">R</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 
@@ -213,11 +214,30 @@
 <span class="sd">    where :math:`R` is the ideal gas constant, :math:`Q` has units of</span>
 <span class="sd">    energy per mole, and :math:`A_0` is a prefactor with units of</span>
 <span class="sd">    pressure :math:`\\text{MPa}^{-3}\\times\\text{yr}^{-1}`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T : float, np.ndarray, or UFL expression</span>
+<span class="sd">        The ice temperature</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A : same type as T</span>
+<span class="sd">        The ice fluidity</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">ufl</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">ufl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+        <span class="n">cold</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">transition_temperature</span><span class="p">)</span>
+        <span class="n">A0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">conditional</span><span class="p">(</span><span class="n">cold</span><span class="p">,</span> <span class="n">A0_cold</span><span class="p">,</span> <span class="n">A0_warm</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">conditional</span><span class="p">(</span><span class="n">cold</span><span class="p">,</span> <span class="n">Q_cold</span><span class="p">,</span> <span class="n">Q_warm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Q</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span>
+
     <span class="n">cold</span> <span class="o">=</span> <span class="n">T</span> <span class="o">&lt;</span> <span class="n">transition_temperature</span>
-    <span class="n">A0</span> <span class="o">=</span> <span class="n">A0_cold</span> <span class="k">if</span> <span class="n">cold</span> <span class="k">else</span> <span class="n">A0_warm</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q_cold</span> <span class="k">if</span> <span class="n">cold</span> <span class="k">else</span> <span class="n">Q_warm</span>
-    <span class="k">return</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Q</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span></div>
+    <span class="n">warm</span> <span class="o">=</span> <span class="o">~</span><span class="n">cold</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="ow">not</span> <span class="n">cold</span><span class="p">)</span>
+    <span class="n">A0</span> <span class="o">=</span> <span class="n">A0_cold</span> <span class="o">*</span> <span class="n">cold</span> <span class="o">+</span> <span class="n">A0_warm</span> <span class="o">*</span> <span class="n">warm</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q_cold</span> <span class="o">*</span> <span class="n">cold</span> <span class="o">+</span> <span class="n">Q_warm</span> <span class="o">*</span> <span class="n">warm</span>
+
+    <span class="k">return</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Q</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="M"><a class="viewcode-back" href="../../../icepack.models.viscosity.html#icepack.models.viscosity.M">[docs]</a><span class="k">def</span> <span class="nf">M</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
