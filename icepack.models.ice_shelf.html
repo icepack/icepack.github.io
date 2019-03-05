@@ -17,34 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.models.ice_stream module" href="icepack.models.ice_stream.html" />
-    <link rel="prev" title="icepack.models.friction module" href="icepack.models.friction.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    <link rel="prev" title="icepack.models.hybrid module" href="icepack.models.hybrid.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -95,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -210,10 +214,10 @@ in ch. 6 of Greve and Blatter.</p>
 model as the Euler-Lagrange equations</p>
 <p>The action functional for the ice shelf diagnostic model is</p>
 <div class="math notranslate nohighlight">
-\[E(u) = \int_\Omega\left(\frac{n}{n + 1}hM:\dot\varepsilon
-- \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx\]</div>
+\[\begin{split}E(u) = \int_\Omega\left(\\frac{n}{n + 1}hM:\dot\\varepsilon
+- \\frac{1}{2}\\varrho gh^2\\nabla\cdot u\\right)dx\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(u\)</span> is the velocity, <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness,
-<span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
+<span class="math notranslate nohighlight">\(\dot\\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
 the membrane stress tensor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -309,8 +313,8 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the gravitational part of the ice shelf action functional</p>
 <p>The gravitational part of the ice shelf action functional is</p>
 <div class="math notranslate nohighlight">
-\[E(u) = -\frac{1}{2}\int_\Omega
-\varrho g\nabla h^2\cdot u\hspace{2pt}dx\]</div>
+\[\begin{split}E(u) = -\\frac{1}{2}\int_\Omega
+\\varrho g\\nabla h^2\cdot u\hspace{2pt}dx\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -337,7 +341,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the terminus stress part of the ice shelf action functional</p>
 <p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
 <div class="math notranslate nohighlight">
-\[E(u) = \int_\Gamma\varrho gh^2u\cdot\nu\hspace{2pt}ds\]</div>
+\[\begin{split}E(u) = \int_\Gamma\\varrho gh^2u\cdot\\nu\hspace{2pt}ds\end{split}\]</div>
 <p>We assume that sea level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for calculating the water
 depth.</p>
 </dd></dl>
@@ -355,7 +359,7 @@ depth.</p>
         <a href="icepack.models.ice_stream.html" class="btn btn-neutral float-right" title="icepack.models.ice_stream module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="icepack.models.friction.html" class="btn btn-neutral" title="icepack.models.friction module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.models.hybrid.html" class="btn btn-neutral float-left" title="icepack.models.hybrid module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -364,7 +368,7 @@ depth.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel Shapero.
+        &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
@@ -381,33 +385,16 @@ depth.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.3',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -17,34 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.utilities module" href="icepack.utilities.html" />
     <link rel="prev" title="icepack.optimization module" href="icepack.optimization.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -95,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -222,10 +226,10 @@ class <cite>ScalarMappable</cite> so that you can make a colorbar out of it.</p>
 <dt id="icepack.plot.streamline">
 <code class="descclassname">icepack.plot.</code><code class="descname">streamline</code><span class="sig-paren">(</span><em>velocity</em>, <em>initial_point</em>, <em>resolution</em>, <em>max_num_points=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a streamline of a 2D velocity field</p>
-<p>A streamline <span class="math notranslate nohighlight">\(\gamma\)</span> of a velocity field <span class="math notranslate nohighlight">\(v\)</span> is a curve
+<p>A streamline <span class="math notranslate nohighlight">\(\\gamma\)</span> of a velocity field <span class="math notranslate nohighlight">\(v\)</span> is a curve
 that solves the ordinary differential equation</p>
 <div class="math notranslate nohighlight">
-\[\frac{d\gamma}{dt} = v(\gamma)\]</div>
+\[\begin{split}\\frac{d\\gamma}{dt} = v(\\gamma)\end{split}\]</div>
 <p>This function returns an approximate streamline for a velocity field.
 Streamlines are primarily for plotting vector fields but are useful for
 other kinds of postprocessing of vector field data.</p>
@@ -288,7 +292,7 @@ if the trajectory can spiral around a center node</li>
         <a href="icepack.utilities.html" class="btn btn-neutral float-right" title="icepack.utilities module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="icepack.optimization.html" class="btn btn-neutral" title="icepack.optimization module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.optimization.html" class="btn btn-neutral float-left" title="icepack.optimization module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -297,7 +301,7 @@ if the trajectory can spiral around a center node</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel Shapero.
+        &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
@@ -314,33 +318,16 @@ if the trajectory can spiral around a center node</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.3',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

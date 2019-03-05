@@ -18,32 +18,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -94,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -175,7 +179,9 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -194,9 +200,11 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.action">action() (icepack.models.ice_shelf.IceShelf method)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.action">action() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.action">(icepack.models.ice_shelf.IceShelf method)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.action">(icepack.models.ice_stream.IceStream method)</a>
 </li>
       </ul></li>
@@ -213,7 +221,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.friction.html#icepack.models.friction.bed_friction">bed_friction() (in module icepack.models.friction)</a>
+
+      <ul>
+        <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.bed_friction">(in module icepack.models.hybrid)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.inverse.html#icepack.inverse.BFGSSolver">BFGSSolver (class in icepack.inverse)</a>
@@ -224,8 +236,12 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.compute_surface">compute_surface() (icepack.models.ice_stream.IceStream method)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.compute_surface">compute_surface() (icepack.models.hybrid.HybridModel method)</a>
+
+      <ul>
+        <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.compute_surface">(icepack.models.ice_stream.IceStream method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.plot.html#icepack.plot.contourf">contourf() (in module icepack.plot)</a>
@@ -238,9 +254,13 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve">diagnostic_solve() (icepack.models.ice_shelf.IceShelf method)</a>
+      <li><a href="icepack.utilities.html#icepack.utilities.depth_average">depth_average() (in module icepack.utilities)</a>
+</li>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.diagnostic_solve">diagnostic_solve() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve">(icepack.models.ice_shelf.IceShelf method)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.diagnostic_solve">(icepack.models.ice_stream.IceStream method)</a>
 </li>
       </ul></li>
@@ -259,6 +279,18 @@
   </ul></td>
 </tr></table>
 
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.facet_normal_2">facet_normal_2() (in module icepack.models.hybrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.friction_stress">friction_stress() (in module icepack.models.hybrid)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -270,19 +302,35 @@
 </li>
       <li><a href="icepack.constants.html#icepack.constants.glen_flow_law">glen_flow_law (in module icepack.constants)</a>
 </li>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.grad_2">grad_2() (in module icepack.models.hybrid)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.gradient">gradient (icepack.inverse.InverseSolver attribute)</a>
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.GradientDescentSolver">GradientDescentSolver (class in icepack.inverse)</a>
 </li>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.gravity">gravity() (in module icepack.models.ice_shelf)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.gravity">gravity() (in module icepack.models.hybrid)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.gravity">(in module icepack.models.ice_shelf)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.gravity">(in module icepack.models.ice_stream)</a>
 </li>
       </ul></li>
       <li><a href="icepack.grid.grid_data.html#icepack.grid.grid_data.GridData">GridData (class in icepack.grid.grid_data)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.horizontal_strain">horizontal_strain() (in module icepack.models.hybrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel">HybridModel (class in icepack.models.hybrid)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -309,6 +357,8 @@
       <li><a href="icepack.models.html#module-icepack.models">icepack.models (module)</a>
 </li>
       <li><a href="icepack.models.friction.html#module-icepack.models.friction">icepack.models.friction (module)</a>
+</li>
+      <li><a href="icepack.models.hybrid.html#module-icepack.models.hybrid">icepack.models.hybrid (module)</a>
 </li>
       <li><a href="icepack.models.ice_shelf.html#module-icepack.models.ice_shelf">icepack.models.ice_shelf (module)</a>
 </li>
@@ -358,10 +408,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.viscosity.html#icepack.models.viscosity.M">M() (in module icepack.models.viscosity)</a>
 </li>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.MassTransport">MassTransport (class in icepack.models.hybrid)</a>
+
+      <ul>
+        <li><a href="icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">(class in icepack.models.mass_transport)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">MassTransport (class in icepack.models.mass_transport)</a>
-</li>
       <li><a href="icepack.inverse.html#icepack.inverse.BFGSSolver.memory">memory (icepack.inverse.BFGSSolver attribute)</a>
 </li>
   </ul></td>
@@ -372,12 +426,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.optimization.html#icepack.optimization.newton_search">newton_search() (in module icepack.optimization)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.norms.html#icepack.norms.norm">norm() (in module icepack.norms)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.friction.html#icepack.models.friction.normal_flow_penalty">normal_flow_penalty() (in module icepack.models.friction)</a>
+
+      <ul>
+        <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.normal_flow_penalty">(in module icepack.models.hybrid)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -398,9 +456,11 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve">prognostic_solve() (icepack.models.ice_shelf.IceShelf method)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.prognostic_solve">prognostic_solve() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve">(icepack.models.ice_shelf.IceShelf method)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.prognostic_solve">(icepack.models.ice_stream.IceStream method)</a>
 </li>
       </ul></li>
@@ -410,9 +470,11 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.quadrature_degree">quadrature_degree() (icepack.models.ice_shelf.IceShelf method)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.quadrature_degree">quadrature_degree() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.quadrature_degree">(icepack.models.ice_shelf.IceShelf method)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.quadrature_degree">(icepack.models.ice_stream.IceStream method)</a>
 </li>
       </ul></li>
@@ -448,9 +510,11 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.scale">scale() (icepack.models.ice_shelf.IceShelf method)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.scale">scale() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.scale">(icepack.models.ice_shelf.IceShelf method)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.scale">(icepack.models.ice_stream.IceStream method)</a>
 </li>
       </ul></li>
@@ -459,10 +523,16 @@
       <li><a href="icepack.grid.grid_data.html#icepack.grid.grid_data.GridData.shape">shape (icepack.grid.grid_data.GridData attribute)</a>
 </li>
       <li><a href="icepack.models.friction.html#icepack.models.friction.side_friction">side_friction() (in module icepack.models.friction)</a>
+
+      <ul>
+        <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.side_friction">(in module icepack.models.hybrid)</a>
 </li>
+      </ul></li>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.solve">solve() (icepack.inverse.InverseSolver method)</a>
 
       <ul>
+        <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.MassTransport.solve">(icepack.models.hybrid.MassTransport method)</a>
+</li>
         <li><a href="icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport.solve">(icepack.models.mass_transport.MassTransport method)</a>
 </li>
       </ul></li>
@@ -478,6 +548,8 @@
 </li>
       <li><a href="icepack.plot.html#icepack.plot.StreamplotSet">StreamplotSet (class in icepack.plot)</a>
 </li>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.stresses">stresses() (in module icepack.models.hybrid)</a>
+</li>
       <li><a href="icepack.plot.html#icepack.plot.subplots">subplots() (in module icepack.plot)</a>
 </li>
       <li><a href="icepack.grid.grid_data.html#icepack.grid.grid_data.GridData.subset">subset() (icepack.grid.grid_data.GridData method)</a>
@@ -490,9 +562,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.friction.html#icepack.models.friction.tau">tau() (in module icepack.models.friction)</a>
 </li>
-      <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.terminus">terminus() (in module icepack.models.ice_shelf)</a>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.terminus">terminus() (in module icepack.models.hybrid)</a>
 
       <ul>
+        <li><a href="icepack.models.ice_shelf.html#icepack.models.ice_shelf.terminus">(in module icepack.models.ice_shelf)</a>
+</li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.terminus">(in module icepack.models.ice_stream)</a>
 </li>
       </ul></li>
@@ -528,6 +602,12 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.vertical_strain">vertical_strain() (in module icepack.models.hybrid)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.viscosity">viscosity() (in module icepack.models.hybrid)</a>
+</li>
       <li><a href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged">viscosity_depth_averaged() (in module icepack.models.viscosity)</a>
 </li>
   </ul></td>
@@ -561,7 +641,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel Shapero.
+        &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
@@ -578,33 +658,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.3',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

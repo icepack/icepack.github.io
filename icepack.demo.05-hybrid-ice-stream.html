@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ice streams, once more &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Inverse problems" href="icepack.demo.04-ice-shelf-inverse.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ice streams, once more</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#geometry-and-input-data">Geometry and input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modeling">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resolving-shear-flow">Resolving shear flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epilogue-bootstrapping">Epilogue: bootstrapping</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Ice streams, once more</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/icepack.demo.05-hybrid-ice-stream.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.models</span><span class="o">,</span> <span class="nn">icepack.plot</span>
+</pre></div>
+</div>
+<div class="section" id="ice-streams-once-more">
+<h1>Ice streams, once more<a class="headerlink" href="#ice-streams-once-more" title="Permalink to this headline">¶</a></h1>
+<p>In this demo, we’ll revisit the ice stream demo but with a different
+model. The <em>hybrid</em> flow model that we’ll use here can resolve both
+<em>plug flow</em> and <em>shear flow</em>. The velocity field is a plug flow if the
+velocity is roughly constanty with depth, whereas in shear flow the
+speed at the ice base is much smaller than at the ice surface. Deep in
+the interior of an ice sheet, most flow is by vertical shear, whereas
+the fast ice streams near the margins are roughly in plug flow. The
+shallow stream equations, and the <code class="docutils literal notranslate"><span class="pre">IceStream</span></code> class we used to solve
+them in the third demo, assume plug flow and thus are limited in the
+regions where they can be applied without substantial error. The
+<code class="docutils literal notranslate"><span class="pre">HybridModel</span></code> class we’ll use here has no such limitation.</p>
+<div class="section" id="geometry-and-input-data">
+<h2>Geometry and input data<a class="headerlink" href="#geometry-and-input-data" title="Permalink to this headline">¶</a></h2>
+<p>We’ll use the same footprint geometry as the ice stream demo, but since
+we’re working with a 3D flow model, we need a 3D mesh to go along with
+it. The model we will use is posed entirely in <em>terrain-following
+coordinates</em>, where the <span class="math notranslate nohighlight">\(z\)</span>-axis is remapped into the interval
+<span class="math notranslate nohighlight">\([0, 1]\)</span>. This new coordinate is defined as</p>
+<div class="math notranslate nohighlight">
+\[\zeta = \frac{z - b}{h}\]</div>
+<p>and the inverse transformation is <span class="math notranslate nohighlight">\(z = h\zeta + b\)</span>. In the absence
+of terminus advance or iceberg calving, the transformation to this
+coordinate system makes the logical geometry of problem completely
+steady even though the surface can be rising or falling.</p>
+<p>Firedrake includes built-in support generating <em>extruded meshes</em> out of
+a 2D footprint mesh. Rather than use a large number of vertical layers
+to achieve high resolution of functions defined on this mesh, we’ll use
+only one layer but high-degree basis functions.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">50e3</span><span class="p">,</span> <span class="mf">12e3</span>
+<span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">32</span>
+<span class="n">mesh2d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">ExtrudedMesh</span><span class="p">(</span><span class="n">mesh2d</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To define a function space on an extruded mesh, the only change over 2D
+function spaces is the addition of the <code class="docutils literal notranslate"><span class="pre">vfamily</span></code> and <code class="docutils literal notranslate"><span class="pre">vdegree</span></code>
+arguments. These describe respectively the finite element type and
+polynomial degree in the vertical direction. The surface and bed
+elevation only have to be defined on the footprint mesh, so we’ll use
+vertical basis functions that are constant.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;DG&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function space for the velocities is more interesting. For starters,
+we have to explicitly specify the value dimension, since we’re workin
+with a 2D vector field defined on a 3D mesh. Rather than use the usual
+continuous or discontinuous Galerkin finite element bases in the
+vertical, we’ll use <em>Gauss-Legendre</em> elements. This finite element uses
+<a class="reference external" href="https://en.wikipedia.org/wiki/Legendre_polynomials">Legendre
+polynomials</a>
+instead of the Lagrange interpolating polynomials. The Legendre
+polynomials are advantageous because they are mutually orthogonal.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating the input data is mostly the same as before. The
+<code class="docutils literal notranslate"><span class="pre">SpatialCoordinate</span></code> function now returns an additional symbol
+representing the terrain-following coordinate <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ζ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">b_in</span><span class="p">,</span> <span class="n">b_out</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">b_in</span> <span class="o">-</span> <span class="p">(</span><span class="n">b_in</span> <span class="o">-</span> <span class="n">b_out</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+
+<span class="n">s_in</span><span class="p">,</span> <span class="n">s_out</span> <span class="o">=</span> <span class="mi">850</span><span class="p">,</span> <span class="mi">50</span>
+<span class="n">s0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s_in</span> <span class="o">-</span> <span class="p">(</span><span class="n">s_in</span> <span class="o">-</span> <span class="n">s_out</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+
+<span class="n">h0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s0</span> <span class="o">-</span> <span class="n">b</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h_in</span> <span class="o">=</span> <span class="n">s_in</span> <span class="o">-</span> <span class="n">b_in</span>
+<span class="n">δs_δx</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_out</span> <span class="o">-</span> <span class="n">s_in</span><span class="p">)</span> <span class="o">/</span> <span class="n">Lx</span>
+<span class="n">τ_D</span> <span class="o">=</span> <span class="o">-</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h_in</span> <span class="o">*</span> <span class="n">δs_δx</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_in</span><span class="p">,</span> <span class="n">u_out</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2400</span>
+<span class="n">velocity_x</span> <span class="o">=</span> <span class="n">u_in</span> <span class="o">+</span> <span class="p">(</span><span class="n">u_out</span> <span class="o">-</span> <span class="n">u_in</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">velocity_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="mf">255.0</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">weertman_sliding_law</span> <span class="k">as</span> <span class="n">m</span>
+<span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">)</span> <span class="o">*</span> <span class="n">τ_D</span> <span class="o">/</span> <span class="n">u_in</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span>
+
+<span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h0</span> <span class="o">-</span> <span class="n">s0</span><span class="p">)</span>
+<span class="n">p_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h0</span>
+<span class="n">ϕ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p_W</span> <span class="o">/</span> <span class="n">p_I</span>
+</pre></div>
+</div>
+<p>The bed friction can be re-parameterized for the hybrid model in the
+same way as for the ice stream model.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">icepack.models.hybrid</span>
+<span class="k">def</span> <span class="nf">friction</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+    <span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">p_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span>
+    <span class="n">ϕ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p_W</span> <span class="o">/</span> <span class="n">p_I</span>
+    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">hybrid</span><span class="o">.</span><span class="n">bed_friction</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">C</span> <span class="o">*</span> <span class="n">ϕ</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">HybridModel</span><span class="p">(</span><span class="n">friction</span><span class="o">=</span><span class="n">friction</span><span class="p">)</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;side_wall_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s0</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">tricontourf</span></code> function in icepack will detect whether you’re
+trying to plot a 2D or a 3D field. Plotting 3D fields is expensive, so
+as a default, this function will depth-average the input field and make
+a contour plot of the resulting 2D field.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_19_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_19_0.png" />
+</div>
+<div class="section" id="modeling">
+<h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
+<p>The code to run the hybrid model is identical to that of the ice stream
+demo.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num_years</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="n">timesteps_per_year</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">δt</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">timesteps_per_year</span>
+<span class="n">num_timesteps</span> <span class="o">=</span> <span class="n">num_years</span> <span class="o">*</span> <span class="n">timesteps_per_year</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mf">1.7</span> <span class="o">-</span> <span class="mf">2.7</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">u0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">δt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h0</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="k">if</span> <span class="n">k</span> <span class="o">*</span> <span class="n">δt</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..........................</span>
+</pre></div>
+</div>
+<p>As a sanity check, we can plot the thickness, velocity, and mass
+balance. These give very similar results in the eyeball norm to our
+previous demo assuming only plug flow.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span>  <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_23_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_23_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_24_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_24_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">div_2</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">u</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_25_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_25_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">Lx</span> <span class="o">*</span> <span class="n">k</span> <span class="o">/</span> <span class="n">nx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+
+<span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
+<span class="n">hs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">bs</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ss</span> <span class="o">-</span> <span class="n">hs</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ss</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_26_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_26_0.png" />
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">hs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_27_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_27_0.png" />
+</div>
+<div class="section" id="resolving-shear-flow">
+<h2>Resolving shear flow<a class="headerlink" href="#resolving-shear-flow" title="Permalink to this headline">¶</a></h2>
+<p>Unlike the ice stream model, however, the hybrid model can resolve
+vertical shear flow. To quantity the degree to which the glacier is in
+plug flow vs shear flow, we can calculate a weighted depth average of
+the velocity. In this case, we’ll use the function</p>
+<div class="math notranslate nohighlight">
+\[q(\zeta) = \sqrt 3 \cdot (2\zeta - 1)\]</div>
+<p>as our weight function. This weight is odd when reflected over the axis
+<span class="math notranslate nohighlight">\(\zeta = 1/2\)</span>, so it’s orthogonal to all plug flow fields. The
+extra factor of <span class="math notranslate nohighlight">\(\sqrt 3\)</span> is there to normalize the weight
+function so that</p>
+<div class="math notranslate nohighlight">
+\[\int_0^1q(\zeta)^2d\zeta = 1.\]</div>
+<p>This weight is actually just the degree-1 Legendre polynomial,
+normalized and shifted over to the interval <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">depth_average</span></code> will evaluate a weighted depth average of
+a 3D field defined on an extruded mesh. The weight can be any
+expression; in our case we’re using a polynomial in the symbol
+<span class="math notranslate nohighlight">\(\zeta\)</span>, but we could also have used another finite element
+function.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The resulting field is defined on the 2D footprint mesh as opposed to
+the 3D extruded mesh.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span> <span class="ow">is</span> <span class="n">mesh2d</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kc">True</span>
+</pre></div>
+</div>
+<p>To wrap things up, let’s plot the shear flow mode and do a bit of
+postprocessing.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u_shear</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_33_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_33_0.png" />
+<p>The region where the velocity has a significant shear flow component is
+confined to the left half of the domain, where the ice is grounded.
+There is virtually no shear flow at all in the right half of the domain
+where the ice is floating, just as we expect. To be more exact, we can
+also calculate the unweighted depth average of the velocity and take the
+ratio of the two components.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="n">u_avg</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+<span class="n">Q2D</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh2d</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">U_shear</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u_shear</span><span class="p">,</span> <span class="n">u_shear</span><span class="p">))</span>
+<span class="n">U_avg</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u_avg</span><span class="p">,</span> <span class="n">u_avg</span><span class="p">))</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">U_shear</span> <span class="o">/</span> <span class="n">U_avg</span><span class="p">,</span> <span class="n">Q2D</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.05-hybrid-ice-stream_36_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_36_0.png" />
+<p>The shear/plug ratio tops out at around 6%. For comparison, when the
+vertical velocity profile follows the shallow ice approximation, the
+horizontal velocity is a quartic polynomial in the vertical:</p>
+<div class="math notranslate nohighlight">
+\[u \propto 1 - (1 - \zeta)^4.\]</div>
+<p>In this case, the shear/plug ratio can be calculated by hand to be
+<span class="math notranslate nohighlight">\(\frac{1}{2\sqrt3} \approx 29\%\)</span>. We could arrive at a different
+shear ratio in steady state by using a larger value for the basal
+friction coefficient.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In this demo, we showed how to use a hybrid model that can capture both
+plug and shear flow. The biggest differences between this model and the
+ice stream model we showed earlier are that you need to create an
+extruded mesh and that you need to specify the element family and degree
+in the vertical dimension. Using spectral methods in the vertical
+dimension makes it possible to capture much of the variation along this
+axis without resorting to a large number of layers, as might be
+necessary if we were using a more “traditional” discretization. There
+are also a few extra steps when you want to analyze or plot 3D fields;
+depth averaging with a good choice of vertical weight function can get
+you pretty far. In principle, this hybrid model will work well on much
+larger spatial scales such as an entire glacier drainage basin or even a
+whole ice sheet.</p>
+</div>
+<div class="section" id="epilogue-bootstrapping">
+<h2>Epilogue: bootstrapping<a class="headerlink" href="#epilogue-bootstrapping" title="Permalink to this headline">¶</a></h2>
+<p>When we chose a function space to represent the velocity field, we used
+a vertical degree of 1, which can resolve linear vertical variations.
+Under the shallow ice approximation, the ice velocity is a quartic
+polynomial in <span class="math notranslate nohighlight">\(\zeta\)</span>, so using a degree of at least 4 might have
+been a more sensible choice.</p>
+<p>The degree-1 solution can still be useful as a cheaper initial guess for
+the degree-4 solution. We rarely have a good initial guess for what the
+steady-state velocity will be, and computing it from a cold start as we
+did for the degree-1 solution can be more expensive the more vertical
+modes we use. Instead, we can run the degree-1 velocity and thickness to
+steady state and use this to initialize a (hopefully cheaper) degree-4
+solution.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">V_1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u_1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">V_1</span><span class="p">)</span>
+
+<span class="n">V_4</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">u_4</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">V_4</span><span class="p">)</span>
+
+<span class="n">u_4</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_4</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To see how much of a change we get with the extra vertical modes, we’ll
+calculate the relative error in the 2-norm.</p>
+<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u_4</span> <span class="o">-</span> <span class="n">u_1</span><span class="p">,</span> <span class="n">V_4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">δu</span><span class="p">)</span> <span class="o">/</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u_4</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.03180326138395853</span>
+</pre></div>
+</div>
+<p>A mismatch of only 3% is not bad at all! However, if we used a synthetic
+glacier that were closer to the idealized shallow ice approximation then
+the error would be larger. The accuracy of the degree-1 solution in this
+particular case should not be extrapolated to all scenarios.</p>
+<p>When we initialize the glacier from a rough initial guess as we did for
+the degree-1, we have to expect that it will take the entire residence
+time for any initial transients to propagate out, which in our case is
+in excess of 100 years. If we initialize a degree-4 solution from the
+steady state degree-1 solution we may be able to get away with a much
+shorter spin-up period.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="icepack.demo.04-ice-shelf-inverse.html" class="btn btn-neutral float-left" title="Inverse problems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

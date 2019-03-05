@@ -17,32 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -93,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -190,7 +194,7 @@
 
 
 <div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the gravitational part of the ice shelf action functional</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the gravitational part of the ice shelf action functional</span>
 
 <span class="sd">    The gravitational part of the ice shelf action functional is</span>
 
@@ -214,7 +218,7 @@
 
 
 <div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">ice_front_ids</span><span class="o">=</span><span class="p">()):</span>
-    <span class="sd">&quot;&quot;&quot;Return the terminus stress part of the ice shelf action functional</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the terminus stress part of the ice shelf action functional</span>
 
 <span class="sd">    The power exerted due to stress at the calving terminus :math:`\Gamma` is</span>
 
@@ -232,7 +236,7 @@
 
 
 <div class="viewcode-block" id="IceShelf"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf">[docs]</a><span class="k">class</span> <span class="nc">IceShelf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class for modelling the flow of floating ice shelves</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for modelling the flow of floating ice shelves</span>
 
 <span class="sd">    This class provides functions that solve for the velocity and</span>
 <span class="sd">    thickness of a floating ice shelf. The relevant physics can be found</span>
@@ -253,7 +257,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">penalty</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IceShelf.action"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the action functional that gives the ice shelf diagnostic</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the action functional that gives the ice shelf diagnostic</span>
 <span class="sd">        model as the Euler-Lagrange equations</span>
 
 <span class="sd">        The action functional for the ice shelf diagnostic model is</span>
@@ -293,7 +297,7 @@
         <span class="k">return</span> <span class="n">viscosity</span> <span class="o">+</span> <span class="n">side_friction</span> <span class="o">-</span> <span class="n">gravity</span> <span class="o">-</span> <span class="n">terminus</span> <span class="o">+</span> <span class="n">penalty</span></div>
 
 <div class="viewcode-block" id="IceShelf.scale"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the positive, convex part of the action functional</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the positive, convex part of the action functional</span>
 
 <span class="sd">        The positive part of the action functional is used as a dimensional</span>
 <span class="sd">        scale to determine when to terminate an optimization algorithm.</span>
@@ -301,7 +305,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IceShelf.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
 <span class="sd">        functional accurately</span>
 
 <span class="sd">        Firedrake uses a very conservative algorithm for estimating the</span>
@@ -314,7 +318,7 @@
         <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">degree_u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_h</span></div>
 
 <div class="viewcode-block" id="IceShelf.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Solve for the ice velocity from the thickness</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve for the ice velocity from the thickness</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -348,7 +352,8 @@
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;side_wall_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">side_wall_ids</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ice_front_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
             <span class="nb">set</span><span class="p">(</span><span class="n">boundary_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">dirichlet_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">side_wall_ids</span><span class="p">))</span>
-        <span class="n">bcs</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dirichlet_ids</span><span class="p">)</span>
+        <span class="n">bcs</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">(),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">dirichlet_ids</span><span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)}</span>
 
         <span class="c1"># Solve the nonlinear optimization problem</span>
@@ -358,12 +363,11 @@
                              <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IceShelf.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
 
 <span class="sd">        See :meth:`icepack.models.mass_transport.MassTransport.solve`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
-
 </pre></div>
 
            </div>
@@ -376,7 +380,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel Shapero.
+        &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
@@ -393,33 +397,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.0.3',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

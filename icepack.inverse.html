@@ -17,34 +17,37 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.norms module" href="icepack.norms.html" />
     <link rel="prev" title="icepack.interpolate module" href="icepack.interpolate.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -95,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
@@ -243,7 +247,7 @@ objective functional. If <span class="math notranslate nohighlight">\(E\)</span>
 the regularization, and <span class="math notranslate nohighlight">\(G\)</span> is the linearization of the parameter-to-
 observation map, then the Gauss-Newton matrix is</p>
 <div class="math notranslate nohighlight">
-\[H = dG^*\cdot d^2E\cdot dG + d^2R.\]</div>
+\[\begin{split}H = dG^*\\cdot d^2E\\cdot dG + d^2R.\end{split}\]</div>
 <p>This matrix consists of only those terms in the Hessian of the full
 objective functional that are of “first order”, i.e. any terms involving
 <span class="math notranslate nohighlight">\(d^2G\)</span> are dropped. This search direction is more expensive to solve
@@ -256,7 +260,7 @@ iterations.</p>
 <dd><p>Compute the energy norm of a field w.r.t. the Gauss-Newton operator</p>
 <p>The energy norm of a field <span class="math notranslate nohighlight">\(q\)</span> w.r.t. the Gauss-Newton operator
 <span class="math notranslate nohighlight">\(H\)</span> can be computed using one fewer linear solve than if we were
-to calculate the action of <span class="math notranslate nohighlight">\(H\cdot q\)</span> on <span class="math notranslate nohighlight">\(q\)</span>. This saves
+to calculate the action of <span class="math notranslate nohighlight">\(H\\cdot q\)</span> on <span class="math notranslate nohighlight">\(q\)</span>. This saves
 computation when using the conjugate gradient method to solve for the
 search direction.</p>
 </dd></dl>
@@ -270,8 +274,8 @@ search direction.</p>
 <dl class="method">
 <dt id="icepack.inverse.GaussNewtonSolver.update_search_direction">
 <code class="descname">update_search_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#GaussNewtonSolver.update_search_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.GaussNewtonSolver.update_search_direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solve the Gauss-Newton system for the new search direction using the
-preconditioned conjugate gradient method</p>
+<dd><p>Solve the Gauss-Newton system for the new search direction using
+the preconditioned conjugate gradient method</p>
 </dd></dl>
 
 </dd></dl>
@@ -329,10 +333,10 @@ glacier, to match remote sensing observations. The key variables that need
 to be stored are the current guess for the parameter, the observable state
 computed from that parameter, the adjoint state, and the search direction.</p>
 <p>The optimization problem is solved using a line search method; at each step
-the parameter <span class="math notranslate nohighlight">\(p_k\)</span> is updated by finding a value <span class="math notranslate nohighlight">\(\alpha_k\)</span>
+the parameter <span class="math notranslate nohighlight">\(p_k\)</span> is updated by finding a value <span class="math notranslate nohighlight">\(\\alpha_k\)</span>
 such that</p>
 <div class="math notranslate nohighlight">
-\[p_{k + 1} = p_k + \alpha_k\cdot q_k\]</div>
+\[\begin{split}p_{k + 1} = p_k + \\alpha_k\cdot q_k\end{split}\]</div>
 <p>reduces the value of the objective function, where <span class="math notranslate nohighlight">\(q_k\)</span> is the
 search direction. This object implements most of the procedures necessary
 for keeping the parameter, state, and adjoint consistent. Objects that
@@ -442,7 +446,7 @@ parameters so that we can calculate derivatives</p>
         <a href="icepack.norms.html" class="btn btn-neutral float-right" title="icepack.norms module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="icepack.interpolate.html" class="btn btn-neutral" title="icepack.interpolate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.interpolate.html" class="btn btn-neutral float-left" title="icepack.interpolate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -451,7 +455,7 @@ parameters so that we can calculate derivatives</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Daniel Shapero.
+        &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
@@ -468,33 +472,16 @@ parameters so that we can calculate derivatives</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.3',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
