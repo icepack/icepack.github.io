@@ -170,7 +170,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.models.ice_shelf</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span></span><span class="c1"># Copyright (C) 2017-2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># This file is part of icepack.</span>
 <span class="c1">#</span>
@@ -199,8 +199,7 @@
 <span class="sd">    The gravitational part of the ice shelf action functional is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        E(u) = -\\frac{1}{2}\int_\Omega</span>
-<span class="sd">        \\varrho g\\nabla h^2\cdot u\hspace{2pt}dx</span>
+<span class="sd">        E(u) = -\frac{1}{2}\int_\Omega\varrho g\nabla h^2\cdot u\hspace{2pt}dx</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -223,7 +222,7 @@
 <span class="sd">    The power exerted due to stress at the calving terminus :math:`\Gamma` is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       E(u) = \int_\Gamma\\varrho gh^2u\cdot\\nu\hspace{2pt}ds</span>
+<span class="sd">       E(u) = \int_\Gamma\varrho gh^2u\cdot\nu\hspace{2pt}ds</span>
 
 <span class="sd">    We assume that sea level is at :math:`z = 0` for calculating the water</span>
 <span class="sd">    depth.</span>
@@ -263,11 +262,11 @@
 <span class="sd">        The action functional for the ice shelf diagnostic model is</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            E(u) = \int_\Omega\left(\\frac{n}{n + 1}hM:\dot\\varepsilon</span>
-<span class="sd">            - \\frac{1}{2}\\varrho gh^2\\nabla\cdot u\\right)dx</span>
+<span class="sd">            E(u) = \int_\Omega\left(\frac{n}{n + 1}hM:\dot\varepsilon</span>
+<span class="sd">            - \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx</span>
 
 <span class="sd">        where :math:`u` is the velocity, :math:`h` is the ice thickness,</span>
-<span class="sd">        :math:`\dot\\varepsilon` is the strain-rate tensor, and :math:`M` is</span>
+<span class="sd">        :math:`\dot\varepsilon` is the strain-rate tensor, and :math:`M` is</span>
 <span class="sd">        the membrane stress tensor.</span>
 
 <span class="sd">        Parameters</span>

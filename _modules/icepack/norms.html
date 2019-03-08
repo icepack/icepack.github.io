@@ -170,7 +170,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.norms</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span></span><span class="c1"># Copyright (C) 2017-2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># This file is part of icepack.</span>
 <span class="c1">#</span>
@@ -195,13 +195,13 @@
 
 <span class="sd">    - ``L2``: :math:`\|u\|^2 = \int_\Omega|u|^2dx`</span>
 
-<span class="sd">    - ``H01``: :math:`\|u\|^2 = \int_\Omega|\\nabla u|^2dx`</span>
+<span class="sd">    - ``H01``: :math:`\|u\|^2 = \int_\Omega|\nabla u|^2dx`</span>
 
-<span class="sd">    - ``H1``: :math:`\|u\|^2 = \int_\Omega\\left(|u|^2 + L^2|\\nabla u|^2\\right)dx`</span>
+<span class="sd">    - ``H1``: :math:`\|u\|^2 = \int_\Omega\left(|u|^2 + L^2|\nabla u|^2\right)dx`</span>
 
 <span class="sd">    - ``L1``: :math:`\|u\| = \int_\Omega|u|dx`</span>
 
-<span class="sd">    - ``TV``: :math:`\|u\| = \int_\Omega|\\nabla u|dx`</span>
+<span class="sd">    - ``TV``: :math:`\|u\| = \int_\Omega|\nabla u|dx`</span>
 
 <span class="sd">    - ``Linfty``: :math:`\|u\| = \max_{x\in\Omega}|u(x)|`</span>
 

@@ -170,7 +170,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.inverse</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span></span><span class="c1"># Copyright (C) 2017-2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># This file is part of icepack.</span>
 <span class="c1">#</span>
@@ -293,18 +293,18 @@
 <span class="sd">    computed from that parameter, the adjoint state, and the search direction.</span>
 
 <span class="sd">    The optimization problem is solved using a line search method; at each step</span>
-<span class="sd">    the parameter :math:`p_k` is updated by finding a value :math:`\\alpha_k`</span>
+<span class="sd">    the parameter :math:`p_k` is updated by finding a value :math:`\alpha_k`</span>
 <span class="sd">    such that</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        p_{k + 1} = p_k + \\alpha_k\cdot q_k</span>
+<span class="sd">        p_{k + 1} = p_k + \alpha_k\cdot q_k</span>
 
 <span class="sd">    reduces the value of the objective function, where :math:`q_k` is the</span>
 <span class="sd">    search direction. This object implements most of the procedures necessary</span>
 <span class="sd">    for keeping the parameter, state, and adjoint consistent. Objects that</span>
 <span class="sd">    inherit from this one only need to define how the search direction is</span>
-<span class="sd">    computed.&quot;&quot;&quot;</span>
-
+<span class="sd">    computed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">)):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span> <span class="o">=</span> <span class="n">problem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callback</span> <span class="o">=</span> <span class="n">callback</span>
@@ -528,7 +528,7 @@
 <span class="sd">    observation map, then the Gauss-Newton matrix is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        H = dG^*\\cdot d^2E\\cdot dG + d^2R.</span>
+<span class="sd">        H = dG^*\cdot d^2E\cdot dG + d^2R.</span>
 
 <span class="sd">    This matrix consists of only those terms in the Hessian of the full</span>
 <span class="sd">    objective functional that are of &quot;first order&quot;, i.e. any terms involving</span>
@@ -574,7 +574,7 @@
 
 <span class="sd">        The energy norm of a field :math:`q` w.r.t. the Gauss-Newton operator</span>
 <span class="sd">        :math:`H` can be computed using one fewer linear solve than if we were</span>
-<span class="sd">        to calculate the action of :math:`H\\cdot q` on :math:`q`. This saves</span>
+<span class="sd">        to calculate the action of :math:`H\cdot q` on :math:`q`. This saves</span>
 <span class="sd">        computation when using the conjugate gradient method to solve for the</span>
 <span class="sd">        search direction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

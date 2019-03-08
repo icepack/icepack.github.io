@@ -247,7 +247,7 @@ objective functional. If <span class="math notranslate nohighlight">\(E\)</span>
 the regularization, and <span class="math notranslate nohighlight">\(G\)</span> is the linearization of the parameter-to-
 observation map, then the Gauss-Newton matrix is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}H = dG^*\\cdot d^2E\\cdot dG + d^2R.\end{split}\]</div>
+\[H = dG^*\cdot d^2E\cdot dG + d^2R.\]</div>
 <p>This matrix consists of only those terms in the Hessian of the full
 objective functional that are of “first order”, i.e. any terms involving
 <span class="math notranslate nohighlight">\(d^2G\)</span> are dropped. This search direction is more expensive to solve
@@ -260,7 +260,7 @@ iterations.</p>
 <dd><p>Compute the energy norm of a field w.r.t. the Gauss-Newton operator</p>
 <p>The energy norm of a field <span class="math notranslate nohighlight">\(q\)</span> w.r.t. the Gauss-Newton operator
 <span class="math notranslate nohighlight">\(H\)</span> can be computed using one fewer linear solve than if we were
-to calculate the action of <span class="math notranslate nohighlight">\(H\\cdot q\)</span> on <span class="math notranslate nohighlight">\(q\)</span>. This saves
+to calculate the action of <span class="math notranslate nohighlight">\(H\cdot q\)</span> on <span class="math notranslate nohighlight">\(q\)</span>. This saves
 computation when using the conjugate gradient method to solve for the
 search direction.</p>
 </dd></dl>
@@ -333,10 +333,10 @@ glacier, to match remote sensing observations. The key variables that need
 to be stored are the current guess for the parameter, the observable state
 computed from that parameter, the adjoint state, and the search direction.</p>
 <p>The optimization problem is solved using a line search method; at each step
-the parameter <span class="math notranslate nohighlight">\(p_k\)</span> is updated by finding a value <span class="math notranslate nohighlight">\(\\alpha_k\)</span>
+the parameter <span class="math notranslate nohighlight">\(p_k\)</span> is updated by finding a value <span class="math notranslate nohighlight">\(\alpha_k\)</span>
 such that</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}p_{k + 1} = p_k + \\alpha_k\cdot q_k\end{split}\]</div>
+\[p_{k + 1} = p_k + \alpha_k\cdot q_k\]</div>
 <p>reduces the value of the objective function, where <span class="math notranslate nohighlight">\(q_k\)</span> is the
 search direction. This object implements most of the procedures necessary
 for keeping the parameter, state, and adjoint consistent. Objects that

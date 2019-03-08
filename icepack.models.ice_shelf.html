@@ -214,10 +214,10 @@ in ch. 6 of Greve and Blatter.</p>
 model as the Euler-Lagrange equations</p>
 <p>The action functional for the ice shelf diagnostic model is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}E(u) = \int_\Omega\left(\\frac{n}{n + 1}hM:\dot\\varepsilon
-- \\frac{1}{2}\\varrho gh^2\\nabla\cdot u\\right)dx\end{split}\]</div>
+\[E(u) = \int_\Omega\left(\frac{n}{n + 1}hM:\dot\varepsilon
+- \frac{1}{2}\varrho gh^2\nabla\cdot u\right)dx\]</div>
 <p>where <span class="math notranslate nohighlight">\(u\)</span> is the velocity, <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness,
-<span class="math notranslate nohighlight">\(\dot\\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
+<span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
 the membrane stress tensor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -313,8 +313,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the gravitational part of the ice shelf action functional</p>
 <p>The gravitational part of the ice shelf action functional is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}E(u) = -\\frac{1}{2}\int_\Omega
-\\varrho g\\nabla h^2\cdot u\hspace{2pt}dx\end{split}\]</div>
+\[E(u) = -\frac{1}{2}\int_\Omega\varrho g\nabla h^2\cdot u\hspace{2pt}dx\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -341,7 +340,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the terminus stress part of the ice shelf action functional</p>
 <p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}E(u) = \int_\Gamma\\varrho gh^2u\cdot\\nu\hspace{2pt}ds\end{split}\]</div>
+\[E(u) = \int_\Gamma\varrho gh^2u\cdot\nu\hspace{2pt}ds\]</div>
 <p>We assume that sea level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for calculating the water
 depth.</p>
 </dd></dl>

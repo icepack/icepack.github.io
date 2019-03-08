@@ -170,7 +170,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.models.viscosity</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2017-2018 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span></span><span class="c1"># Copyright (C) 2017-2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># This file is part of icepack.</span>
 <span class="c1">#</span>
@@ -204,11 +204,11 @@
 <div class="viewcode-block" id="rate_factor"><a class="viewcode-back" href="../../../icepack.models.viscosity.html#icepack.models.viscosity.rate_factor">[docs]</a><span class="k">def</span> <span class="nf">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the rate factor in Glen&#39;s flow law for a given temperature</span>
 
-<span class="sd">    The strain rate :math:`\dot\\varepsilon` of ice resulting from a stress</span>
-<span class="sd">    :math:`\\tau` is</span>
+<span class="sd">    The strain rate :math:`\dot\varepsilon` of ice resulting from a stress</span>
+<span class="sd">    :math:`\tau` is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \dot\\varepsilon = A(T)\\tau^3</span>
+<span class="sd">       \dot\varepsilon = A(T)\tau^3</span>
 
 <span class="sd">    where :math:`A(T)` is the temperature-dependent rate factor:</span>
 
@@ -217,7 +217,7 @@
 
 <span class="sd">    where :math:`R` is the ideal gas constant, :math:`Q` has units of</span>
 <span class="sd">    energy per mole, and :math:`A_0` is a prefactor with units of</span>
-<span class="sd">    pressure :math:`\\text{MPa}^{-3}\\times\\text{yr}^{-1}`.</span>
+<span class="sd">    pressure :math:`\text{MPa}^{-3}\times\text{yr}^{-1}`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -265,14 +265,14 @@
 <span class="sd">    The viscous component of the action for depth-averaged ice flow is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        E(u) = \\frac{n}{n+1}\int_\Omega h\cdot</span>
-<span class="sd">        M(\dot\\varepsilon, A):\dot\\varepsilon\hspace{2pt} dx</span>
+<span class="sd">        E(u) = \frac{n}{n+1}\int_\Omega h\cdot</span>
+<span class="sd">        M(\dot\varepsilon, A):\dot\varepsilon\hspace{2pt} dx</span>
 
-<span class="sd">    where :math:`M(\dot\\varepsilon, A)` is the membrane stress tensor</span>
+<span class="sd">    where :math:`M(\dot\varepsilon, A)` is the membrane stress tensor</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        M(\dot\\varepsilon, A) = A^{-1/n}|\dot\\varepsilon|^{1/n - 1}</span>
-<span class="sd">        (\dot\\varepsilon + \\text{tr}\dot\\varepsilon\cdot I).</span>
+<span class="sd">        M(\dot\varepsilon, A) = A^{-1/n}|\dot\varepsilon|^{1/n - 1}</span>
+<span class="sd">        (\dot\varepsilon + \text{tr}\dot\varepsilon\cdot I).</span>
 
 <span class="sd">    This form assumes that we&#39;re using the fluidity parameter instead</span>
 <span class="sd">    the rheology parameter, the temperature, etc. To use a different</span>
