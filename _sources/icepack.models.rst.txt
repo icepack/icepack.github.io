@@ -12,6 +12,7 @@ Submodules
 .. toctree::
 
    icepack.models.friction
+   icepack.models.heat_transport
    icepack.models.hybrid
    icepack.models.ice_shelf
    icepack.models.ice_stream

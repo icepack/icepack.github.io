@@ -201,10 +201,10 @@
 thickness of a floating ice shelf. The relevant physics can be found
 in ch. 6 of Greve and Blatter.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal notranslate"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt>
-<dd>Default implementation of the ice shelf viscous action</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="icepack.models.viscosity.html#icepack.models.viscosity.viscosity_depth_averaged" title="icepack.models.viscosity.viscosity_depth_averaged"><code class="xref py py-func docutils literal notranslate"><span class="pre">icepack.models.viscosity.viscosity_depth_averaged()</span></code></a></dt><dd><p>Default implementation of the ice shelf viscous action</p>
+</dd>
 </dl>
 </div>
 <dl class="method">
@@ -219,64 +219,54 @@ model as the Euler-Lagrange equations</p>
 <p>where <span class="math notranslate nohighlight">\(u\)</span> is the velocity, <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness,
 <span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> is the strain-rate tensor, and <span class="math notranslate nohighlight">\(M\)</span> is
 the membrane stress tensor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>E</strong> – the ice shelf action functional</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">firedrake.Form</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last"><strong>**kwargs</strong> – All other keyword arguments will be passed on to the viscosity
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>E</strong> – the ice shelf action functional</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – All other keyword arguments will be passed on to the viscosity
 and gravity functionals. The ice fluidity coefficient, for
 example, is passed as a keyword argument.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="icepack.models.ice_shelf.IceShelf.diagnostic_solve">
 <code class="descname">diagnostic_solve</code><span class="sig-paren">(</span><em>u0</em>, <em>h</em>, <em>dirichlet_ids</em>, <em>tol=1e-06</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the ice velocity; the Dirichlet boundaries
-are taken from <cite>u0</cite></li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</li>
-<li><strong>dirichlet_ids</strong> (<em>list of int</em>) – list of integer IDs denoting the parts of the boundary where
-Dirichlet conditions should be applied</li>
-<li><strong>tol</strong> (<em>float</em>) – dimensionless tolerance for when to terminate Newton’s method</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the ice velocity; the Dirichlet boundaries
+are taken from <cite>u0</cite></p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</p></li>
+<li><p><strong>dirichlet_ids</strong> (<em>list of int</em>) – list of integer IDs denoting the parts of the boundary where
+Dirichlet conditions should be applied</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – dimensionless tolerance for when to terminate Newton’s method</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>u</strong> – Ice velocity</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">firedrake.Function</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last"><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u</strong> – Ice velocity</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
 <cite>viscosity</cite> and <cite>gravity</cite> functions that were set when this
 model object was initialized</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -314,24 +304,20 @@ scale to determine when to terminate an optimization algorithm.</p>
 <p>The gravitational part of the ice shelf action functional is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = -\frac{1}{2}\int_\Omega\varrho g\nabla h^2\cdot u\hspace{2pt}dx\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Form</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">

@@ -197,35 +197,28 @@
 <dt id="icepack.grid.geotiff.read">
 <code class="descclassname">icepack.grid.geotiff.</code><code class="descname">read</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/geotiff.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.geotiff.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a GeoTIFF file into a gridded data set</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em><em> or </em><em>file-like</em>) – name of the input file</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>file-like</em>) – name of the input file</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="icepack.grid.geotiff.write">
 <code class="descclassname">icepack.grid.geotiff.</code><code class="descname">write</code><span class="sig-paren">(</span><em>filename</em>, <em>q</em>, <em>missing=-9999</em>, <em>crs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/grid/geotiff.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.grid.geotiff.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a gridded dataset to a GeoTIFF file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<em>str</em>) – name of the destination file</li>
-<li><strong>q</strong> (<em>icepack.grid.GridData</em>) – the gridded data set to be written</li>
-<li><strong>missing</strong> (<em>float</em><em>, </em><em>optional</em>) – No data value (default -9999)</li>
-<li><strong>crs</strong> (<em>int</em><em>, </em><em>string</em><em>, or </em><em>rasterio.crs.CRS</em><em>, </em><em>optional</em>) – Coordinate reference system, specified either as a string, an EPSG
-code, or a CRS object from rasterio</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – name of the destination file</p></li>
+<li><p><strong>q</strong> (<em>icepack.grid.GridData</em>) – the gridded data set to be written</p></li>
+<li><p><strong>missing</strong> (<em>float</em><em>, </em><em>optional</em>) – No data value (default -9999)</p></li>
+<li><p><strong>crs</strong> (<em>int</em><em>, </em><em>string</em><em>, or </em><em>rasterio.crs.CRS</em><em>, </em><em>optional</em>) – Coordinate reference system, specified either as a string, an EPSG
+code, or a CRS object from rasterio</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.models.ice_shelf module" href="icepack.models.ice_shelf.html" />
-    <link rel="prev" title="icepack.models.friction module" href="icepack.models.friction.html" /> 
+    <link rel="prev" title="icepack.models.heat_transport module" href="icepack.models.heat_transport.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -227,35 +227,30 @@ will go afloat. The surface elevation of a floating ice shelf is</p>
 <code class="descname">diagnostic_solve</code><span class="sig-paren">(</span><em>u0</em>, <em>h</em>, <em>s</em>, <em>dirichlet_ids</em>, <em>tol=1e-06</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness and surface
 elevation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the ice velocity; the Dirichlet boundaries
-are taken from <cite>u0</cite></li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</li>
-<li><strong>s</strong> (<em>firedrake.Function</em>) – Ice surface elevation</li>
-<li><strong>dirichlet_ids</strong> (<em>list of int</em>) – list of integer IDs denoting the parts of the boundary where
-Dirichlet boundary conditions should be applied</li>
-<li><strong>tol</strong> (<em>float</em>) – dimensionless tolerance for when to terminate Newton’s method</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the ice velocity; the Dirichlet boundaries
+are taken from <cite>u0</cite></p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – Ice surface elevation</p></li>
+<li><p><strong>dirichlet_ids</strong> (<em>list of int</em>) – list of integer IDs denoting the parts of the boundary where
+Dirichlet boundary conditions should be applied</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – dimensionless tolerance for when to terminate Newton’s method</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>u</strong> – Ice velocity</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">firedrake.Function</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last"><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u</strong> – Ice velocity</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
 <cite>viscosity</cite>, <cite>friction</cite>, <cite>gravity</cite>, and <cite>terminus</cite> functions
 that were set when this model object was initialized</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -309,22 +304,9 @@ scale to determine when to terminate an optimization algorithm.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="icepack.models.hybrid.facet_normal_2">
-<code class="descclassname">icepack.models.hybrid.</code><code class="descname">facet_normal_2</code><span class="sig-paren">(</span><em>mesh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#facet_normal_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.facet_normal_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the horizontal component of the unit outward normal vector
-to a mesh</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="icepack.models.hybrid.friction_stress">
 <code class="descclassname">icepack.models.hybrid.</code><code class="descname">friction_stress</code><span class="sig-paren">(</span><em>u</em>, <em>C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#friction_stress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.friction_stress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the shear stress for a given sliding velocity</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.models.hybrid.grad_2">
-<code class="descclassname">icepack.models.hybrid.</code><code class="descname">grad_2</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#grad_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.grad_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the horizontal gradient of a 3D field</p>
 </dd></dl>
 
 <dl class="function">
@@ -335,19 +317,15 @@ to a mesh</p>
 <div class="math notranslate nohighlight">
 \[E(u) = -\int_\Omega\int_0^1\rho_Ig\nabla s\cdot u
 \hspace{2pt}hd\zeta \hspace{2pt}dx\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
-<li><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -399,21 +377,17 @@ horizontal and shear strain rates and fluidity</p>
 \rho_Wg(\zeta_{\text{sl}} - \zeta)_+\right)hd\zeta ds\]</div>
 <p>where <span class="math notranslate nohighlight">\(\zeta_\text{sl}\)</span> is the relative depth to sea level and the
 <span class="math notranslate nohighlight">\((\zeta - \zeta_\text{sl})\)</span> denotes only the positive part.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
-<li><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</li>
-<li><strong>ice_front_ids</strong> (<em>list of int</em>) – numeric IDs of the parts of the boundary corresponding to the
-calving front</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</p></li>
+<li><p><strong>ice_front_ids</strong> (<em>list of int</em>) – numeric IDs of the parts of the boundary corresponding to the
+calving front</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -439,26 +413,22 @@ the rheology parameter, the temperature, etc. To use a different
 variable, you can implement your own viscosity functional and pass it
 as an argument when initializing model objects to use your functional
 instead.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</li>
-<li><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</li>
-<li><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</li>
-<li><strong>A</strong> (<em>firedrake.Function</em>) – ice fluidity parameter</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
+<li><p><strong>A</strong> (<em>firedrake.Function</em>) – ice fluidity parameter</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Form</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -474,7 +444,7 @@ instead.</p>
         <a href="icepack.models.ice_shelf.html" class="btn btn-neutral float-right" title="icepack.models.ice_shelf module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="icepack.models.friction.html" class="btn btn-neutral float-left" title="icepack.models.friction module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.models.heat_transport.html" class="btn btn-neutral float-left" title="icepack.models.heat_transport module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

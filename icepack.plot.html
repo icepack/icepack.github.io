@@ -233,27 +233,23 @@ that solves the ordinary differential equation</p>
 <p>This function returns an approximate streamline for a velocity field.
 Streamlines are primarily for plotting vector fields but are useful for
 other kinds of postprocessing of vector field data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>velocity</strong> (<em>firedrake.Function</em><em> or </em><em>tuple of icepack.grid.GridData</em>) – the velocity field we are integrating</li>
-<li><strong>initial_point</strong> (<em>pair of floats</em>) – the starting point for the streamline</li>
-<li><strong>resolution</strong> (<em>float</em>) – the desired length of each segment of the streamline</li>
-<li><strong>max_num_points</strong> (<em>int</em>) – maximum number of points of the streamline; can be necessary to set
-if the trajectory can spiral around a center node</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>velocity</strong> (<em>firedrake.Function</em><em> or </em><em>tuple of icepack.grid.GridData</em>) – the velocity field we are integrating</p></li>
+<li><p><strong>initial_point</strong> (<em>pair of floats</em>) – the starting point for the streamline</p></li>
+<li><p><strong>resolution</strong> (<em>float</em>) – the desired length of each segment of the streamline</p></li>
+<li><p><strong>max_num_points</strong> (<em>int</em>) – maximum number of points of the streamline; can be necessary to set
+if the trajectory can spiral around a center node</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>xs</strong></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array of points</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xs</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array of points</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">

@@ -180,7 +180,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+  <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.models</span><span class="o">,</span> <span class="nn">icepack.plot</span>
@@ -216,7 +216,7 @@ steady even though the surface can be rising or falling.</p>
 a 2D footprint mesh. Rather than use a large number of vertical layers
 to achieve high resolution of functions defined on this mesh, we’ll use
 only one layer but high-degree basis functions.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">50e3</span><span class="p">,</span> <span class="mf">12e3</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">50e3</span><span class="p">,</span> <span class="mf">12e3</span>
 <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">32</span>
 <span class="n">mesh2d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">ExtrudedMesh</span><span class="p">(</span><span class="n">mesh2d</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -228,7 +228,7 @@ arguments. These describe respectively the finite element type and
 polynomial degree in the vertical direction. The surface and bed
 elevation only have to be defined on the footprint mesh, so we’ll use
 vertical basis functions that are constant.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;DG&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;DG&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The function space for the velocities is more interesting. For starters,
@@ -240,17 +240,17 @@ vertical, we’ll use <em>Gauss-Legendre</em> elements. This finite element uses
 polynomials</a>
 instead of the Lagrange interpolating polynomials. The Legendre
 polynomials are advantageous because they are mutually orthogonal.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Creating the input data is mostly the same as before. The
 <code class="docutils literal notranslate"><span class="pre">SpatialCoordinate</span></code> function now returns an additional symbol
 representing the terrain-following coordinate <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ζ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">b_in</span><span class="p">,</span> <span class="n">b_out</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_in</span><span class="p">,</span> <span class="n">b_out</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">b_in</span> <span class="o">-</span> <span class="p">(</span><span class="n">b_in</span> <span class="o">-</span> <span class="n">b_out</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 
 <span class="n">s_in</span><span class="p">,</span> <span class="n">s_out</span> <span class="o">=</span> <span class="mi">850</span><span class="p">,</span> <span class="mi">50</span>
@@ -259,21 +259,21 @@ representing the terrain-following coordinate <span class="math notranslate nohi
 <span class="n">h0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s0</span> <span class="o">-</span> <span class="n">b</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h_in</span> <span class="o">=</span> <span class="n">s_in</span> <span class="o">-</span> <span class="n">b_in</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h_in</span> <span class="o">=</span> <span class="n">s_in</span> <span class="o">-</span> <span class="n">b_in</span>
 <span class="n">δs_δx</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_out</span> <span class="o">-</span> <span class="n">s_in</span><span class="p">)</span> <span class="o">/</span> <span class="n">Lx</span>
 <span class="n">τ_D</span> <span class="o">=</span> <span class="o">-</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h_in</span> <span class="o">*</span> <span class="n">δs_δx</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_in</span><span class="p">,</span> <span class="n">u_out</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2400</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u_in</span><span class="p">,</span> <span class="n">u_out</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2400</span>
 <span class="n">velocity_x</span> <span class="o">=</span> <span class="n">u_in</span> <span class="o">+</span> <span class="p">(</span><span class="n">u_out</span> <span class="o">-</span> <span class="n">u_in</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 <span class="n">u0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">velocity_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="mf">255.0</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="mf">255.0</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">weertman_sliding_law</span> <span class="k">as</span> <span class="n">m</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">weertman_sliding_law</span> <span class="k">as</span> <span class="n">m</span>
 <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">)</span> <span class="o">*</span> <span class="n">τ_D</span> <span class="o">/</span> <span class="n">u_in</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span>
 
 <span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h0</span> <span class="o">-</span> <span class="n">s0</span><span class="p">)</span>
@@ -283,7 +283,7 @@ representing the terrain-following coordinate <span class="math notranslate nohi
 </div>
 <p>The bed friction can be re-parameterized for the hybrid model in the
 same way as for the ice stream model.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">icepack.models.hybrid</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">icepack.models.hybrid</span>
 <span class="k">def</span> <span class="nf">friction</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
     <span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span>
     <span class="n">p_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span>
@@ -291,7 +291,7 @@ same way as for the ice stream model.</p>
     <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">hybrid</span><span class="o">.</span><span class="n">bed_friction</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">C</span> <span class="o">*</span> <span class="n">ϕ</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">HybridModel</span><span class="p">(</span><span class="n">friction</span><span class="o">=</span><span class="n">friction</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">HybridModel</span><span class="p">(</span><span class="n">friction</span><span class="o">=</span><span class="n">friction</span><span class="p">)</span>
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;side_wall_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
 <span class="n">u0</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s0</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 </pre></div>
@@ -300,7 +300,7 @@ same way as for the ice stream model.</p>
 trying to plot a 2D or a 3D field. Plotting 3D fields is expensive, so
 as a default, this function will depth-average the input field and make
 a contour plot of the resulting 2D field.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
@@ -312,7 +312,7 @@ a contour plot of the resulting 2D field.</p>
 <h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
 <p>The code to run the hybrid model is identical to that of the ice stream
 demo.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num_years</span> <span class="o">=</span> <span class="mi">250</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_years</span> <span class="o">=</span> <span class="mi">250</span>
 <span class="n">timesteps_per_year</span> <span class="o">=</span> <span class="mi">2</span>
 
 <span class="n">δt</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">timesteps_per_year</span>
@@ -335,21 +335,21 @@ demo.</p>
 <p>As a sanity check, we can plot the thickness, velocity, and mass
 balance. These give very similar results in the eyeball norm to our
 previous demo assuming only plug flow.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span>  <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.05-hybrid-ice-stream_23_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_23_0.png" />
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.05-hybrid-ice-stream_24_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_24_0.png" />
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">div_2</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">u</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
@@ -360,7 +360,7 @@ previous demo assuming only plug flow.</p>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.05-hybrid-ice-stream_25_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_25_0.png" />
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">Lx</span> <span class="o">*</span> <span class="n">k</span> <span class="o">/</span> <span class="n">nx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
 
 <span class="n">ss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
@@ -375,7 +375,7 @@ previous demo assuming only plug flow.</p>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.05-hybrid-ice-stream_26_0.png" src="_images/icepack.demo.05-hybrid-ice-stream_26_0.png" />
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">hs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -403,12 +403,12 @@ a 3D field defined on an extruded mesh. The weight can be any
 expression; in our case we’re using a polynomial in the symbol
 <span class="math notranslate nohighlight">\(\zeta\)</span>, but we could also have used another finite element
 function.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The resulting field is defined on the 2D footprint mesh as opposed to
 the 3D extruded mesh.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span> <span class="ow">is</span> <span class="n">mesh2d</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u_shear</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span> <span class="ow">is</span> <span class="n">mesh2d</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kc">True</span>
@@ -416,7 +416,7 @@ the 3D extruded mesh.</p>
 </div>
 <p>To wrap things up, let’s plot the shear flow mode and do a bit of
 postprocessing.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u_shear</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
@@ -429,7 +429,7 @@ There is virtually no shear flow at all in the right half of the domain
 where the ice is floating, just as we expect. To be more exact, we can
 also calculate the unweighted depth average of the velocity and take the
 ratio of the two components.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
 <span class="n">u_avg</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 
 <span class="n">Q2D</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh2d</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -438,7 +438,7 @@ ratio of the two components.</p>
 <span class="n">ratio</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">U_shear</span> <span class="o">/</span> <span class="n">U_avg</span><span class="p">,</span> <span class="n">Q2D</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
@@ -485,7 +485,7 @@ did for the degree-1 solution can be more expensive the more vertical
 modes we use. Instead, we can run the degree-1 velocity and thickness to
 steady state and use this to initialize a (hopefully cheaper) degree-4
 solution.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">V_1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">V_1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">u_1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">V_1</span><span class="p">)</span>
 
 <span class="n">V_4</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s1">&#39;GL&#39;</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -496,11 +496,11 @@ solution.</p>
 </div>
 <p>To see how much of a change we get with the extra vertical modes, we’ll
 calculate the relative error in the 2-norm.</p>
-<div class="code ipython3 highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u_4</span> <span class="o">-</span> <span class="n">u_1</span><span class="p">,</span> <span class="n">V_4</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u_4</span> <span class="o">-</span> <span class="n">u_1</span><span class="p">,</span> <span class="n">V_4</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">δu</span><span class="p">)</span> <span class="o">/</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u_4</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.03180326138395853</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.030796564575567096</span>
 </pre></div>
 </div>
 <p>A mismatch of only 3% is not bad at all! However, if we used a synthetic

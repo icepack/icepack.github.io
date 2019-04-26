@@ -199,33 +199,29 @@
 <dt id="icepack.optimization.newton_search">
 <code class="descclassname">icepack.optimization.</code><code class="descname">newton_search</code><span class="sig-paren">(</span><em>E</em>, <em>u</em>, <em>bc</em>, <em>tolerance</em>, <em>scale</em>, <em>max_iterations=50</em>, <em>armijo=0.0001</em>, <em>contraction_factor=0.5</em>, <em>form_compiler_parameters={}</em>, <em>solver_parameters={'ksp_type': 'preonly'</em>, <em>'pc_type': 'lu'}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#newton_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.newton_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the minimizer of a convex functional</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be minimized</li>
-<li><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the minimizer</li>
-<li><strong>tolerance</strong> (<em>float</em>) – Stopping criterion for the optimization procedure</li>
-<li><strong>scale</strong> (<em>firedrake.Form</em>) – A positive scale functional by which to measure the objective</li>
-<li><strong>max_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Optimization procedure will stop at this many iterations regardless
-of convergence</li>
-<li><strong>armijo</strong> (<em>float</em><em>, </em><em>optional</em>) – The constant in the Armijo condition (see Nocedal and Wright)</li>
-<li><strong>contraction_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The amount by which to backtrack in the line search if the Armijo
-condition is not satisfied</li>
-<li><strong>form_compiler_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the firedrake form compiler</li>
-<li><strong>solver_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the linear solver</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be minimized</p></li>
+<li><p><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the minimizer</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Stopping criterion for the optimization procedure</p></li>
+<li><p><strong>scale</strong> (<em>firedrake.Form</em>) – A positive scale functional by which to measure the objective</p></li>
+<li><p><strong>max_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Optimization procedure will stop at this many iterations regardless
+of convergence</p></li>
+<li><p><strong>armijo</strong> (<em>float</em><em>, </em><em>optional</em>) – The constant in the Armijo condition (see Nocedal and Wright)</p></li>
+<li><p><strong>contraction_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The amount by which to backtrack in the line search if the Armijo
+condition is not satisfied</p></li>
+<li><p><strong>form_compiler_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the firedrake form compiler</p></li>
+<li><p><strong>solver_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the linear solver</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The approximate minimizer of <cite>E</cite> to within tolerance</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">firedrake.Function</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The approximate minimizer of <cite>E</cite> to within tolerance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

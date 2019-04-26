@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack.models.mass_transport module &mdash; icepack 0.0.3 documentation</title>
+  <title>icepack.models.heat_transport module &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="icepack.models.viscosity module" href="icepack.models.viscosity.html" />
-    <link rel="prev" title="icepack.models.ice_stream module" href="icepack.models.ice_stream.html" /> 
+    <link rel="next" title="icepack.models.hybrid module" href="icepack.models.hybrid.html" />
+    <link rel="prev" title="icepack.models.friction module" href="icepack.models.friction.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -171,13 +171,13 @@
         
           <li><a href="icepack.models.html">icepack.models package</a> &raquo;</li>
         
-      <li>icepack.models.mass_transport module</li>
+      <li>icepack.models.heat_transport module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/icepack.models.mass_transport.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.models.heat_transport.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -190,45 +190,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-icepack.models.mass_transport">
-<span id="icepack-models-mass-transport-module"></span><h1>icepack.models.mass_transport module<a class="headerlink" href="#module-icepack.models.mass_transport" title="Permalink to this headline">¶</a></h1>
-<p>Solvers for the mass continuity equation</p>
-<p>This module contains a solver for the conservative advection equation that
-describes the evolution of ice thickness. While the basic mass transport
-solver will suffice for, say, ice shelf flow, other models that describe
-grounded glaciers will also need to update the ice surface elevation in a
-manner consistent with the bed elevation and where the ice may go afloat.</p>
+  <div class="section" id="module-icepack.models.heat_transport">
+<span id="icepack-models-heat-transport-module"></span><h1>icepack.models.heat_transport module<a class="headerlink" href="#module-icepack.models.heat_transport" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="icepack.models.mass_transport.MassTransport">
-<em class="property">class </em><code class="descclassname">icepack.models.mass_transport.</code><code class="descname">MassTransport</code><a class="reference internal" href="_modules/icepack/models/mass_transport.html#MassTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.MassTransport" title="Permalink to this definition">¶</a></dt>
+<dt id="icepack.models.heat_transport.HeatTransport3D">
+<em class="property">class </em><code class="descclassname">icepack.models.heat_transport.</code><code class="descname">HeatTransport3D</code><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for modeling 3D heat transport</p>
+<p>This class solves the 3D advection-diffusion equation for the energy
+density. The energy density factors in both the temperature and the latent
+heat included in meltwater. We use the energy density rather than the
+enthalpy because it comes out to a nice round number (about 500 MPa/m^3)
+in the unit system we use.</p>
 <dl class="method">
-<dt id="icepack.models.mass_transport.MassTransport.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>dt</em>, <em>h0</em>, <em>a</em>, <em>u</em>, <em>h_inflow=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#MassTransport.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.MassTransport.solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagate the thickness forward by one timestep</p>
-<p>This function uses the implicit Euler timestepping scheme to avoid
-the stability issues associated to using continuous finite elements
-for advection-type equations. The implicit Euler scheme is stable
-for any timestep; you do not need to ensure that the CFL condition
-is satisfied in order to get an answer. Nonetheless, keeping the
-timestep within the CFL bound is a good idea for accuracy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dt</strong> (<em>float</em>) – Timestep</p></li>
-<li><p><strong>h0</strong> (<em>firedrake.Function</em>) – Initial ice thickness</p></li>
-<li><p><strong>a</strong> (<em>firedrake.Function</em>) – Sum of accumulation and melt rates</p></li>
-<li><p><strong>u</strong> (<em>firedrake.Function</em>) – Ice velocity</p></li>
-<li><p><strong>h_inflow</strong> (<em>firedrake.Function</em>) – Thickness of the upstream ice that advects into the domain</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>h</strong> – Ice thickness at <cite>t + dt</cite></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>firedrake.Function</p>
-</dd>
-</dl>
+<dt id="icepack.models.heat_transport.HeatTransport3D.energy_density">
+<code class="descname">energy_density</code><span class="sig-paren">(</span><em>T</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.energy_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.energy_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the energy density for ice at the given temperature and melt
+fraction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.meltwater_fraction">
+<code class="descname">meltwater_fraction</code><span class="sig-paren">(</span><em>E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.meltwater_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.meltwater_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the melt fraction of ice at the given energy density</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>dt</em>, <em>E0</em>, <em>u</em>, <em>w</em>, <em>h</em>, <em>s</em>, <em>q</em>, <em>q_bed</em>, <em>E_inflow</em>, <em>E_surface</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagate the energy density forward by one timestep</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.temperature">
+<code class="descname">temperature</code><span class="sig-paren">(</span><em>E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the temperature of ice at the given energy density</p>
 </dd></dl>
 
 </dd></dl>
@@ -243,10 +239,10 @@ timestep within the CFL bound is a good idea for accuracy.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="icepack.models.viscosity.html" class="btn btn-neutral float-right" title="icepack.models.viscosity module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.models.hybrid.html" class="btn btn-neutral float-right" title="icepack.models.hybrid module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="icepack.models.ice_stream.html" class="btn btn-neutral float-left" title="icepack.models.ice_stream module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.models.friction.html" class="btn btn-neutral float-left" title="icepack.models.friction module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

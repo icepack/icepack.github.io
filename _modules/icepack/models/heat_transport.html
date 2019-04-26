@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>icepack.models.heat_transport &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reading.html">Reading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>icepack.models.heat_transport</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for icepack.models.heat_transport</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ds_b</span><span class="p">,</span> <span class="n">ds_t</span><span class="p">,</span> <span class="n">ds_v</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">thermal_diffusivity</span> <span class="k">as</span> <span class="n">α</span><span class="p">,</span>
+                               <span class="n">heat_capacity</span> <span class="k">as</span> <span class="n">c</span><span class="p">,</span> <span class="n">latent_heat</span> <span class="k">as</span> <span class="n">L</span><span class="p">,</span>
+                               <span class="n">melting_temperature</span> <span class="k">as</span> <span class="n">Tm</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="k">import</span> <span class="n">facet_normal_2</span><span class="p">,</span> <span class="n">grad_2</span>
+
+<div class="viewcode-block" id="HeatTransport3D"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D">[docs]</a><span class="k">class</span> <span class="nc">HeatTransport3D</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for modeling 3D heat transport</span>
+
+<span class="sd">    This class solves the 3D advection-diffusion equation for the energy</span>
+<span class="sd">    density. The energy density factors in both the temperature and the latent</span>
+<span class="sd">    heat included in meltwater. We use the energy density rather than the</span>
+<span class="sd">    enthalpy because it comes out to a nice round number (about 500 MPa/m^3)</span>
+<span class="sd">    in the unit system we use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_advect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">E_inflow</span><span class="p">,</span> <span class="n">E_surface</span><span class="p">):</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">φ</span><span class="p">,</span> <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+        <span class="n">U</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">w</span><span class="p">))</span>
+        <span class="n">flux_cells</span> <span class="o">=</span> <span class="o">-</span><span class="n">φ</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">ψ</span><span class="p">))</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
+        <span class="n">ν</span> <span class="o">=</span> <span class="n">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">outflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">inflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">flux_outflow</span> <span class="o">=</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">outflow</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_v</span> <span class="o">+</span> \
+                       <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_b</span> <span class="o">+</span> \
+                       <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_t</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_outflow</span><span class="p">)</span>
+
+        <span class="n">flux_inflow</span> <span class="o">=</span> <span class="o">-</span><span class="n">E_inflow</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">inflow</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_v</span> \
+                      <span class="o">-</span><span class="n">E_surface</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_b</span> \
+                      <span class="o">-</span><span class="n">E_surface</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_t</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">E</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">flux_inflow</span>
+
+        <span class="n">solver_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">}</span>
+        <span class="n">degree_E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+        <span class="n">degree_u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">degree_E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">degree_u</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                  <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_E</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">degree_u</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">form_compiler_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">}</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">F</span> <span class="o">==</span> <span class="n">A</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span>
+                        <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span><span class="p">,</span>
+                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_diffuse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_bed</span><span class="p">,</span> <span class="n">E_surface</span><span class="p">):</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">φ</span><span class="p">,</span> <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">α</span> <span class="o">*</span> <span class="n">φ</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">ψ</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span> \
+            <span class="o">+</span> <span class="n">degree</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">α</span> <span class="o">*</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">/</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_t</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">E</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span> \
+            <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span> \
+            <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">q_bed</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">ds_b</span> \
+            <span class="o">+</span> <span class="n">degree</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">α</span> <span class="o">*</span> <span class="n">E_surface</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">/</span> <span class="n">h</span> <span class="o">*</span> <span class="n">ds_t</span>
+
+        <span class="n">degree_E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">degree_E</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_E</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">form_compiler_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">}</span>
+        <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">f</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span>
+                        <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">form_compiler_parameters</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeatTransport3D.solve"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">E0</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_bed</span><span class="p">,</span> <span class="n">E_inflow</span><span class="p">,</span> <span class="n">E_surface</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the energy density forward by one timestep&quot;&quot;&quot;</span>
+        <span class="n">E_inflow</span> <span class="o">=</span> <span class="n">E_inflow</span> <span class="k">if</span> <span class="n">E_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">E0</span>
+        <span class="n">E_surface</span> <span class="o">=</span> <span class="n">E_surface</span> <span class="k">if</span> <span class="n">E_surface</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">E0</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">E0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_advect</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">E_inflow</span><span class="p">,</span> <span class="n">E_surface</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_diffuse</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_bed</span><span class="p">,</span> <span class="n">E_surface</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">E</span></div>
+
+<div class="viewcode-block" id="HeatTransport3D.temperature"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.temperature">[docs]</a>    <span class="k">def</span> <span class="nf">temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the temperature of ice at the given energy density&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span> <span class="n">Tm</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HeatTransport3D.meltwater_fraction"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.meltwater_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">meltwater_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the melt fraction of ice at the given energy density&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">Tm</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HeatTransport3D.energy_density"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.energy_density">[docs]</a>    <span class="k">def</span> <span class="nf">energy_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the energy density for ice at the given temperature and melt</span>
+<span class="sd">        fraction&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">T</span> <span class="o">+</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">L</span> <span class="o">*</span> <span class="n">f</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
