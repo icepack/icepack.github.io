@@ -240,11 +240,13 @@ glacier becomes marine one third of the way into the domain.</p>
 \[\tau_D = -\rho_Igh\nabla s\]</div>
 <p>at the inflow boundary of the ice stream to make sure the value isn’t
 absurd.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+                               <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">)</span>
+
 <span class="n">h_in</span> <span class="o">=</span> <span class="n">s_in</span> <span class="o">-</span> <span class="n">b_in</span>
 <span class="n">δs_δx</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_out</span> <span class="o">-</span> <span class="n">s_in</span><span class="p">)</span> <span class="o">/</span> <span class="n">Lx</span>
 <span class="n">τ_D</span> <span class="o">=</span> <span class="o">-</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h_in</span> <span class="o">*</span> <span class="n">δs_δx</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> kPa&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">τ_D</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> kPa&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">τ_D</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">93.556008</span> <span class="n">kPa</span>

@@ -184,7 +184,8 @@
 
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span>
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span><span class="p">,</span> <span class="n">rho_water</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+                               <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.models.viscosity</span> <span class="k">import</span> <span class="n">viscosity_depth_averaged</span> <span class="k">as</span> <span class="n">viscosity</span>
 <span class="kn">from</span> <span class="nn">icepack.models.friction</span> <span class="k">import</span> <span class="n">bed_friction</span><span class="p">,</span> <span class="n">side_friction</span><span class="p">,</span> \
     <span class="n">normal_flow_penalty</span> <span class="k">as</span> <span class="n">penalty</span>
@@ -210,7 +211,7 @@
 <span class="sd">    s : firedrake.Function</span>
 <span class="sd">        ice surface elevation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="o">-</span><span class="n">rho_ice</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span></div>
+    <span class="k">return</span> <span class="o">-</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span></div>
 
 
 <div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ice_front_ids</span><span class="o">=</span><span class="p">()):</span>
@@ -241,11 +242,11 @@
     <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">conditional</span><span class="p">,</span> <span class="n">lt</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">conditional</span><span class="p">(</span><span class="n">lt</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">s</span> <span class="o">-</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="n">tau_I</span> <span class="o">=</span> <span class="n">rho_ice</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="n">tau_W</span> <span class="o">=</span> <span class="n">rho_water</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">d</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">τ_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">τ_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">d</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="n">ν</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">())</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">tau_I</span> <span class="o">-</span> <span class="n">tau_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ice_front_ids</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">τ_I</span> <span class="o">-</span> <span class="n">τ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ice_front_ids</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="IceStream"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream">[docs]</a><span class="k">class</span> <span class="nc">IceStream</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -372,7 +373,7 @@
 <span class="sd">        provided everything is in hydrostatic balance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_function_space</span><span class="p">()</span>
-        <span class="n">s_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho_ice</span> <span class="o">/</span> <span class="n">rho_water</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">s_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s_expr</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span></div></div>
 </pre></div>
 

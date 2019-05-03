@@ -233,7 +233,7 @@ formats. The following code reads in the Larsen mesh and makes a plot of
 it so that we can see all the boundary IDs. Boundary segments 1 and 2
 correspond to the calving terminus; segment 3 borders the Gipps Ice
 Rise.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;meshes/larsen/larsen.msh&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;meshes/larsen/larsen.msh&#39;</span><span class="p">))</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
@@ -267,9 +267,9 @@ arguments. Since the individual components of the ice velocity aren’t
 that illuminating to look at, we first make a gridded data set of the
 ice speed and plot that instead.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">arcinfo</span><span class="p">,</span> <span class="n">GridData</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;bedmap2/larsen-h.txt&quot;</span><span class="p">))</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vx.txt&quot;</span><span class="p">))</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vy.txt&quot;</span><span class="p">))</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.txt&#39;</span><span class="p">))</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vx.txt&#39;</span><span class="p">))</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vy.txt&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -354,7 +354,7 @@ spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1139846970345316</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11394107675058486</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -398,7 +398,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.835944995136447</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.8364483877092352</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

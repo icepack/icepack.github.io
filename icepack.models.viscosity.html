@@ -198,15 +198,9 @@ and, in particular, the viscous part of the action functional for ice flow.
 Several flow models all have essentially the same viscous part.</p>
 <dl class="function">
 <dt id="icepack.models.viscosity.M">
-<code class="descclassname">icepack.models.viscosity.</code><code class="descname">M</code><span class="sig-paren">(</span><em>eps</em>, <em>A</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#M"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.M" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">icepack.models.viscosity.</code><code class="descname">M</code><span class="sig-paren">(</span><em>ε</em>, <em>A</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#M"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.M" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the membrane stress for a given strain rate and
 fluidity</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.models.viscosity.eps">
-<code class="descclassname">icepack.models.viscosity.</code><code class="descname">eps</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#eps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.eps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the strain rate for a given flow velocity</p>
 </dd></dl>
 
 <dl class="function">
@@ -268,6 +262,12 @@ instead.</p>
 <dd class="field-odd"><p>firedrake.Form</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.models.viscosity.ε">
+<code class="descclassname">icepack.models.viscosity.</code><code class="descname">ε</code><span class="sig-paren">(</span><em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#ε"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.viscosity.ε" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the strain rate for a given flow velocity</p>
 </dd></dl>
 
 </div>

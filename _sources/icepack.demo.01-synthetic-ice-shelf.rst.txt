@@ -84,18 +84,19 @@ demo.
 
 .. code:: ipython3
 
+    from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
+                                   gravity as g, glen_flow_law as n)
+    
     h0, δh = 500.0, 100.0
     h = firedrake.interpolate(h0 - δh * x / Lx, Q)
     
-    from icepack.constants import rho_ice as ρ_I, rho_water as ρ_W, \
-        gravity as g, glen_flow_law as n
-    ϱ = ρ_I * (1 - ρ_I / ρ_W)
+    ρ = ρ_I * (1 - ρ_I / ρ_W)
     T0 = 254.15
     B = icepack.rate_factor(T0)**(-1/n)
-    ζ = (ϱ * g * h0 / (4 * B))**n
-    β = 1 - (1 - (δh/h0) * (x/Lx))**(n + 1)
+    Z = (ρ * g * h0 / (4 * B))**n
+    q = 1 - (1 - (δh/h0) * (x/Lx))**(n + 1)
     u0 = 100.0
-    du = ζ * β * Lx * (h0 / δh) / (n + 1)
+    du = Z * q * Lx * (h0 / δh) / (n + 1)
     v = firedrake.interpolate(firedrake.as_vector((u0 + du, 0)), V)
 
 Here we’ll plot both the thickness and the exact solution for the
@@ -108,11 +109,11 @@ things to look nice.
 
     fig, axes = icepack.plot.subplots(ncols=2, sharex=True, sharey=True)
     
-    axes[0].set_title("Thickness")
+    axes[0].set_title('Thickness')
     contours_h = icepack.plot.tricontourf(h, axes=axes[0])
     fig.colorbar(contours_h, ax=axes[0], label='meters', fraction=0.046, pad=0.04)
     
-    axes[1].set_title("Velocity")
+    axes[1].set_title('Velocity')
     contours_v = icepack.plot.tricontourf(v, axes=axes[1])
     fig.colorbar(contours_v, ax=axes[1], label='meters/year', fraction=0.046, pad=0.04)
     

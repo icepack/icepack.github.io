@@ -246,7 +246,9 @@ polynomials are advantageous because they are mutually orthogonal.</p>
 <p>Creating the input data is mostly the same as before. The
 <code class="docutils literal notranslate"><span class="pre">SpatialCoordinate</span></code> function now returns an additional symbol
 representing the terrain-following coordinate <span class="math notranslate nohighlight">\(\zeta\)</span>.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">rho_ice</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">rho_water</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+                               <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">)</span>
+
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ζ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -500,7 +502,7 @@ calculate the relative error in the 2-norm.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">δu</span><span class="p">)</span> <span class="o">/</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u_4</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.030796564575567096</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.030796564575568126</span>
 </pre></div>
 </div>
 <p>A mismatch of only 3% is not bad at all! However, if we used a synthetic

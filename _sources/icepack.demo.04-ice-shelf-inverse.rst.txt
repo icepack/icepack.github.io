@@ -81,7 +81,7 @@ Shelf, but we also need to use the error estimates for the velocities.
 
 .. code:: ipython3
 
-    mesh = firedrake.Mesh(os.path.join(data_directory, "meshes/larsen/larsen.msh"))
+    mesh = firedrake.Mesh(os.path.join(data_directory, 'meshes/larsen/larsen.msh'))
     
     fig, axes = icepack.plot.subplots()
     axes.set_xlabel('meters')
@@ -97,11 +97,11 @@ Shelf, but we also need to use the error estimates for the velocities.
 .. code:: ipython3
 
     from icepack.grid import arcinfo, GridData
-    thickness = arcinfo.read(os.path.join(data_directory, "bedmap2/larsen-h.txt"))
-    vx = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vx.txt"))
-    vy = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-vy.txt"))
-    stdx = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-stdx.txt"))
-    stdy = arcinfo.read(os.path.join(data_directory, "measures_antarctica/larsen-stdy.txt"))
+    thickness = arcinfo.read(os.path.join(data_directory, 'bedmap2/larsen-h.txt'))
+    vx = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vx.txt'))
+    vy = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vy.txt'))
+    stdx = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-stdx.txt'))
+    stdy = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-stdy.txt'))
 
 .. code:: ipython3
 
@@ -262,7 +262,7 @@ represented by the ``GaussNewtonSolver`` class.
 
 .. parsed-literal::
 
-    12.0533, 0
+    12.0907, 0
 
 
 Before setting the solver loose, let’s look at the initial search
@@ -309,10 +309,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.08614, 0.278768
-    1.0019, 0.476694
-    1.01201, 0.434057
-    1.00568, 0.43692
+    2.11301, 0.272188
+    1.00295, 0.476243
+    1.01069, 0.436337
+    1.00479, 0.438773
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -414,8 +414,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.5145930107256276
-    1.0056848931456468
+    2.514152185108978
+    1.0047945743487885
 
 
 The objective function has been reduced by a factor of 10 through the

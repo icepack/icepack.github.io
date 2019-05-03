@@ -245,7 +245,7 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ICEPACK_DATA&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;meshes/larsen/larsen.msh&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;meshes/larsen/larsen.msh&#39;</span><span class="p">))</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
@@ -256,11 +256,11 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 </div>
 <img alt="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">arcinfo</span><span class="p">,</span> <span class="n">GridData</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;bedmap2/larsen-h.txt&quot;</span><span class="p">))</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vx.txt&quot;</span><span class="p">))</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-vy.txt&quot;</span><span class="p">))</span>
-<span class="n">stdx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-stdx.txt&quot;</span><span class="p">))</span>
-<span class="n">stdy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;measures_antarctica/larsen-stdy.txt&quot;</span><span class="p">))</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.txt&#39;</span><span class="p">))</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vx.txt&#39;</span><span class="p">))</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vy.txt&#39;</span><span class="p">))</span>
+<span class="n">stdx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-stdx.txt&#39;</span><span class="p">))</span>
+<span class="n">stdy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-stdy.txt&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preprocess</span> <span class="k">import</span> <span class="n">preprocess</span>
@@ -393,7 +393,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.0533</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.0907</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -427,10 +427,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.08614</span><span class="p">,</span> <span class="mf">0.278768</span>
-<span class="mf">1.0019</span><span class="p">,</span> <span class="mf">0.476694</span>
-<span class="mf">1.01201</span><span class="p">,</span> <span class="mf">0.434057</span>
-<span class="mf">1.00568</span><span class="p">,</span> <span class="mf">0.43692</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.11301</span><span class="p">,</span> <span class="mf">0.272188</span>
+<span class="mf">1.00295</span><span class="p">,</span> <span class="mf">0.476243</span>
+<span class="mf">1.01069</span><span class="p">,</span> <span class="mf">0.436337</span>
+<span class="mf">1.00479</span><span class="p">,</span> <span class="mf">0.438773</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -504,8 +504,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.5145930107256276</span>
-<span class="mf">1.0056848931456468</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.514152185108978</span>
+<span class="mf">1.0047945743487885</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the
