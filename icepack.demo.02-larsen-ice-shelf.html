@@ -98,7 +98,6 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Larsen Ice Shelf</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#geometry">Geometry</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-data">Input data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeling">Modeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
@@ -291,21 +290,6 @@ ice speed and plot that instead.</p>
 </div>
 <img alt="_images/icepack.demo.02-larsen-ice-shelf_8_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_8_0.png" />
 </div>
-<div class="section" id="preprocessing">
-<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
-<p>It would be tempting at this point to interpolate the gridded data to
-the mesh and go model some ice flow, but unfortunately we can’t do that
-quite yet. There are just a few points in the domain that we can’t
-interpolate to because the thickness data set is missing around that
-point. We can fill in these missing points in the gridded data by taking
-a weighted average of nearby points. The code for this preprocessing
-step is in the module <code class="docutils literal notranslate"><span class="pre">preprocess.py</span></code> if you want to see all the
-details.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preprocess</span> <span class="k">import</span> <span class="n">preprocess</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="modeling">
 <h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
 <p>Having done all the leg work to make a mesh and get a good set of input
@@ -333,7 +317,7 @@ interpolate function and knows what to do with gridded data sets.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_11_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_11_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">260</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
 
@@ -348,13 +332,13 @@ interpolate function and knows what to do with gridded data sets.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_15_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_15_0.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_13_0.png" />
 <p>We get a fairly reasonable approximation for the velocity even with a
 spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11394107675058486</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11546411966037437</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -376,7 +360,7 @@ for this loop should be familiar from the previous example.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_18_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_18_0.png" />
 <p>By plotting the difference between the modeled thickness after 10 years
 and the initial thickness, we can see the propagation of the rifts
 downstream. This effect is best visualized with a diverging colormap
@@ -390,7 +374,7 @@ that makes the 0-contour really obvious.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_22_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_22_0.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_20_0.png" />
 <p>The oscillatory pattern makes it less than obvious whether the ice shelf
 gained or lost mass, so let’s evaluate the integral of the thickness
 change to see.</p>
@@ -398,7 +382,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.8364483877092352</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.7638954211094338</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly
@@ -417,9 +401,11 @@ these missing points have to be filled in somehow. The Bedmap2 thickness
 also contains processing artifacts that are visible as depressions
 running diagonally across the ice shelf. These artifacts could be
 removed by using a low-pass filter on the gridded data, although this
-might also wash out some real features like the many rifts in the ice.
-Most of this preprocessing can be done directly on the <code class="docutils literal notranslate"><span class="pre">GridData</span></code>
-object.</p>
+might also wash out some real features like the many rifts in the ice.</p>
+<p>In order to run the simulation, we had to come up with a guess for the
+ice rheology. The simple choice we made is quite far from the real value
+and in a subsequent demo we’ll show how to estimate it from
+observational data.</p>
 </div>
 </div>
 

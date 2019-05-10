@@ -263,10 +263,6 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 <span class="n">stdy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-stdy.txt&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">preprocess</span> <span class="k">import</span> <span class="n">preprocess</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-</pre></div>
-</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
@@ -287,7 +283,7 @@ platform.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_9_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_9_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_8_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_8_0.png" />
 <p>We need to make an initial guess for the fluidity parameter. In this
 case, we’ll use the same value as in the second demo – a constant
 fluidity assuming a temperature of <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
@@ -311,7 +307,7 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_12_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_12_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_11_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_11_0.png" />
 </div>
 <div class="section" id="inferring-the-fluidity">
 <h2>Inferring the fluidity<a class="headerlink" href="#inferring-the-fluidity" title="Permalink to this headline">¶</a></h2>
@@ -393,7 +389,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.0907</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.2395</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -404,7 +400,7 @@ direction.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_22_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_22_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_21_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_21_0.png" />
 <p>The search direction is obtained by multiplying the inverse of the
 Gauss-Newton matrix <span class="math notranslate nohighlight">\(H\)</span> by the gradient <span class="math notranslate nohighlight">\(dJ\)</span> of the
 objective function. The Gauss-Newton matrix is dense, so we don’t
@@ -427,10 +423,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.11301</span><span class="p">,</span> <span class="mf">0.272188</span>
-<span class="mf">1.00295</span><span class="p">,</span> <span class="mf">0.476243</span>
-<span class="mf">1.01069</span><span class="p">,</span> <span class="mf">0.436337</span>
-<span class="mf">1.00479</span><span class="p">,</span> <span class="mf">0.438773</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12028</span><span class="p">,</span> <span class="mf">0.276602</span>
+<span class="mf">1.00032</span><span class="p">,</span> <span class="mf">0.480362</span>
+<span class="mf">1.01004</span><span class="p">,</span> <span class="mf">0.43712</span>
+<span class="mf">1.00316</span><span class="p">,</span> <span class="mf">0.440574</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -456,7 +452,7 @@ velocity. You can see all the publicly visible properties by typing
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span> <span class="o">/</span> <span class="n">n</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ctr</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
@@ -464,7 +460,7 @@ velocity. You can see all the publicly visible properties by typing
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_28_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_28_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" />
 <p>The fluidity is much higher around areas of heavy crevassing, such as
 the rift opening from the Gipps Ice Rise and the area flowing into it.
 Additionally, several areas downstream of the inlets have much higher
@@ -487,7 +483,7 @@ difference between the computed and observed velocities.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_31_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_31_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" />
 <p>The computed ice velocity is mostly similar to observations aside from a
 few blips. The most widespread departures from observations occur around
 the rifts that flow into the Gipps Ice Rise. We regularized the problem
@@ -504,8 +500,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.514152185108978</span>
-<span class="mf">1.0047945743487885</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.51330216608616</span>
+<span class="mf">1.0031645688417767</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

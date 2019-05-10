@@ -140,23 +140,6 @@ ice speed and plot that instead.
 .. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_8_0.png
 
 
-Preprocessing
-~~~~~~~~~~~~~
-
-It would be tempting at this point to interpolate the gridded data to
-the mesh and go model some ice flow, but unfortunately we can’t do that
-quite yet. There are just a few points in the domain that we can’t
-interpolate to because the thickness data set is missing around that
-point. We can fill in these missing points in the gridded data by taking
-a weighted average of nearby points. The code for this preprocessing
-step is in the module ``preprocess.py`` if you want to see all the
-details.
-
-.. code:: ipython3
-
-    from preprocess import preprocess
-    thickness = preprocess(thickness, mesh, radius=6)
-
 Modeling
 ~~~~~~~~
 
@@ -191,7 +174,7 @@ interpolate function and knows what to do with gridded data sets.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_13_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_11_0.png
 
 
 .. code:: ipython3
@@ -212,7 +195,7 @@ interpolate function and knows what to do with gridded data sets.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_15_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_13_0.png
 
 
 We get a fairly reasonable approximation for the velocity even with a
@@ -225,7 +208,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.11394107675058486
+    0.11546411966037437
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -252,7 +235,7 @@ for this loop should be familiar from the previous example.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_20_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_18_0.png
 
 
 By plotting the difference between the modeled thickness after 10 years
@@ -272,7 +255,7 @@ that makes the 0-contour really obvious.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_22_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_20_0.png
 
 
 The oscillatory pattern makes it less than obvious whether the ice shelf
@@ -287,7 +270,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.8364483877092352
+    -3.7638954211094338
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly
@@ -309,5 +292,8 @@ also contains processing artifacts that are visible as depressions
 running diagonally across the ice shelf. These artifacts could be
 removed by using a low-pass filter on the gridded data, although this
 might also wash out some real features like the many rifts in the ice.
-Most of this preprocessing can be done directly on the ``GridData``
-object.
+
+In order to run the simulation, we had to come up with a guess for the
+ice rheology. The simple choice we made is quite far from the real value
+and in a subsequent demo we’ll show how to estimate it from
+observational data.
