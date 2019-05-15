@@ -255,12 +255,12 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">arcinfo</span><span class="p">,</span> <span class="n">GridData</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.txt&#39;</span><span class="p">))</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vx.txt&#39;</span><span class="p">))</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vy.txt&#39;</span><span class="p">))</span>
-<span class="n">stdx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-stdx.txt&#39;</span><span class="p">))</span>
-<span class="n">stdy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-stdy.txt&#39;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">geotiff</span><span class="p">,</span> <span class="n">GridData</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.tif&#39;</span><span class="p">))</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vx.tif&#39;</span><span class="p">))</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vy.tif&#39;</span><span class="p">))</span>
+<span class="n">stdx</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-stdx.tif&#39;</span><span class="p">))</span>
+<span class="n">stdy</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-stdy.tif&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
@@ -423,10 +423,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12028</span><span class="p">,</span> <span class="mf">0.276602</span>
-<span class="mf">1.00032</span><span class="p">,</span> <span class="mf">0.480362</span>
-<span class="mf">1.01004</span><span class="p">,</span> <span class="mf">0.43712</span>
-<span class="mf">1.00316</span><span class="p">,</span> <span class="mf">0.440574</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12046</span><span class="p">,</span> <span class="mf">0.276586</span>
+<span class="mf">1.00158</span><span class="p">,</span> <span class="mf">0.478505</span>
+<span class="mf">1.00881</span><span class="p">,</span> <span class="mf">0.438274</span>
+<span class="mf">1.00299</span><span class="p">,</span> <span class="mf">0.440849</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -500,8 +500,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.51330216608616</span>
-<span class="mf">1.0031645688417767</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.5085467864680564</span>
+<span class="mf">1.002994417915554</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

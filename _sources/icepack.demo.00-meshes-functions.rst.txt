@@ -143,7 +143,7 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.6759871429118592e-17
+    -2.5153490401663703e-17
     [ 3.46901282e-15 -2.52175273e-15]
 
 

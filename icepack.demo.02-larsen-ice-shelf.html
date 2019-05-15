@@ -192,12 +192,11 @@
 <p>This demo will involve using real data for the Larsen Ice Shelf in the
 Antarctic Peninsula. So far as the actual modeling is concerned, most of
 what we’ll need was in the previous demo. What’s new here are the
-functions for reading in meshes from files, reading in gridded data
-sets, and ways to cope with the messiness of real data.</p>
+functions for reading in meshes and gridded data sets from files.</p>
 <p>The scripts I used to fetch and process all of this data are contained
 in <a class="reference external" href="https://github.com/icepack/icepack-data">this repo</a>. To use it,
 clone the repository and run <code class="docutils literal notranslate"><span class="pre">make</span></code> in each of the directories
-<code class="docutils literal notranslate"><span class="pre">bedmap2/</span></code>, <code class="docutils literal notranslate"><span class="pre">measures_antarctica/</span></code>, and <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code>. For this
+<code class="docutils literal notranslate"><span class="pre">bedmap2/</span></code>, <code class="docutils literal notranslate"><span class="pre">measures-antarctica/</span></code>, and <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code>. For this
 notebook, I’ll assume that the absolute path of the data repository on
 your computer is stored in a variable <code class="docutils literal notranslate"><span class="pre">data_directory</span></code>. In my case, I
 keep this in an environment variable called <code class="docutils literal notranslate"><span class="pre">ICEPACK_DATA</span></code>. If you
@@ -213,13 +212,13 @@ hard-code <code class="docutils literal notranslate"><span class="pre">data_dire
 </div>
 <div class="section" id="geometry">
 <h2>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
-<p>First, we need to make a mesh. I go about this by hand-drawing the
-domain boundary in <a class="reference external" href="https://www.qgis.org">QGIS</a> on top of satellite
-imagery and whatever other gridded data sets I’m working with. I always
-save these vector data in the <a class="reference external" href="http://geojson.org/">GeoJSON</a> format
-rather than, say, an ESRI shapefile. GeoJSON is human-readable and easy
-to keep in version control. The GeoJSON files for the outline of Larsen
-are in the directory of <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code> of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
+<p>First we need to make a mesh. I go about this by hand-drawing the domain
+boundary in <a class="reference external" href="https://www.qgis.org">QGIS</a> on top of satellite imagery
+and whatever other gridded data sets I’m working with. I always save
+these vector data in the <a class="reference external" href="http://geojson.org/">GeoJSON</a> format rather
+than, say, an ESRI shapefile. GeoJSON is human-readable and easy to keep
+in version control. The GeoJSON files for the outline of Larsen are in
+the directory of <code class="docutils literal notranslate"><span class="pre">meshes/larsen/</span></code> of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
 repo</a>. That said, this is my
 own peculiar workflow and yours might differ.</p>
 <p>The domain outline is then transformed into whatever file format your
@@ -249,26 +248,26 @@ Rise.</p>
 <a class="reference external" href="https://www.bas.ac.uk/project/bedmap-2/">Bedmap2</a> and velocity data
 from <a class="reference external" href="https://nsidc.org/data/measures/aiv">MEaSUREs</a>. These data sets
 are large and not all in the same format. The scripts in the <code class="docutils literal notranslate"><span class="pre">bedmap2</span></code>
-and <code class="docutils literal notranslate"><span class="pre">measures_antarctica</span></code> directories of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
+and <code class="docutils literal notranslate"><span class="pre">measures-antarctica</span></code> directories of the <a class="reference external" href="https://github.com/icepack/icepack-data">data
 repo</a> fetch the data from
 the original sources, divide them up into subsets for several
-interesting regions in Antarctica, and save them as <a class="reference external" href="https://en.wikipedia.org/wiki/Esri_grid">Arc/Info ASCII
-grids</a>. This format isn’t
-especially compact, but it’s easy to write a parser for and all the
-common GIS programs can read it too.</p>
-<p>The module <code class="docutils literal notranslate"><span class="pre">icepack.grid.arcinfo</span></code> contains functions for reading and
-writing the Arc/Info ASCII grid format. The code below reads the
-thickness and velocity fields into a data structure called <code class="docutils literal notranslate"><span class="pre">GridData</span></code>.
-These objects can interpolate values to arbitrary points within the
-domain, and are designed to gracefully handle missing data.</p>
+interesting regions in Antarctica, and save them as
+<a class="reference external" href="https://en.wikipedia.org/wiki/GeoTIFF">GeoTIFF</a> files. GeoTIFF is a
+common storage format for gridded data that adds georeferencing metadata
+on top of the TIFF image file format.</p>
+<p>The module <code class="docutils literal notranslate"><span class="pre">icepack.grid.geotiff</span></code> contains functions for reading and
+writing this format. The code below reads the thickness and velocity
+fields into a data structure called <code class="docutils literal notranslate"><span class="pre">GridData</span></code>. These objects can
+interpolate values to arbitrary points within the domain, and are
+designed to gracefully handle missing data.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">icepack.plot</span></code> function can also take in <code class="docutils literal notranslate"><span class="pre">GridData</span></code> objects as
 arguments. Since the individual components of the ice velocity aren’t
 that illuminating to look at, we first make a gridded data set of the
 ice speed and plot that instead.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">arcinfo</span><span class="p">,</span> <span class="n">GridData</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.txt&#39;</span><span class="p">))</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vx.txt&#39;</span><span class="p">))</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">arcinfo</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures_antarctica/larsen-vy.txt&#39;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">geotiff</span><span class="p">,</span> <span class="n">GridData</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.tif&#39;</span><span class="p">))</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vx.tif&#39;</span><span class="p">))</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vy.tif&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -338,7 +337,7 @@ spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11546411966037437</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1154641192125292</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -382,7 +381,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.7638954211094338</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.763895414757247</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

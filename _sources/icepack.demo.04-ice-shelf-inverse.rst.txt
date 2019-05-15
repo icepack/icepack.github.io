@@ -96,12 +96,12 @@ Shelf, but we also need to use the error estimates for the velocities.
 
 .. code:: ipython3
 
-    from icepack.grid import arcinfo, GridData
-    thickness = arcinfo.read(os.path.join(data_directory, 'bedmap2/larsen-h.txt'))
-    vx = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vx.txt'))
-    vy = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vy.txt'))
-    stdx = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-stdx.txt'))
-    stdy = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-stdy.txt'))
+    from icepack.grid import geotiff, GridData
+    thickness = geotiff.read(os.path.join(data_directory, 'bedmap2/larsen-h.tif'))
+    vx = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vx.tif'))
+    vy = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vy.tif'))
+    stdx = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-stdx.tif'))
+    stdy = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-stdy.tif'))
 
 .. code:: ipython3
 
@@ -304,10 +304,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.12028, 0.276602
-    1.00032, 0.480362
-    1.01004, 0.43712
-    1.00316, 0.440574
+    2.12046, 0.276586
+    1.00158, 0.478505
+    1.00881, 0.438274
+    1.00299, 0.440849
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -409,8 +409,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.51330216608616
-    1.0031645688417767
+    2.5085467864680564
+    1.002994417915554
 
 
 The objective function has been reduced by a factor of 10 through the

@@ -14,13 +14,12 @@ Larsen Ice Shelf
 This demo will involve using real data for the Larsen Ice Shelf in the
 Antarctic Peninsula. So far as the actual modeling is concerned, most of
 what we’ll need was in the previous demo. What’s new here are the
-functions for reading in meshes from files, reading in gridded data
-sets, and ways to cope with the messiness of real data.
+functions for reading in meshes and gridded data sets from files.
 
 The scripts I used to fetch and process all of this data are contained
 in `this repo <https://github.com/icepack/icepack-data>`__. To use it,
 clone the repository and run ``make`` in each of the directories
-``bedmap2/``, ``measures_antarctica/``, and ``meshes/larsen/``. For this
+``bedmap2/``, ``measures-antarctica/``, and ``meshes/larsen/``. For this
 notebook, I’ll assume that the absolute path of the data repository on
 your computer is stored in a variable ``data_directory``. In my case, I
 keep this in an environment variable called ``ICEPACK_DATA``. If you
@@ -42,13 +41,13 @@ hard-code ``data_directory`` to the right location on your computer.
 Geometry
 ~~~~~~~~
 
-First, we need to make a mesh. I go about this by hand-drawing the
-domain boundary in `QGIS <https://www.qgis.org>`__ on top of satellite
-imagery and whatever other gridded data sets I’m working with. I always
-save these vector data in the `GeoJSON <http://geojson.org/>`__ format
-rather than, say, an ESRI shapefile. GeoJSON is human-readable and easy
-to keep in version control. The GeoJSON files for the outline of Larsen
-are in the directory of ``meshes/larsen/`` of the `data
+First we need to make a mesh. I go about this by hand-drawing the domain
+boundary in `QGIS <https://www.qgis.org>`__ on top of satellite imagery
+and whatever other gridded data sets I’m working with. I always save
+these vector data in the `GeoJSON <http://geojson.org/>`__ format rather
+than, say, an ESRI shapefile. GeoJSON is human-readable and easy to keep
+in version control. The GeoJSON files for the outline of Larsen are in
+the directory of ``meshes/larsen/`` of the `data
 repo <https://github.com/icepack/icepack-data>`__. That said, this is my
 own peculiar workflow and yours might differ.
 
@@ -86,19 +85,19 @@ Next, we have to load the input data. We’ll use ice thickness data from
 `Bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ and velocity data
 from `MEaSUREs <https://nsidc.org/data/measures/aiv>`__. These data sets
 are large and not all in the same format. The scripts in the ``bedmap2``
-and ``measures_antarctica`` directories of the `data
+and ``measures-antarctica`` directories of the `data
 repo <https://github.com/icepack/icepack-data>`__ fetch the data from
 the original sources, divide them up into subsets for several
-interesting regions in Antarctica, and save them as `Arc/Info ASCII
-grids <https://en.wikipedia.org/wiki/Esri_grid>`__. This format isn’t
-especially compact, but it’s easy to write a parser for and all the
-common GIS programs can read it too.
+interesting regions in Antarctica, and save them as
+`GeoTIFF <https://en.wikipedia.org/wiki/GeoTIFF>`__ files. GeoTIFF is a
+common storage format for gridded data that adds georeferencing metadata
+on top of the TIFF image file format.
 
-The module ``icepack.grid.arcinfo`` contains functions for reading and
-writing the Arc/Info ASCII grid format. The code below reads the
-thickness and velocity fields into a data structure called ``GridData``.
-These objects can interpolate values to arbitrary points within the
-domain, and are designed to gracefully handle missing data.
+The module ``icepack.grid.geotiff`` contains functions for reading and
+writing this format. The code below reads the thickness and velocity
+fields into a data structure called ``GridData``. These objects can
+interpolate values to arbitrary points within the domain, and are
+designed to gracefully handle missing data.
 
 The ``icepack.plot`` function can also take in ``GridData`` objects as
 arguments. Since the individual components of the ice velocity aren’t
@@ -107,10 +106,10 @@ ice speed and plot that instead.
 
 .. code:: ipython3
 
-    from icepack.grid import arcinfo, GridData
-    thickness = arcinfo.read(os.path.join(data_directory, 'bedmap2/larsen-h.txt'))
-    vx = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vx.txt'))
-    vy = arcinfo.read(os.path.join(data_directory, 'measures_antarctica/larsen-vy.txt'))
+    from icepack.grid import geotiff, GridData
+    thickness = geotiff.read(os.path.join(data_directory, 'bedmap2/larsen-h.tif'))
+    vx = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vx.tif'))
+    vy = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vy.tif'))
 
 .. code:: ipython3
 
@@ -208,7 +207,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.11546411966037437
+    0.1154641192125292
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -270,7 +269,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.7638954211094338
+    -3.763895414757247
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly
