@@ -224,6 +224,33 @@ to a mesh</p>
 <dd><p>Compute the horizontal gradient of a 3D field</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="icepack.utilities.lift3d">
+<code class="descclassname">icepack.utilities.</code><code class="descname">lift3d</code><span class="sig-paren">(</span><em>q2d</em>, <em>Q3D</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#lift3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.lift3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a 3D function that extends the given 2D function as a constant
+in the vertical</p>
+<p>This is the reverse operation of depth averaging – it takes a 2D function
+<cite>q2d</cite> and returns a function <cite>q3d</cite> defined over a 3D function space such
+<cite>q3d(x, y, z) == q2d(x, y)</cite> for any <cite>x, y</cite>. The space <cite>Q3D</cite> of the result
+must have the same horizontal element as the input function and a vertical
+degree of 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q2d</strong> (<em>firedrake.Function</em>) – A function defined on a 2D footprint mesh</p></li>
+<li><p><strong>Q3D</strong> (<em>firedrake.Function</em>) – A function space defined on a 3D mesh extruded from the footprint mesh;
+the function space must only go up to degree 0 in the vertical.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>q3d</strong> – The 3D-lifted input field</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

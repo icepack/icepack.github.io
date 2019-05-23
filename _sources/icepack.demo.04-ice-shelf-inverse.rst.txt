@@ -304,10 +304,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.12046, 0.276586
-    1.00158, 0.478505
-    1.00881, 0.438274
-    1.00299, 0.440849
+    2.12037, 0.276594
+    0.999955, 0.480809
+    1.01004, 0.437135
+    1.00321, 0.440538
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -409,8 +409,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.5085467864680564
-    1.002994417915554
+    2.5135520532711277
+    1.0032070660822885
 
 
 The objective function has been reduced by a factor of 10 through the

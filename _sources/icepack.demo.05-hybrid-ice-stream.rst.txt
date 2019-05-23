@@ -416,7 +416,7 @@ calculate the relative error in the 2-norm.
 
 .. parsed-literal::
 
-    0.030796564575567096
+    0.030796564575568383
 
 
 A mismatch of only 3% is not bad at all! However, if we used a synthetic

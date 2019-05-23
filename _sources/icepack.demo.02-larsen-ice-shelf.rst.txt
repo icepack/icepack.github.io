@@ -269,7 +269,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.763895414757247
+    -3.7638954147572417
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

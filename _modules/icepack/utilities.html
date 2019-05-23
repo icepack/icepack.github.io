@@ -244,6 +244,35 @@
     <span class="k">return</span> <span class="n">q2d</span></div>
 
 
+<div class="viewcode-block" id="lift3d"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.lift3d">[docs]</a><span class="k">def</span> <span class="nf">lift3d</span><span class="p">(</span><span class="n">q2d</span><span class="p">,</span> <span class="n">Q3D</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a 3D function that extends the given 2D function as a constant</span>
+<span class="sd">    in the vertical</span>
+
+<span class="sd">    This is the reverse operation of depth averaging -- it takes a 2D function</span>
+<span class="sd">    `q2d` and returns a function `q3d` defined over a 3D function space such</span>
+<span class="sd">    `q3d(x, y, z) == q2d(x, y)` for any `x, y`. The space `Q3D` of the result</span>
+<span class="sd">    must have the same horizontal element as the input function and a vertical</span>
+<span class="sd">    degree of 0.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    q2d : firedrake.Function</span>
+<span class="sd">        A function defined on a 2D footprint mesh</span>
+<span class="sd">    Q3D : firedrake.Function</span>
+<span class="sd">        A function space defined on a 3D mesh extruded from the footprint mesh;</span>
+<span class="sd">        the function space must only go up to degree 0 in the vertical.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    q3d : firedrake.Function</span>
+<span class="sd">        The 3D-lifted input field</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q3d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q3D</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">q3d</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">q2d</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">q3d</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q2d</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span><span class="p">[:]</span>
+    <span class="k">return</span> <span class="n">q3d</span></div>
+
+
 <div class="viewcode-block" id="add_kwarg_wrapper"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.add_kwarg_wrapper">[docs]</a><span class="k">def</span> <span class="nf">add_kwarg_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;VAR_KEYWORD&#39;</span>
