@@ -1,7 +1,0 @@
-icepack.grid.geotiff module
-===========================
-
-.. automodule:: icepack.grid.geotiff
-    :members:
-    :undoc-members:
-    :show-inheritance:

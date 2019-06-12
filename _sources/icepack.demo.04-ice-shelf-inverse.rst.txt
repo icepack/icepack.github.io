@@ -5,6 +5,7 @@
     import os
     import matplotlib.pyplot as plt
     import numpy as np
+    import rasterio
     import firedrake
     import icepack, icepack.plot, icepack.models
 
@@ -77,11 +78,9 @@ Shelf, but we also need to use the error estimates for the velocities.
 
 .. code:: ipython3
 
-    data_directory = os.environ['ICEPACK_DATA']
-
-.. code:: ipython3
-
-    mesh = firedrake.Mesh(os.path.join(data_directory, 'meshes/larsen/larsen.msh'))
+    import data
+    mesh_filename = data.fetch_larsen_mesh()
+    mesh = firedrake.Mesh(mesh_filename)
     
     fig, axes = icepack.plot.subplots()
     axes.set_xlabel('meters')
@@ -91,23 +90,26 @@ Shelf, but we also need to use the error estimates for the velocities.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_4_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_3_0.png
 
 
 .. code:: ipython3
 
-    from icepack.grid import geotiff, GridData
-    thickness = geotiff.read(os.path.join(data_directory, 'bedmap2/larsen-h.tif'))
-    vx = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vx.tif'))
-    vy = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-vy.tif'))
-    stdx = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-stdx.tif'))
-    stdy = geotiff.read(os.path.join(data_directory, 'measures-antarctica/larsen-stdy.tif'))
+    thickness_filename = [f for f in data.fetch_bedmap2() if
+                          os.path.basename(f) == 'bedmap2_thickness.tif'][0]
+    velocity_filename = data.fetch_measures_antarctica()
+    
+    thickness = rasterio.open(thickness_filename, 'r')
+    vx = rasterio.open('netcdf:' + velocity_filename + ':VX', 'r')
+    vy = rasterio.open('netcdf:' + velocity_filename + ':VY', 'r')
+    stdx = rasterio.open('netcdf:' + velocity_filename + ':STDX', 'r')
+    stdy = rasterio.open('netcdf:' + velocity_filename + ':STDY', 'r')
 
 .. code:: ipython3
 
     degree = 2
-    Q = firedrake.FunctionSpace(mesh, 'CG', degree)
-    V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
+    Q = firedrake.FunctionSpace(mesh, family='CG', degree=degree)
+    V = firedrake.VectorFunctionSpace(mesh, family='CG', degree=degree)
     
     h = icepack.interpolate(thickness, Q)
     u_obs = icepack.interpolate((vx, vy), V)
@@ -128,7 +130,7 @@ platform.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_8_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_7_0.png
 
 
 We need to make an initial guess for the fluidity parameter. In this
@@ -147,7 +149,7 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
     θ = firedrake.Function(Q)
     
     ice_shelf = icepack.models.IceShelf(viscosity=viscosity)
-    opts = {'dirichlet_ids': [3, 4, 5, 6, 7, 8], 'tol': 1e-6}
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8], 'tol': 1e-6}
     u = ice_shelf.diagnostic_solve(u0=u_obs, h=h, θ=θ, **opts)
 
 .. code:: ipython3
@@ -159,7 +161,7 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_11_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_10_0.png
 
 
 Inferring the fluidity
@@ -257,7 +259,7 @@ represented by the ``GaussNewtonSolver`` class.
 
 .. parsed-literal::
 
-    12.2395, 0
+    11.3326, 0
 
 
 Before setting the solver loose, let’s look at the initial search
@@ -272,7 +274,7 @@ direction.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_21_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_20_0.png
 
 
 The search direction is obtained by multiplying the inverse of the
@@ -304,10 +306,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.12037, 0.276594
-    0.999955, 0.480809
-    1.01004, 0.437135
-    1.00321, 0.440538
+    2.86563, 0.326874
+    1.52047, 0.501993
+    1.32817, 0.564823
+    1.32655, 0.560951
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -339,7 +341,7 @@ First, let’s plot the parameter value and the fluidity.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_26_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_25_0.png
 
 
 .. code:: ipython3
@@ -352,7 +354,7 @@ First, let’s plot the parameter value and the fluidity.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_27_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_26_0.png
 
 
 The fluidity is much higher around areas of heavy crevassing, such as
@@ -383,7 +385,7 @@ difference between the computed and observed velocities.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_30_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_29_0.png
 
 
 The computed ice velocity is mostly similar to observations aside from a
@@ -409,8 +411,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.5135520532711277
-    1.0032070660822885
+    2.5606809614877997
+    1.3265494919838048
 
 
 The objective function has been reduced by a factor of 10 through the

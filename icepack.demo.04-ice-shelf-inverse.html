@@ -183,6 +183,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">rasterio</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
 </pre></div>
@@ -242,10 +243,9 @@ the true value of the fluidity coefficient.</p>
 <h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h2>
 <p>The input data are just as in the previous demo for the Larsen Ice
 Shelf, but we also need to use the error estimates for the velocities.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ICEPACK_DATA&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;meshes/larsen/larsen.msh&#39;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">data</span>
+<span class="n">mesh_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_larsen_mesh</span><span class="p">()</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="n">mesh_filename</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
@@ -254,18 +254,21 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_4_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.grid</span> <span class="k">import</span> <span class="n">geotiff</span><span class="p">,</span> <span class="n">GridData</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;bedmap2/larsen-h.tif&#39;</span><span class="p">))</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vx.tif&#39;</span><span class="p">))</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-vy.tif&#39;</span><span class="p">))</span>
-<span class="n">stdx</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-stdx.tif&#39;</span><span class="p">))</span>
-<span class="n">stdy</span> <span class="o">=</span> <span class="n">geotiff</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s1">&#39;measures-antarctica/larsen-stdy.tif&#39;</span><span class="p">))</span>
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_3_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_3_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thickness_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_bedmap2</span><span class="p">()</span> <span class="k">if</span>
+                      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;bedmap2_thickness.tif&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
+
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">thickness_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:VX&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:VY&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">stdx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:STDX&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">stdy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:STDY&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
 
 <span class="n">h</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">u_obs</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
@@ -283,7 +286,7 @@ platform.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_8_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_8_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_7_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_7_0.png" />
 <p>We need to make an initial guess for the fluidity parameter. In this
 case, we’ll use the same value as in the second demo – a constant
 fluidity assuming a temperature of <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
@@ -297,7 +300,7 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 <span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
 <span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
-<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -307,7 +310,7 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_11_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_11_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_10_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_10_0.png" />
 </div>
 <div class="section" id="inferring-the-fluidity">
 <h2>Inferring the fluidity<a class="headerlink" href="#inferring-the-fluidity" title="Permalink to this headline">¶</a></h2>
@@ -389,7 +392,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.2395</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">11.3326</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -400,7 +403,7 @@ direction.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_21_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_21_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_20_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_20_0.png" />
 <p>The search direction is obtained by multiplying the inverse of the
 Gauss-Newton matrix <span class="math notranslate nohighlight">\(H\)</span> by the gradient <span class="math notranslate nohighlight">\(dJ\)</span> of the
 objective function. The Gauss-Newton matrix is dense, so we don’t
@@ -423,10 +426,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12037</span><span class="p">,</span> <span class="mf">0.276594</span>
-<span class="mf">0.999955</span><span class="p">,</span> <span class="mf">0.480809</span>
-<span class="mf">1.01004</span><span class="p">,</span> <span class="mf">0.437135</span>
-<span class="mf">1.00321</span><span class="p">,</span> <span class="mf">0.440538</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.86563</span><span class="p">,</span> <span class="mf">0.326874</span>
+<span class="mf">1.52047</span><span class="p">,</span> <span class="mf">0.501993</span>
+<span class="mf">1.32817</span><span class="p">,</span> <span class="mf">0.564823</span>
+<span class="mf">1.32655</span><span class="p">,</span> <span class="mf">0.560951</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -452,7 +455,7 @@ velocity. You can see all the publicly visible properties by typing
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_25_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_25_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span> <span class="o">/</span> <span class="n">n</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ctr</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
@@ -460,7 +463,7 @@ velocity. You can see all the publicly visible properties by typing
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_27_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_26_0.png" />
 <p>The fluidity is much higher around areas of heavy crevassing, such as
 the rift opening from the Gipps Ice Rise and the area flowing into it.
 Additionally, several areas downstream of the inlets have much higher
@@ -483,7 +486,7 @@ difference between the computed and observed velocities.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_30_0.png" />
+<img alt="_images/icepack.demo.04-ice-shelf-inverse_29_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_29_0.png" />
 <p>The computed ice velocity is mostly similar to observations aside from a
 few blips. The most widespread departures from observations occur around
 the rifts that flow into the Gipps Ice Rise. We regularized the problem
@@ -500,8 +503,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.5135520532711277</span>
-<span class="mf">1.0032070660822885</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.5606809614877997</span>
+<span class="mf">1.3265494919838048</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

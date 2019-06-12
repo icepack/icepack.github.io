@@ -167,9 +167,9 @@ call the function ``firedrake.assemble`` to evaluate it.
 
 .. parsed-literal::
 
-    0.25000000000000094
-    2.083334604899087
-    172.0160966979125
+    0.24999999999999994
+    2.083334604899089
+    172.01609669791307
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary
@@ -198,9 +198,9 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
 
 .. parsed-literal::
 
-    14.66666920979819
-    3.583333333333336
-    42.000000000000036
+    14.666669209798183
+    3.583333333333335
+    42.000000000000014
 
 
 Conclusion
