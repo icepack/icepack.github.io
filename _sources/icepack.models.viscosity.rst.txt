@@ -2,6 +2,6 @@ icepack.models.viscosity module
 ===============================
 
 .. automodule:: icepack.models.viscosity
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

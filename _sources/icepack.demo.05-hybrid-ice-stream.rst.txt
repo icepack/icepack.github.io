@@ -238,10 +238,10 @@ previous demo assuming only plug flow.
     hs = np.array(h.at(xs, tolerance=1e-10))
     bs = np.array(b.at(xs, tolerance=1e-10))
     
-    fig, ax = plt.subplots()
-    ax.plot(xs[:, 0], bs, color='black')
-    ax.plot(xs[:, 0], ss - hs, color='blue')
-    ax.plot(xs[:, 0], ss, color='blue')
+    fig, axes = plt.subplots()
+    axes.plot(xs[:, 0], bs, color='black')
+    axes.plot(xs[:, 0], ss - hs, color='blue')
+    axes.plot(xs[:, 0], ss, color='blue')
     plt.show(fig)
 
 
@@ -251,8 +251,8 @@ previous demo assuming only plug flow.
 
 .. code:: ipython3
 
-    fig, ax = plt.subplots()
-    ax.plot(xs[:, 0], hs)
+    fig, axes = plt.subplots()
+    axes.plot(xs[:, 0], hs)
     plt.show(fig)
 
 

@@ -2,6 +2,6 @@ icepack.models.ice\_shelf module
 ================================
 
 .. automodule:: icepack.models.ice_shelf
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -2,9 +2,9 @@ icepack.models package
 ======================
 
 .. automodule:: icepack.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Submodules
 ----------
@@ -18,4 +18,3 @@ Submodules
    icepack.models.ice_stream
    icepack.models.mass_transport
    icepack.models.viscosity
-

@@ -2,16 +2,16 @@ icepack package
 ===============
 
 .. automodule:: icepack
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
 
 .. toctree::
 
-    icepack.models
+   icepack.models
 
 Submodules
 ----------
@@ -25,4 +25,3 @@ Submodules
    icepack.optimization
    icepack.plot
    icepack.utilities
-

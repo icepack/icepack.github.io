@@ -297,10 +297,10 @@ surface, bed, and ice base elevation look like in the
     hs = np.array(h.at(xs, tolerance=1e-10))
     bs = np.array(b.at(xs, tolerance=1e-10))
     
-    fig, ax = plt.subplots()
-    ax.plot(xs[:, 0], bs, color='black')
-    ax.plot(xs[:, 0], ss - hs, color='blue')
-    ax.plot(xs[:, 0], ss, color='blue')
+    fig, axes = plt.subplots()
+    axes.plot(xs[:, 0], bs, color='black')
+    axes.plot(xs[:, 0], ss - hs, color='blue')
+    axes.plot(xs[:, 0], ss, color='blue')
     plt.show(fig)
 
 
@@ -313,8 +313,8 @@ crosses the grounding line.
 
 .. code:: ipython3
 
-    fig, ax = plt.subplots()
-    ax.plot(xs[:, 0], hs)
+    fig, axes = plt.subplots()
+    axes.plot(xs[:, 0], hs)
     plt.show(fig)
 
 
@@ -551,8 +551,8 @@ further upstream.
     hs_weertman = np.array(h_weertman.at(xs, tolerance=1e-10))
     hs_schoof = np.array(h_schoof.at(xs, tolerance=1e-10))
     
-    fig, ax = plt.subplots()
-    ax.plot(xs[:, 0], hs_weertman - hs_schoof, color='black')
+    fig, axes = plt.subplots()
+    axes.plot(xs[:, 0], hs_weertman - hs_schoof, color='black')
     plt.show(fig)
 
 

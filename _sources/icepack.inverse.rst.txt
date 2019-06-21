@@ -2,6 +2,6 @@ icepack.inverse module
 ======================
 
 .. automodule:: icepack.inverse
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

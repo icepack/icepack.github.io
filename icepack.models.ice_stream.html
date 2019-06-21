@@ -193,7 +193,7 @@
 <span id="icepack-models-ice-stream-module"></span><h1>icepack.models.ice_stream module<a class="headerlink" href="#module-icepack.models.ice_stream" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="icepack.models.ice_stream.IceStream">
-<em class="property">class </em><code class="descclassname">icepack.models.ice_stream.</code><code class="descname">IceStream</code><span class="sig-paren">(</span><em>viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em>friction=&lt;function bed_friction&gt;</em>, <em>side_friction=&lt;function side_friction&gt;</em>, <em>penalty=&lt;function normal_flow_penalty&gt;</em>, <em>gravity=&lt;function gravity&gt;</em>, <em>terminus=&lt;function terminus&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">IceStream</code><span class="sig-paren">(</span><em class="sig-param">viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em class="sig-param">friction=&lt;function bed_friction&gt;</em>, <em class="sig-param">side_friction=&lt;function side_friction&gt;</em>, <em class="sig-param">penalty=&lt;function normal_flow_penalty&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">terminus=&lt;function terminus&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modelling the flow of grounded ice streams</p>
 <p>This class provides functions that solve for the velocity, thickness,
@@ -207,14 +207,14 @@ and surface elevation of a grounded, fast-flowing ice stream.</p>
 </div>
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.action">
-<code class="descname">action</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.action" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the action functional that gives the ice stream
 diagnostic model as the Euler-Lagrange equations</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.compute_surface">
-<code class="descname">compute_surface</code><span class="sig-paren">(</span><em>h</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.compute_surface" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param">h</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.compute_surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ice surface elevation consistent with a given
 thickness and bathymetry</p>
 <p>If the bathymetry beneath a tidewater glacier is too low, the ice
@@ -226,7 +226,7 @@ will go afloat. The surface elevation of a floating ice shelf is</p>
 
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.diagnostic_solve">
-<code class="descname">diagnostic_solve</code><span class="sig-paren">(</span><em>u0</em>, <em>h</em>, <em>s</em>, <em>dirichlet_ids</em>, <em>tol=1e-06</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param">u0</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">dirichlet_ids</em>, <em class="sig-param">tol=1e-06</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness and surface
 elevation</p>
 <dl class="field-list simple">
@@ -257,14 +257,14 @@ that were set when this model object was initialized</p>
 
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.prognostic_solve">
-<code class="descname">prognostic_solve</code><span class="sig-paren">(</span><em>dt</em>, <em>h0</em>, <em>a</em>, <em>u</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.prognostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">h0</em>, <em class="sig-param">a</em>, <em class="sig-param">u</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.prognostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the ice thickness forward one timestep</p>
 <p>See <a class="reference internal" href="icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport.solve" title="icepack.models.mass_transport.MassTransport.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">icepack.models.mass_transport.MassTransport.solve()</span></code></a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.quadrature_degree">
-<code class="descname">quadrature_degree</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.quadrature_degree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.quadrature_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadrature degree necessary to integrate the action
 functional accurately</p>
 <p>Firedrake uses a very conservative algorithm for estimating the
@@ -275,7 +275,7 @@ reduce the number of quadrature points while preserving accuracy.</p>
 
 <dl class="method">
 <dt id="icepack.models.ice_stream.IceStream.scale">
-<code class="descname">scale</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the positive, convex part of the action functional</p>
 <p>The positive part of the action functional is used as a dimensional
 scale to determine when to terminate an optimization algorithm.</p>
@@ -285,7 +285,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 <dl class="function">
 <dt id="icepack.models.ice_stream.gravity">
-<code class="descclassname">icepack.models.ice_stream.</code><code class="descname">gravity</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the ice stream action functional is</p>
 <div class="math notranslate nohighlight">
@@ -303,7 +303,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 <dl class="function">
 <dt id="icepack.models.ice_stream.terminus">
-<code class="descclassname">icepack.models.ice_stream.</code><code class="descname">terminus</code><span class="sig-paren">(</span><em>u</em>, <em>h</em>, <em>s</em>, <em>ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminal stress part of the ice stream action functional</p>
 <p>The power exerted due to stress at the ice calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span>
 is</p>

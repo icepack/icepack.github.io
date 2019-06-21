@@ -123,8 +123,8 @@ platform.
 .. code:: ipython3
 
     σ = firedrake.interpolate(firedrake.sqrt(σx**2 + σy**2), Q)
-    fig, ax = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(σ, 20, axes=ax)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(σ, 20, axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -154,8 +154,8 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 
 .. code:: ipython3
 
-    fig, ax = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(u, 20, axes=ax)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(u, 20, axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -217,7 +217,7 @@ how one solves for the Lagrange multiplier field :math:`\lambda`.
         parameter_name='θ',
         parameter=θ,
         model_args={'h': h, 'u0': u, 'tol': 1e-6},
-        dirichlet_ids=[3, 4, 5, 6, 7, 8]
+        dirichlet_ids=opts['dirichlet_ids']
     )
 
 Once we’ve created the problem, we then create a solver object that will
@@ -259,7 +259,7 @@ represented by the ``GaussNewtonSolver`` class.
 
 .. parsed-literal::
 
-    11.3326, 0
+    12.2342, 0
 
 
 Before setting the solver loose, let’s look at the initial search
@@ -267,8 +267,9 @@ direction.
 
 .. code:: ipython3
 
-    fig, ax = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(solver.search_direction, 20, axes=ax)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(solver.search_direction, 20,
+                                        cmap='RdBu', axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -306,10 +307,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.86563, 0.326874
-    1.52047, 0.501993
-    1.32817, 0.564823
-    1.32655, 0.560951
+    2.15196, 0.27972
+    1.01877, 0.483241
+    1.02576, 0.442913
+    1.01809, 0.44706
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -334,9 +335,10 @@ First, let’s plot the parameter value and the fluidity.
 
 .. code:: ipython3
 
-    fig, ax = icepack.plot.subplots()
-    ctr = icepack.plot.tricontourf(solver.parameter, np.linspace(-10, 10, 41), cmap='RdBu', extend='both', axes=ax)
-    fig.colorbar(ctr)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(solver.parameter, np.linspace(-10, 10, 41),
+                                        cmap='RdBu', extend='both', axes=axes)
+    fig.colorbar(contours)
     plt.show(fig)
 
 
@@ -347,9 +349,10 @@ First, let’s plot the parameter value and the fluidity.
 .. code:: ipython3
 
     A = firedrake.interpolate(A0 * firedrake.exp(-solver.parameter / n), Q)
-    fig, ax = icepack.plot.subplots()
-    ctr = icepack.plot.tricontourf(A, levels=np.linspace(0, 50, 51), extend='both', axes=ax)
-    fig.colorbar(ctr)
+    fig, axes = icepack.plot.subplots()
+    contours = icepack.plot.tricontourf(A, levels=np.linspace(0, 50, 51),
+                                        extend='both', axes=axes)
+    fig.colorbar(contours)
     plt.show(fig)
 
 
@@ -377,10 +380,11 @@ difference between the computed and observed velocities.
 
 .. code:: ipython3
 
-    fig, ax = icepack.plot.subplots()
+    fig, axes = icepack.plot.subplots()
     δu = firedrake.interpolate((solver.state - u_obs)**2/(2*σ**2), Q)
-    ctr = icepack.plot.tricontourf(δu, levels=np.linspace(0, 25, 51), extend='both', axes=ax)
-    fig.colorbar(ctr)
+    contours = icepack.plot.tricontourf(δu, levels=np.linspace(0, 25, 51),
+                                        extend='both', axes=axes)
+    fig.colorbar(contours)
     plt.show(fig)
 
 
@@ -411,8 +415,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.5606809614877997
-    1.3265494919838048
+    2.4934222806924087
+    1.0180907593294504
 
 
 The objective function has been reduced by a factor of 10 through the

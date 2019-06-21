@@ -2,6 +2,6 @@ icepack.models.friction module
 ==============================
 
 .. automodule:: icepack.models.friction
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
