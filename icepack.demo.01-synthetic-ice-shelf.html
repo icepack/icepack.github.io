@@ -185,7 +185,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">π</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">as_vector</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">ds</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">as_vector</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">ds</span>
 <span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
 </pre></div>
 </div>
@@ -208,12 +208,15 @@ successively solve the prognostic and diagnostic equations until the
 system is close to a steady state. In our case, that will take about 250
 years of model time and (at least on my laptop) only a few minutes of
 computer time.</p>
-<p>The whole simulation can be divided into three parts: * Define the
-shape of the ice shelf and get a triangulation of the interior. *
-Define the initial guess for the ice thickness and velocity, and set a
-value of the rheology and accumulation rate. * Set the total simulation
-time and the number of time steps, and then iteratively update the ice
-thickness and velocity at each time step.</p>
+<p>The whole simulation can be divided into three parts:</p>
+<ul class="simple">
+<li><p>Define the shape of the ice shelf and get a triangulation of the
+interior.</p></li>
+<li><p>Define the initial guess for the ice thickness and velocity, and set
+a value of the rheology and accumulation rate.</p></li>
+<li><p>Set the total simulation time and the number of time steps, and then
+iteratively update the ice thickness and velocity at each time step.</p></li>
+</ul>
 <p>This is a pretty common workflow for a predictive model. In later demos
 we’ll see some variations on this procedure – incorporating real data,
 comparing different physics, and so forth – but the essential idea is
@@ -295,20 +298,20 @@ notebook.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Info</span>    <span class="p">:</span> <span class="n">Running</span> <span class="s1">&#39;gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo&#39;</span> <span class="p">[</span><span class="n">Gmsh</span> <span class="mf">4.0</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span> <span class="n">node</span><span class="p">,</span> <span class="nb">max</span><span class="o">.</span> <span class="mi">1</span> <span class="n">thread</span><span class="p">]</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">15</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">06</span> <span class="mi">2019</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">16</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">19</span> <span class="mi">2019</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">1</span><span class="n">D</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">1</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">2</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">1</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.000981</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">1</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.001016</span> <span class="n">s</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">2</span><span class="n">D</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">surface</span> <span class="mi">4</span> <span class="p">(</span><span class="n">Plane</span><span class="p">,</span> <span class="n">Delaunay</span><span class="p">)</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">2</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.096025</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">2</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.117678</span> <span class="n">s</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="mi">3793</span> <span class="n">vertices</span> <span class="mi">7584</span> <span class="n">elements</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Stopped</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">15</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">07</span> <span class="mi">2019</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Stopped</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">16</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">19</span> <span class="mi">2019</span>
 </pre></div>
 </div>
 <p>The terminal output from gmsh gives us some diagnostics like how many
@@ -376,8 +379,8 @@ combine them all together at the end.</p>
 
 <span class="n">hs</span><span class="p">,</span> <span class="n">us</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inlet_angles</span><span class="p">,</span> <span class="n">inlet_widths</span><span class="p">):</span>
-    <span class="n">x0</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">))))</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="n">Constant</span><span class="p">(</span><span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">))))</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">)))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">)))</span>
     <span class="n">L</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
     <span class="n">W</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">L</span> <span class="o">*</span> <span class="n">v</span>
     <span class="n">Rn</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ϕ</span> <span class="o">/</span> <span class="n">π</span> <span class="o">*</span> <span class="n">R</span>
@@ -389,7 +392,7 @@ combine them all together at the end.</p>
 <p>To combine the expressions for the thickness and velocity of each inlet
 into expressions for the whole ice shelf, we’ll take the maximum
 thickness at any point, and the sum of the velocities.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h_expr</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hs</span><span class="p">:</span>
     <span class="n">h_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">h_expr</span><span class="p">)</span>
 
@@ -414,7 +417,7 @@ should be more illuminating.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f2660694c18</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7ff4e869a6a0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" />
@@ -424,7 +427,7 @@ should be more illuminating.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f263446ef98</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7ff4e86cdb38</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" />
@@ -583,7 +586,7 @@ actual work of evaluating the integral.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Flux: </span><span class="si">{}</span><span class="s1"> km^3 / year&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flux</span><span class="p">:</span> <span class="mf">36.0396713561253</span> <span class="n">km</span><span class="o">^</span><span class="mi">3</span> <span class="o">/</span> <span class="n">year</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flux</span><span class="p">:</span> <span class="mf">36.039671356125304</span> <span class="n">km</span><span class="o">^</span><span class="mi">3</span> <span class="o">/</span> <span class="n">year</span>
 </pre></div>
 </div>
 <p>To check the degree to which the system really is in steady state, we

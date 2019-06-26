@@ -6,7 +6,7 @@
     import numpy as np
     from numpy import pi as π
     import firedrake
-    from firedrake import Constant, as_vector, inner, ds
+    from firedrake import as_vector, inner, ds
     import icepack, icepack.plot, icepack.models
 
 Synthetic ice shelf
@@ -31,12 +31,14 @@ system is close to a steady state. In our case, that will take about 250
 years of model time and (at least on my laptop) only a few minutes of
 computer time.
 
-The whole simulation can be divided into three parts: \* Define the
-shape of the ice shelf and get a triangulation of the interior. \*
-Define the initial guess for the ice thickness and velocity, and set a
-value of the rheology and accumulation rate. \* Set the total simulation
-time and the number of time steps, and then iteratively update the ice
-thickness and velocity at each time step.
+The whole simulation can be divided into three parts:
+
+-  Define the shape of the ice shelf and get a triangulation of the
+   interior.
+-  Define the initial guess for the ice thickness and velocity, and set
+   a value of the rheology and accumulation rate.
+-  Set the total simulation time and the number of time steps, and then
+   iteratively update the ice thickness and velocity at each time step.
 
 This is a pretty common workflow for a predictive model. In later demos
 we’ll see some variations on this procedure – incorporating real data,
@@ -138,20 +140,20 @@ notebook.
 .. parsed-literal::
 
     Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.0.7, 1 node, max. 1 thread]
-    Info    : Started on Wed Jun 26 15:18:06 2019
+    Info    : Started on Wed Jun 26 16:34:19 2019
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
     Info    : Meshing curve 1 (Circle)
     Info    : Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.000981 s)
+    Info    : Done meshing 1D (0.001016 s)
     Info    : Meshing 2D...
     Info    : Meshing surface 4 (Plane, Delaunay)
-    Info    : Done meshing 2D (0.096025 s)
+    Info    : Done meshing 2D (0.117678 s)
     Info    : 3793 vertices 7584 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Wed Jun 26 15:18:07 2019
+    Info    : Stopped on Wed Jun 26 16:34:19 2019
 
 
 The terminal output from gmsh gives us some diagnostics like how many
@@ -235,8 +237,8 @@ combine them all together at the end.
     
     hs, us = [], []
     for θ, ϕ in zip(inlet_angles, inlet_widths):
-        x0 = Constant(R * as_vector((np.cos(θ), np.sin(θ))))
-        v = -Constant(as_vector((np.cos(θ), np.sin(θ))))
+        x0 = R * as_vector((np.cos(θ), np.sin(θ)))
+        v = -as_vector((np.cos(θ), np.sin(θ)))
         L = inner(x - x0, v)
         W = x - x0 - L * v
         Rn = 2 * ϕ / π * R
@@ -250,7 +252,7 @@ thickness at any point, and the sum of the velocities.
 
 .. code:: ipython3
 
-    h_expr = Constant(hb)
+    h_expr = firedrake.Constant(hb)
     for h in hs:
         h_expr = firedrake.max_value(h, h_expr)
         
@@ -283,7 +285,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f2660694c18>
+    <matplotlib.colorbar.Colorbar at 0x7ff4e869a6a0>
 
 
 
@@ -303,7 +305,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f263446ef98>
+    <matplotlib.colorbar.Colorbar at 0x7ff4e86cdb38>
 
 
 
@@ -512,7 +514,7 @@ actual work of evaluating the integral.
 
 .. parsed-literal::
 
-    Flux: 36.0396713561253 km^3 / year
+    Flux: 36.039671356125304 km^3 / year
 
 
 To check the degree to which the system really is in steady state, we
