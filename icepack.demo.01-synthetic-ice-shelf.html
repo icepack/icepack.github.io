@@ -87,16 +87,17 @@
             
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Synthetic ice shelf</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#geometry-and-input-data">Geometry and input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geometry">Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-data">Input data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modeling">Modeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
@@ -181,120 +182,261 @@
             
   <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">π</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">as_vector</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">ds</span>
 <span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
 </pre></div>
 </div>
 <div class="section" id="synthetic-ice-shelf">
 <h1>Synthetic ice shelf<a class="headerlink" href="#synthetic-ice-shelf" title="Permalink to this headline">¶</a></h1>
 <p>In this demo, we’ll show how to simulate the evolution of a floating ice
-shelf. Running a simulation consists of creating a model object that
-represents the physics you’re using, and calling the model object’s
-solve methods. These methods take a set of input fields and return some
-output field. For most ice sheet models, there are two kinds of PDEs to
-solve: a diagnostic equation that takes in a thickness and returns the
-current velocity, and a prognostic equation that takes the current
-velocity and thickness, and returns the thickness at the next timestep.
-To keep things as simple as possible, we’ll use an exact analytic
-solution for the velocity of a floating ice shelf with a thickness that
-decreases linearly from the inflow boundary to the ice front.</p>
-<div class="section" id="geometry-and-input-data">
-<h2>Geometry and input data<a class="headerlink" href="#geometry-and-input-data" title="Permalink to this headline">¶</a></h2>
-<p>First we need to define some input data, for which we’ll use an exact
-solution for a floating ice shelf with a simple geometry. A thorough
-derivation of the PDE for ice shelf flow can be found in chapter 6 of
-Greve and Blatter, <a class="reference external" href="https://books.google.com/books?isbn=3642034152">Dynamics of Ice Sheets and
-Glaciers</a>, along with
-the exact solution that we’ll use here. We’ll briefly review what these
-PDEs are below. The symbols and variable names we use will correspond
-exactly to the variable names used in the code that follows.</p>
-<p>The diagnostic equation for the velocity of an ice shelf is</p>
-<div class="math notranslate nohighlight">
-\[\nabla\cdot hM - \frac{1}{2}\varrho g\nabla h^2 = 0\]</div>
-<p>where <span class="math notranslate nohighlight">\(h\)</span> is the ice thickness, <span class="math notranslate nohighlight">\(M\)</span> is the membrane stress
-tensor, <span class="math notranslate nohighlight">\(g\)</span> is the acceleration due to gravity, and
-<span class="math notranslate nohighlight">\(\varrho = \rho_I(1 - \rho_I/\rho_W)\)</span> is the buoyant density of
-ice over water. The membrane stress is defined as</p>
-<div class="math notranslate nohighlight">
-\[M = 2\mu(\dot\varepsilon + \text{tr}(\dot\varepsilon)I),\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mu\)</span> is the ice viscosity,
-<span class="math notranslate nohighlight">\(\dot\varepsilon = (\nabla u + \nabla u^*)/2\)</span> is the 2D
-strain-rate tensor, and <span class="math notranslate nohighlight">\(I\)</span> is the identity tensor. Note that
-since we’re in 2D the trace of the strain rate tensor is no longer zero.
-Finally, the ice viscosity is a function of the strain rate tensor:</p>
-<div class="math notranslate nohighlight">
-\[\mu = \frac{B}{2}\sqrt{\frac{\dot\varepsilon : \dot\varepsilon + \text{tr}(\dot\varepsilon)^2}{2}}^{1/n - 1}\]</div>
-<p>where <span class="math notranslate nohighlight">\(n = 3\)</span>, and <span class="math notranslate nohighlight">\(B\)</span> is the temperature-dependent rheology
-coefficient.</p>
-<p>When we consider ice shelves with no variation in the
-<span class="math notranslate nohighlight">\(y\)</span>-direction, these equations reduce to a 1D boundary value
-problem. We can integrate twice to get that</p>
-<div class="math notranslate nohighlight">
-\[u = u_0 + \int_0^x\left(\frac{\varrho g h(x')}{4B}\right)^n dx'.\]</div>
-<p>When <span class="math notranslate nohighlight">\(h\)</span> is a linear function of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(B\)</span> is
-constant, we can evaluate this integral exactly to arrive at an
-expression for <span class="math notranslate nohighlight">\(u\)</span> which is a degree-4 polynomial.</p>
-<p>First, let’s set up the geometry and some function spaces.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">20e3</span><span class="p">,</span> <span class="mf">20e3</span>
-<span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+shelf. The example that we’ll show is an example of a model <em>spin-up</em>.
+In a spin-up experiment, the objective is to obtain a physically
+plausible state of some system from an initial guess by simulating its
+evolution for a long time. For example, it’s common to spin up climate
+models from a very rough initial guess for several thousand years to
+obtain a representative state of the atmosphere and oceans for the epoch
+you’re interested in.</p>
+<p>In our case, we’ll use an idealized ice shelf geometry and a rough guess
+for the initial ice thickness. First we’ll solve the <em>diagnostic
+equation</em> for the velocity througout the ice shelf. We’ll then solve the
+<em>prognostic equation</em> to obtain the ice thickness at a slightly later
+time. By assuming a given rate of ice accumulation and melting, we can
+successively solve the prognostic and diagnostic equations until the
+system is close to a steady state. In our case, that will take about 250
+years of model time and (at least on my laptop) only a few minutes of
+computer time.</p>
+<p>The whole simulation can be divided into three parts: * Define the
+shape of the ice shelf and get a triangulation of the interior. *
+Define the initial guess for the ice thickness and velocity, and set a
+value of the rheology and accumulation rate. * Set the total simulation
+time and the number of time steps, and then iteratively update the ice
+thickness and velocity at each time step.</p>
+<p>This is a pretty common workflow for a predictive model. In later demos
+we’ll see some variations on this procedure – incorporating real data,
+comparing different physics, and so forth – but the essential idea is
+the same throughout.</p>
+<div class="section" id="geometry">
+<h2>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
+<p>First we need to define the geometry of the ice shelf. Although we’ll be
+solving a synthetic problem, we’ll try to use a more-or-less realistic
+shape. The inflow boundary will be a circular arc centered at the origin
+with a radius of 200 km. The outflow boundary will be another circular
+arc with a much higher radius.</p>
+<p>In the first demo, we used one of firedrake’s built-in functions to
+create the geometry. For more complicated shapes you’ll need to use a
+mesh generator, a program that turns a description of the boundary of a
+spatial domain into a triangulation of the interior. Two of the more
+popular 2D mesh generators are <a class="reference external" href="http://gmsh.info/">gmsh</a> and
+<a class="reference external" href="https://www.cs.cmu.edu/~quake/triangle.html">Triangle</a>. In this case
+we’ll use gmsh because we can create the input file entirely in Python
+through the package <a class="reference external" href="https://github.com/nschloe/pygmsh">pygmsh</a>.</p>
+<p>We’ll first define the mesh radius and the spacing for the mesh cells.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygmsh</span>
 
-<span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="mf">200e3</span>
+<span class="n">δx</span> <span class="o">=</span> <span class="mf">5e3</span>
 </pre></div>
 </div>
-<p>Next, we’ll interpolate the expressions for the exact fields to the
-finite element representation. This should all be familiar from the last
-demo.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
-                               <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span><span class="p">)</span>
+<p>Next, we’ll create an empty geometry and add some points to it. The
+points <code class="docutils literal notranslate"><span class="pre">x1</span></code>, <code class="docutils literal notranslate"><span class="pre">x2</span></code> will represent the left and right endpoints of the
+mesh. The points <code class="docutils literal notranslate"><span class="pre">center1</span></code>, <code class="docutils literal notranslate"><span class="pre">center2</span></code> will not actually be contained
+in the mesh, but rather define the centers of the two circular arcs.
+Finally, we’ll add the circular arcs.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">geometry</span> <span class="o">=</span> <span class="n">pygmsh</span><span class="o">.</span><span class="n">built_in</span><span class="o">.</span><span class="n">Geometry</span><span class="p">()</span>
 
-<span class="n">h0</span><span class="p">,</span> <span class="n">δh</span> <span class="o">=</span> <span class="mf">500.0</span><span class="p">,</span> <span class="mf">100.0</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">h0</span> <span class="o">-</span> <span class="n">δh</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_point</span><span class="p">([</span><span class="o">-</span><span class="n">R</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lcar</span><span class="o">=</span><span class="n">δx</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_point</span><span class="p">([</span><span class="o">+</span><span class="n">R</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lcar</span><span class="o">=</span><span class="n">δx</span><span class="p">)</span>
 
-<span class="n">ρ</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span>
-<span class="n">T0</span> <span class="o">=</span> <span class="mf">254.15</span>
-<span class="n">B</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-<span class="n">Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span><span class="o">**</span><span class="n">n</span>
-<span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">δh</span><span class="o">/</span><span class="n">h0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">u0</span> <span class="o">=</span> <span class="mf">100.0</span>
-<span class="n">du</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">Lx</span> <span class="o">*</span> <span class="p">(</span><span class="n">h0</span> <span class="o">/</span> <span class="n">δh</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">u0</span> <span class="o">+</span> <span class="n">du</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V</span><span class="p">)</span>
+<span class="n">center1</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_point</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,],</span> <span class="n">lcar</span><span class="o">=</span><span class="n">δx</span><span class="p">)</span>
+<span class="n">center2</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_point</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span> <span class="o">*</span> <span class="n">R</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lcar</span><span class="o">=</span><span class="n">δx</span><span class="p">)</span>
+
+<span class="n">arcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">add_circle_arc</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">center1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span>
+        <span class="n">geometry</span><span class="o">.</span><span class="n">add_circle_arc</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">center2</span><span class="p">,</span> <span class="n">x1</span><span class="p">)]</span>
 </pre></div>
 </div>
-<p>Here we’ll plot both the thickness and the exact solution for the
-velocity. Just to show off some of the matplotlib integration, we’ll
-make them as subplots of the same figure. The extra padding around the
-colorbars and the call to <code class="docutils literal notranslate"><span class="pre">fig.tight_layout()</span></code> are necessary for
-things to look nice.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Now that we’ve added the geometric elements of our domain, we also need
+to tell gmsh about the topology, i.e. how all the arcs are connected to
+each other and how they’re oriented. The physical lines and surfaces are
+added so that gmsh will tag each geometric entity with a number that we
+can use to set different boundary conditions.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">line_loop</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_line_loop</span><span class="p">(</span><span class="n">arcs</span><span class="p">)</span>
+<span class="n">plane_surface</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_plane_surface</span><span class="p">(</span><span class="n">line_loop</span><span class="p">)</span>
 
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Thickness&#39;</span><span class="p">)</span>
-<span class="n">contours_h</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours_h</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
-
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Velocity&#39;</span><span class="p">)</span>
-<span class="n">contours_v</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours_v</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.046</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">physical_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="o">.</span><span class="n">add_physical</span><span class="p">(</span><span class="n">arc</span><span class="p">)</span> <span class="k">for</span> <span class="n">arc</span> <span class="ow">in</span> <span class="n">arcs</span><span class="p">]</span>
+<span class="n">physical_surface</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_physical</span><span class="p">(</span><span class="n">plane_surface</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This completes the definition of the input geometry. The method
+<code class="docutils literal notranslate"><span class="pre">get_code</span></code> of the geometry object returns the string describing it in
+the syntax that gmsh expects. We’ll write this string out to a file with
+the extension <code class="docutils literal notranslate"><span class="pre">.geo</span></code>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;ice-shelf.geo&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">geo_file</span><span class="p">:</span>
+    <span class="n">geo_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Next, we’ll call gmsh from the command line on the input file we just
+created. The mesh generator will read the description of the domain
+boundary, triangulate the interior of the domain, and output a file with
+the extension <code class="docutils literal notranslate"><span class="pre">.msh</span></code>. Other mesh generators have different input and
+output formats, but the procedure is roughly the same.</p>
+<p>In a jupyter notebook, you can use an exclamation mark followed by a
+command to execute this command at the shell rather than in Python.
+We’ll call <code class="docutils literal notranslate"><span class="pre">gmsh</span></code> from the command line with the following arguments:
+* <code class="docutils literal notranslate"><span class="pre">-2</span></code>: generate a 2D mesh as opposed to 3D * <code class="docutils literal notranslate"><span class="pre">-format</span> <span class="pre">msh2</span></code>:
+specify the storage format of the output file * <code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">ice-shelf.msh</span></code>:
+name of the output file * <code class="docutils literal notranslate"><span class="pre">ice-shelf.geo</span></code>: the input data</p>
+<p>The shell command (without the exclamation mark) is what you would use
+if you were working directly from the command line rather than in a
+notebook.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Info</span>    <span class="p">:</span> <span class="n">Running</span> <span class="s1">&#39;gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo&#39;</span> <span class="p">[</span><span class="n">Gmsh</span> <span class="mf">4.0</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span> <span class="n">node</span><span class="p">,</span> <span class="nb">max</span><span class="o">.</span> <span class="mi">1</span> <span class="n">thread</span><span class="p">]</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">15</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">06</span> <span class="mi">2019</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span><span class="o">...</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">1</span><span class="n">D</span><span class="o">...</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">1</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">2</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">1</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.000981</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">2</span><span class="n">D</span><span class="o">...</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">surface</span> <span class="mi">4</span> <span class="p">(</span><span class="n">Plane</span><span class="p">,</span> <span class="n">Delaunay</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">2</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.096025</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="mi">3793</span> <span class="n">vertices</span> <span class="mi">7584</span> <span class="n">elements</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span><span class="o">...</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Stopped</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">15</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">07</span> <span class="mi">2019</span>
+</pre></div>
+</div>
+<p>The terminal output from gmsh gives us some diagnostics like how many
+vertices and triangles it contains. This is also where gmsh will report
+if something went wrong – a syntax error in the .geo file, a degenerate
+input geometry, and so forth.</p>
+<p>To load the mesh we pass the filename to the function
+<code class="docutils literal notranslate"><span class="pre">firedrake.Mesh</span></code>. This function will determine the mesh format based
+on the file extension; it works for meshes that were generated by
+Triangle or other programs as well.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="s1">&#39;ice-shelf.msh&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The colors in the figure below show how gmsh tagged the calving terminus
+with ID 2 and the inflow boundary as 1. This is exactly analogous to how
+firedrake adds tags for each side of the square geometry that we used in
+the previous demo. These numeric tags help us define Dirichlet (inflow)
+and Neumann (terminus) boundary conditions where they apply.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.01-synthetic-ice-shelf_7_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_7_0.png" />
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_16_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_16_0.png" />
+<p>In the demos for real glaciers that follow, we use all of the same
+tools. The main difference is that the boundary arcs are drawn by hand
+in a geographic information system, rather than defined programatically
+in Python. In the repository
+<a class="reference external" href="https://github.com/icepack/glacier-meshes">glacier-meshes</a> I’ve
+included shapefiles of the outlines of several glaciers and a program to
+automate the translation of a shapefile into a .geo file using pygmsh.
+This will be used in the demo for the Larsen Ice Shelf.</p>
+</div>
+<div class="section" id="input-data">
+<h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h2>
+<p>To mimic the state of a real ice shelf, we’ll pick a few angles along
+the inflow boundary that represent the centerlines of the ice streams
+that feed the shelf. We’ll then define velocity and thickness profiles
+along this inflow boundary. We don’t have a great idea from the outset
+of what the steady state of the ice shelf is; it doesn’t have a simple
+analytical expression in terms of the coordinates. Instead, we’ll pick a
+somewhat arbitrary initial profile and evolve it towards steady state.</p>
+<p>Many ice shelves (Larsen, Ross, etc.) have several streams feeding them.
+Our synthetic glacier will be fed by four streams. We’ll define the
+inlets by picking the angles around the inflow boundary where each inlet
+comes in from and the width in radians. You can re-run this notebook and
+change the values or the number of streams to whatever you like.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">inlet_angles</span> <span class="o">=</span> <span class="n">π</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">])</span>
+<span class="n">inlet_widths</span> <span class="o">=</span> <span class="n">π</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Next, we’ll come up with some rather arbitrary and un-physical input
+data. The basic idea is to make the thickness slope down as you go
+towards the calving terminus and away from the centerline of an inlet.
+Likewise the ice speed goes up as you go towards the calving terminus.
+In order to make this big nasty algebraic expression, we’ll create a
+list of the perturbation thickness and velocity for each inlet, and
+combine them all together at the end.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="n">u_in</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">h_in</span> <span class="o">=</span> <span class="mi">350</span>
+<span class="n">hb</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">dh</span><span class="p">,</span> <span class="n">du</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">250</span>
+
+<span class="n">hs</span><span class="p">,</span> <span class="n">us</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inlet_angles</span><span class="p">,</span> <span class="n">inlet_widths</span><span class="p">):</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">))))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="n">Constant</span><span class="p">(</span><span class="n">as_vector</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">θ</span><span class="p">))))</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">L</span> <span class="o">*</span> <span class="n">v</span>
+    <span class="n">Rn</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ϕ</span> <span class="o">/</span> <span class="n">π</span> <span class="o">*</span> <span class="n">R</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">W</span> <span class="o">/</span> <span class="n">Rn</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">hs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hb</span> <span class="o">+</span> <span class="n">q</span> <span class="o">*</span> <span class="p">((</span><span class="n">h_in</span> <span class="o">-</span> <span class="n">hb</span><span class="p">)</span> <span class="o">-</span> <span class="n">dh</span> <span class="o">*</span> <span class="n">L</span> <span class="o">/</span><span class="n">R</span><span class="p">))</span>
+    <span class="n">us</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">W</span><span class="o">/</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">u_in</span> <span class="o">+</span> <span class="n">du</span> <span class="o">*</span> <span class="n">L</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To combine the expressions for the thickness and velocity of each inlet
+into expressions for the whole ice shelf, we’ll take the maximum
+thickness at any point, and the sum of the velocities.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h_expr</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hs</span><span class="p">:</span>
+    <span class="n">h_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">h_expr</span><span class="p">)</span>
+
+<span class="n">u_expr</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">us</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These are merely algebraic expressions. To start modeling we need to
+interpolate these expressions to some function spaces defined over the
+mesh.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">h0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">h_expr</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">u0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u_expr</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The algebra might be a little opaque, but the plots of the initial data
+should be more illuminating.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Thickness&#39;</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f2660694c18</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Velocity&#39;</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f263446ef98</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" />
+<p>As the simulation progresses, the ice streams, as represented by areas
+with higher thickness, will spread and grow.</p>
 </div>
 <div class="section" id="modeling">
 <h2>Modeling<a class="headerlink" href="#modeling" title="Permalink to this headline">¶</a></h2>
 <p>To actually start solving things, we’ll make an <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code> object that
-represents the physical model we’re using. The model object stores a
-bunch of data about the individual physics components – viscosity,
-gravity, etc. These aren’t important for now but we’ll come back to them
-later.</p>
-<p>Each model type has two methods, <code class="docutils literal notranslate"><span class="pre">diagnostic_solve</span></code> and
-<code class="docutils literal notranslate"><span class="pre">prognostic_solve</span></code>, that solve the PDEs for the ice velocity and
-thickness.</p>
+represents the physical model we’re using. Each model type has two
+methods, <code class="docutils literal notranslate"><span class="pre">diagnostic_solve</span></code> and <code class="docutils literal notranslate"><span class="pre">prognostic_solve</span></code>, that solve the
+PDEs for the ice velocity and thickness.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">()</span>
 <span class="n">help</span><span class="p">(</span><span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">)</span>
 </pre></div>
@@ -328,86 +470,138 @@ diagnostic_solve(u0, h, dirichlet_ids, tol=1e-06, <a href="#id1"><span class="pr
         All other keyword arguments will be passed on to the
         <cite>viscosity</cite> and <cite>gravity</cite> functions that were set when this
         model object was initialized</pre>
-<p>To solve for the ice velocity, we pass in all the input fields as
-keyword arguments. To make things a little more interesting, we’ll use a
-value of the fluidity parameter that changes in the center of the
-domain. Since we’re using a value of the fluidity parameter that varies
-in both the <span class="math notranslate nohighlight">\(x\)</span>- and <span class="math notranslate nohighlight">\(y\)</span>-directions, the PDE will no longer
-have a nice closed-form solution.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">Lx</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="n">Ly</span>
-<span class="n">shape_x</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">px</span><span class="p">))</span>
-<span class="n">shape_y</span> <span class="o">=</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">py</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span> <span class="o">-</span> <span class="n">py</span><span class="p">))</span>
-
-<span class="n">δT</span> <span class="o">=</span> <span class="mf">10.0</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">T0</span> <span class="o">+</span> <span class="n">shape_x</span> <span class="o">*</span> <span class="n">shape_y</span> <span class="o">*</span> <span class="n">δT</span>
+<p>For now we’ll use a fluidity that assumes a spatially constant
+temperature of -18:math:<cite>{}^circ</cite>C. The code itself assumes that all
+temperatures are in Kelvin. In later demos, we’ll use a spatially
+variable fluidity coefficient and show how to infer it from
+observations.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">255.15</span><span class="p">)</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;MPa$</span><span class="si">{}</span><span class="s1">^{-3}$ * years$</span><span class="si">{}</span><span class="s1">^{-1}$&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.01-synthetic-ice-shelf_11_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_11_0.png" />
-<p>We also need to describe the boundary conditions we’re using and the
-tolerance for solving Newton’s method. Since the boundary conditions and
-convergence tolerance are usually the same throughout a simulation,
-we’ll pack them into a dictionary and reuse it throughout. To compute
-the velocity field that results from the values of the thickness and
-fluidity we’ve chosen, we invoke the diagnostic solve method of the ice
-shelf object, passing in the extra options as keyword arguments.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">}</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+<p>Finally, we need to prescribe the boundary conditions for the velocity
+and the convergence tolerance for the nonlinear solver. Since the
+boundary conditions and convergence tolerance are usually the same
+throughout a simulation, we’ll pack them into a dictionary call <code class="docutils literal notranslate"><span class="pre">opts</span></code>
+and reuse it throughout.</p>
+<p>To compute the velocity field, we call the diagnostic solve method of
+the ice shelf object. This function takes in the initial guess <code class="docutils literal notranslate"><span class="pre">u0</span></code>
+for the velocity, the thickness, the fluidity, and all the extra options
+we packed into <code class="docutils literal notranslate"><span class="pre">opts</span></code>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">}</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note how in the diagnostic solve procedure we passed everything in as a
-keyword argument. This convention will be used throughout all the demos.
-Keyword arguments are slightly more verbose, but they save you the
-trouble of remembering what order everything goes in. On top of that,
-many fields are <em>only</em> passed in as keyword arguments; for example, the
-fluidity parameter is not a positional argument of the diagnostic solve
-routine. The reason for this choice, as we’ll see later, is that it’s
-much easier to swap out components of the model physics for your own
-customized versions.</p>
-<p>The effect of using a different fluidity field can be seen in how the
-contour lines for the ice speed bend in the middle of the domain.</p>
+<p>Here we passed all the arguments to <code class="docutils literal notranslate"><span class="pre">diagnostic_solve</span></code> as keywords.
+This convention will be used throughout all the demos. Passing arguments
+by keyword is slightly more verbose than passing them by position, but
+it saves you the trouble of remembering what order everything goes in.
+On top of that, many fields are <em>only</em> passed in as keyword arguments.
+For example, the fluidity parameter is not a positional argument of the
+diagnostic solve routine. The reason for this choice, as we’ll see
+later, is that it’s much easier to swap out components of the model
+physics for your own customized versions.</p>
+<p>The following plot shows streamlines of the velocity field. These kind
+of plots are useful for showing areas of convergence and divergence of
+the flow field.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">streamlines</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">streamplot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">2e3</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">streamlines</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.01-synthetic-ice-shelf_16_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_16_0.png" />
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_37_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_37_0.png" />
 <p>To project the state of the ice shelf forward in time, we’ll use the
 prognostic solve method. The prognostic solver updates the ice thickness
 forward by a given timestep given the accumulation rate and velocity. We
 then update the velocity using the diagnostic solver at each timestep.
-The following code runs the model forward for a year with a timestep of
-one month, assuming a constant value of the accumulation rate.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">12</span>
+The following code runs the model forward for several years until the
+ice shelf is roughly in steady state.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mf">250.0</span>
+<span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">125</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">T</span> <span class="o">/</span> <span class="n">num_timesteps</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span><span class="p">):</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_timesteps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h0</span><span class="p">)</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.............</span>
+</pre></div>
+</div>
+<p>The main loop to run the simulation consists of alternating calls to the
+prognostic and diagnostic solve methods of the model object. We’ll see
+this pattern repeated in all of the demos that follow. In some cases
+we’ll add in extra physics, like updating the temperature or damage
+field, but the core idea is the same.</p>
+<p>We’ve added a bit of feedback to the loop by printing out a period every
+10 iterations. These kinds of diagnostics are helpful to know that the
+simulation is actually running and that it hasn’t frozen. But you can
+also put in whatever extra code you want here. For example, you might
+want to make plots of the thickness and velocity, print out some
+physical quantity like the total flux of ice out of the calving front,
+or accumulate the fields into a list so that you can analyze the entire
+time series later.</p>
+<p>To wrap things up, we’ll make a plot of the final ice thickness and
+velocity. The initial thickness profile of each ice stream, which
+flattened out in the middle of the shelf, has extended all the way to
+the terminus.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.01-synthetic-ice-shelf_19_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_19_0.png" />
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_41_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_41_0.png" />
+<p>A stream plot of the ice velocity shows that the areas of greatest flow
+divergence have moved around relative to the initial velocity.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
+<span class="n">streamlines</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">streamplot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">2e3</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">streamlines</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters/year&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/icepack.demo.01-synthetic-ice-shelf_20_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_20_0.png" />
+<img alt="_images/icepack.demo.01-synthetic-ice-shelf_43_0.png" src="_images/icepack.demo.01-synthetic-ice-shelf_43_0.png" />
+<p>A useful quantity to know is how much ice is moving through the system.
+In the previous demo, we showed how to symbolically create functionals
+of the solution. We can use this to calculate the total ice flux through
+the calving terminus.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ν</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">flux</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The extra argument to <code class="docutils literal notranslate"><span class="pre">ds</span></code> indicates that we want to integrate over
+just the calving terminus rather than over the entire domain boundary.
+The variable <code class="docutils literal notranslate"><span class="pre">flux</span></code> is a symbolic representation of this quantity in
+terms of the input fields; it isn’t a number but rather a description of
+how to compute a number. The function <code class="docutils literal notranslate"><span class="pre">firedrake.assemble</span></code> does the
+actual work of evaluating the integral.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Flux: </span><span class="si">{}</span><span class="s1"> km^3 / year&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flux</span><span class="p">:</span> <span class="mf">36.0396713561253</span> <span class="n">km</span><span class="o">^</span><span class="mi">3</span> <span class="o">/</span> <span class="n">year</span>
+</pre></div>
+</div>
+<p>To check the degree to which the system really is in steady state, we
+can compute the flux along the inflow boundary rather than along the
+terminus. This should be equal to the flux out of the domain since we’ve
+set the accumulation rate to be zero.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">influx</span> <span class="o">=</span> <span class="o">-</span><span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Influx: </span><span class="si">{}</span><span class="s1"> km^3 / year&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">influx</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Influx</span><span class="p">:</span> <span class="mf">38.15826841513586</span> <span class="n">km</span><span class="o">^</span><span class="mi">3</span> <span class="o">/</span> <span class="n">year</span>
+</pre></div>
+</div>
+<p>The influx and outflux are reasonably close, with the influx slightly
+exceeding the outflux. The ice shelf will thicken, increasing the flux
+out of the terminus, until the two values equilibrate. If you want to
+experiment with this example a bit more, you can increase the final time
+<span class="math notranslate nohighlight">\(T\)</span> and then compare the fluxes.</p>
 </div>
 <div class="section" id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>

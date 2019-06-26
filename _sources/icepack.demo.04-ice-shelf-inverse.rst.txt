@@ -6,6 +6,7 @@
     import matplotlib.pyplot as plt
     import numpy as np
     import rasterio
+    import geojson
     import firedrake
     import icepack, icepack.plot, icepack.models
 
@@ -79,18 +80,34 @@ Shelf, but we also need to use the error estimates for the velocities.
 .. code:: ipython3
 
     import data
-    mesh_filename = data.fetch_larsen_mesh()
-    mesh = firedrake.Mesh(mesh_filename)
-    
+    import meshing
+    outline_filename = data.fetch_larsen_outline()
+    with open(outline_filename, 'r') as outline_file:
+        outline = geojson.load(outline_file)
+        
+    geometry = meshing.collection_to_geo(outline)
+    with open('larsen.geo', 'w') as geo_file:
+        geo_file.write(geometry.get_code())
+
+.. code:: ipython3
+
+    !gmsh -2 -format msh2 -v 2 -o larsen.msh larsen.geo
+
+.. code:: ipython3
+
+    mesh = firedrake.Mesh('larsen.msh')
+
+.. code:: ipython3
+
     fig, axes = icepack.plot.subplots()
     axes.set_xlabel('meters')
     axes.grid()
-    icepack.plot.triplot(mesh, axes=axes, linewidth=2)
+    icepack.plot.triplot(mesh, axes=axes, linewidth=1)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_3_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_6_0.png
 
 
 .. code:: ipython3
@@ -130,7 +147,7 @@ platform.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_7_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_10_0.png
 
 
 We need to make an initial guess for the fluidity parameter. In this
@@ -161,7 +178,7 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_10_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_13_0.png
 
 
 Inferring the fluidity
@@ -275,7 +292,7 @@ direction.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_20_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_23_0.png
 
 
 The search direction is obtained by multiplying the inverse of the
@@ -307,10 +324,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.15196, 0.27972
-    1.01877, 0.483241
-    1.02576, 0.442913
-    1.01809, 0.44706
+    2.15197, 0.279719
+    1.0196, 0.482157
+    1.0255, 0.443131
+    1.01802, 0.447144
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -343,7 +360,7 @@ First, let’s plot the parameter value and the fluidity.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_25_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_28_0.png
 
 
 .. code:: ipython3
@@ -357,7 +374,7 @@ First, let’s plot the parameter value and the fluidity.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_26_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_29_0.png
 
 
 The fluidity is much higher around areas of heavy crevassing, such as
@@ -389,7 +406,7 @@ difference between the computed and observed velocities.
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_29_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_32_0.png
 
 
 The computed ice velocity is mostly similar to observations aside from a
@@ -415,8 +432,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.4934222806924087
-    1.0180907593294504
+    2.4930984726165333
+    1.018024226555064
 
 
 The objective function has been reduced by a factor of 10 through the

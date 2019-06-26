@@ -6,6 +6,7 @@
     import matplotlib.pyplot as plt
     import numpy as np
     import rasterio
+    import geojson
     import firedrake
     import icepack, icepack.plot, icepack.models
 
@@ -24,15 +25,15 @@ which NASA makes remote sensing data available to the public. Most of
 the ice sheet remote sensing data produced by American research
 institutions is hosted at the `National Snow and Ice Data Center
 (NSIDC) <https://www.nsidc.org>`__ and an EarthData login is necessary
-to access data from NSIDC. In particular, we’ll use a velocity map of
-Antarctica produced as part of the MEaSUREs program, which you can read
-more about `here <https://nsidc.org/data/nsidc-0484>`__. For the ice
-thickness we’ll use the
-`bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ data set, which is
-available from the British Antarctic Survey. Finally, we’ll need a
-description of the computational domain. In this case, I created a
-vector data file of the outline of the Larsen Ice Shelf by tracing over
-satellite imagery in a `geographic information
+to access data from NSIDC.
+
+The external data that we will use are: \* a velocity map of Antarctica
+produced as part of the MEaSUREs program, which you can read more about
+`here <https://nsidc.org/data/nsidc-0484>`__ \* an ice thickness map
+from the `bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ data set,
+which is available from the British Antarctic Survey \* an outline of
+the Larsen C Ice Shelf that I created by tracing over satellite imagery
+in a `geographic information
 system <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
 
 Rather than manually download these data sets from the websites they’re
@@ -44,53 +45,134 @@ unzipping archived files, and so forth.) One we have the gridded data
 sets we’ll use the library
 `rasterio <https://rasterio.readthedocs.io/en/stable/>`__ to read them.
 Both pooch and rasterio will have been installed along with icepack, so
-you don’t need to do this yourself. You will need to have a working
-installation of `gmsh <https://gmsh.info>`__ in order to generate the
-mesh.
-
-First, we’ll fetch the mesh and print out the path to the file where
-it’s been stored.
-
-.. code:: ipython3
-
-    import data
-    mesh_filename = data.fetch_larsen_mesh()
-    print(mesh_filename)
-
-
-.. parsed-literal::
-
-    /home/daniel/.cache/icepack/larsen.msh
-
-
-This function will put the mesh in a predictable location on your system
-so it can be found easily later, and it will only download the file the
-first time you ask for it. The caching aspect will come in handy because
-we’ll be using much of the same data in the fourth demo. The data module
-contains functions to fetch the remaining data, which we’ll see below.
+you don’t need to do this yourself.
 
 Geometry
 ~~~~~~~~
 
-Now that we’ve downloaded the mesh we need to read it. Firedrake has
-built-in functions for reading meshes in a variety of formats. The
-following code reads in the Larsen mesh and makes a plot of it so that
-we can see all the boundary IDs. Boundary segments 1 and 3 correspond to
-the calving terminus; segment 2 borders the Gipps Ice Rise.
+First, we’ll fetch a `GeoJSON <https://en.wikipedia.org/wiki/GeoJSON>`__
+file describing the outline of the domain. GeoJSON is a common file
+format for geospatial vector data. In the previous demo, we generated a
+.geo file describing the outline of the domain, and then called gmsh to
+create a triangulation of the interior. For this demo, we’ll use a
+different helper script that will turn our .geojson file into the .geo
+format that gmsh expects.
+
+To retrieve the external data, we’ll use several functions in the module
+``data.py``. All of these functions start with ``fetch``. These
+functions retrieve the external data from the internet and put them in a
+predictable location so they can be found easily later. The files will
+be will only be downloaded the first time you fetch them; this caching
+functionality will come in handy because we’ll be using much of the same
+data in later demos.
 
 .. code:: ipython3
 
-    mesh = firedrake.Mesh(mesh_filename)
-    
+    import data
+    outline_filename = data.fetch_larsen_outline()
+    print(outline_filename)
+
+
+.. parsed-literal::
+
+    /home/daniel/.cache/icepack/larsen.geojson
+
+
+To read this file we’ll use the GeoJSON package. We won’t go into a
+great amount of detail about analyzing geospatial vector data here, but
+a few basic features are worth going over.
+
+.. code:: ipython3
+
+    with open(outline_filename, 'r') as outline_file:
+        outline = geojson.load(outline_file)
+
+From the user’s perspective, a GeoJSON object looks like a big nested
+dictionary, and somewhere down the line are some arrays of coordinates.
+Here we’ll access the `coordinate reference system
+(CRS) <https://en.wikipedia.org/wiki/Spatial_reference_system>`__ that
+the data are stored in. The most common reference systems are
+standardized and given numeric ID codes by some standards body, in this
+case the European Petroleum Survey Group (EPSG). The most common CRS for
+Antarctic data sets is EPSG:3031, which is a polar stereographic
+projection centered on the South Pole.
+
+.. code:: ipython3
+
+    print(outline['crs']['properties']['name'])
+
+
+.. parsed-literal::
+
+    urn:ogc:def:crs:EPSG::3031
+
+
+For good measure we’ll read every feature in the outline and plot the
+coordinates.
+
+.. code:: ipython3
+
     fig, axes = icepack.plot.subplots()
+    
+    for feature in outline['features']:
+        for line_string in feature['geometry']['coordinates']:
+            xs = np.array(line_string)
+            axes.plot(xs[:, 0], xs[:, 1])
+            
     axes.set_xlabel('meters')
-    axes.grid()
-    icepack.plot.triplot(mesh, axes=axes, linewidth=2)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_5_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_9_0.png
+
+
+Next we’ll take this GeoJSON object and translate it into a geometry
+object from pygmsh. The function to do that is contained in the module
+``meshing.py``. We can then save this to a .geo file and run gmsh on the
+result, just like we did in the previous demo.
+
+.. code:: ipython3
+
+    import meshing
+    geometry = meshing.collection_to_geo(outline)
+
+.. code:: ipython3
+
+    with open('larsen.geo', 'w') as geo_file:
+        geo_file.write(geometry.get_code())
+
+The call to gmsh is the same as in the previous demo, but we’ll make the
+output less verbose by passing the flag ``-v 2`` as well.
+
+.. code:: ipython3
+
+    !gmsh -2 -format msh2 -v 2 -o larsen.msh larsen.geo
+
+Now that we’ve generated the mesh we can read it just like we did in the
+previous demo.
+
+.. code:: ipython3
+
+    mesh = firedrake.Mesh('larsen.msh')
+
+Finally we’ll make a plot of the mesh so that we can see all the
+boundary IDs. Boundary segments 1 and 3 correspond to the calving
+terminus and these are where Neumann boundary conditions should be
+applied. Segment 2 borders the Gipps Ice Rise, and the remaining
+segments are where ice is flowing in from.
+
+.. code:: ipython3
+
+    fig, axes = icepack.plot.subplots()
+    axes.grid()
+    axes.set_xlabel('meters')
+    icepack.plot.triplot(mesh, axes=axes, linewidth=1)
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_18_0.png
 
 
 Input data
@@ -113,16 +195,16 @@ function did.
 
 .. parsed-literal::
 
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_coverage.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_icemask_grounded_and_shelves.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/gl04c_geiod_to_WGS84.tif
     /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_thickness.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_thickness_uncertainty_5km.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_icemask_grounded_and_shelves.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_lakemask_vostok.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_coverage.tif
     /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_grounded_bed_uncertainty.tif
     /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_bed.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_lakemask_vostok.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_rockmask.tif
     /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_surface.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/gl04c_geiod_to_WGS84.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_rockmask.tif
+    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_thickness_uncertainty_5km.tif
 
 
 We’re only interested in the thickness data itself, so the following
@@ -172,7 +254,7 @@ matplotlib function.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_14_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_27_0.png
 
 
 Next, we have to fetch the velocity data, which are hosted on NSIDC. The
@@ -200,38 +282,20 @@ all the fields stored in a NetCDF file.
 
 .. parsed-literal::
 
-    <class 'netCDF4._netCDF4.Dataset'>
-    root group (NETCDF4 data model, file format HDF5):
-        Conventions: CF-1.6
-        Metadata_Conventions: CF-1.6, Unidata Dataset Discovery v1.0, GDS v2.0
-        standard_name_vocabulary: CF Standard Name Table (v22, 12 February 2013)
-        id: vel_nsidc.CF16.nc
-        title: MEaSURES Antarctica Ice Velocity Map 450m spacing
-        product_version:  
-        summary:  
-        keywords:  
-        keywords_vocabulary:  
-        platform:  
-        sensor:  
-        date_created: 2017-04-06T17:47:44.00004923343322Z
-        institution: Department of Earth System Science, University of California, Irvine
-        cdm_data_type: Grid
-        geospatial_lat_units: degrees_north
-        geospatial_lon_units: degrees_east
-        geospatial_lat_min: -90
-        geospatial_lat_max: -60
-        geospatial_lon_min: -180
-        geospatial_lon_max: 180
-        spatial_resolution: 450m
-        time_coverage_start: 1995-01-01
-        time_coverage_end: 2016-12-31
-        project: NASA/MEaSUREs
-        creator_name: J. Mouginot
-        license: No restrictions on access or use
-        dimensions(sizes): x(12445), y(12445)
-        variables(dimensions): |S1 [4mcoord_system[0m(), float64 [4mx[0m(x), float64 [4my[0m(y), float64 [4mlat[0m(y,x), float64 [4mlon[0m(y,x), float32 [4mVX[0m(y,x), float32 [4mVY[0m(y,x), float32 [4mSTDX[0m(y,x), float32 [4mSTDY[0m(y,x), float32 [4mERRX[0m(y,x), float32 [4mERRY[0m(y,x), int32 [4mCNT[0m(y,x)
-        groups: 
-    
+    Traceback (most recent call last):
+      File "/home/daniel/.local/bin/ncinfo", line 11, in <module>
+        load_entry_point('netCDF4==1.4.1', 'console_scripts', 'ncinfo')()
+      File "/usr/lib/python3.7/site-packages/pkg_resources/__init__.py", line 489, in load_entry_point
+        return get_distribution(dist).load_entry_point(group, name)
+      File "/usr/lib/python3.7/site-packages/pkg_resources/__init__.py", line 2843, in load_entry_point
+        return ep.load()
+      File "/usr/lib/python3.7/site-packages/pkg_resources/__init__.py", line 2434, in load
+        return self.resolve()
+      File "/usr/lib/python3.7/site-packages/pkg_resources/__init__.py", line 2440, in resolve
+        module = __import__(self.module_name, fromlist=['__name__'], level=0)
+      File "/home/daniel/.local/lib/python3.7/site-packages/netCDF4/__init__.py", line 3, in <module>
+        from ._netCDF4 import *
+    ImportError: libnetcdf.so.13: cannot open shared object file: No such file or directory
 
 
 The fields we want are ``VX`` and ``VY``. We can use rasterio can read
@@ -280,7 +344,7 @@ interpolate function and knows what to do with gridded data sets.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_23_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_36_0.png
 
 
 .. code:: ipython3
@@ -301,7 +365,7 @@ interpolate function and knows what to do with gridded data sets.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_25_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_38_0.png
 
 
 We get a fairly reasonable approximation for the velocity even with a
@@ -314,7 +378,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.11482850497984727
+    0.1148285049798471
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -341,7 +405,7 @@ for this loop should be familiar from the previous example.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_30_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_43_0.png
 
 
 By plotting the difference between the modeled thickness after 10 years
@@ -362,7 +426,7 @@ that makes the 0-contour really obvious.
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_32_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_45_0.png
 
 
 The oscillatory pattern makes it less than obvious whether the ice shelf
@@ -377,7 +441,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.781448124076747
+    -3.781448124076765
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly
