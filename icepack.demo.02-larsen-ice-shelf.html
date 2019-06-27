@@ -401,20 +401,37 @@ all the fields stored in a NetCDF file.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>ncinfo <span class="s2">&quot;</span><span class="nv">$velocity_filename</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s2">&quot;/home/daniel/.local/bin/ncinfo&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">11</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-    <span class="n">load_entry_point</span><span class="p">(</span><span class="s1">&#39;netCDF4==1.4.1&#39;</span><span class="p">,</span> <span class="s1">&#39;console_scripts&#39;</span><span class="p">,</span> <span class="s1">&#39;ncinfo&#39;</span><span class="p">)()</span>
-  <span class="n">File</span> <span class="s2">&quot;/usr/lib/python3.7/site-packages/pkg_resources/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">489</span><span class="p">,</span> <span class="ow">in</span> <span class="n">load_entry_point</span>
-    <span class="k">return</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="o">.</span><span class="n">load_entry_point</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-  <span class="n">File</span> <span class="s2">&quot;/usr/lib/python3.7/site-packages/pkg_resources/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2843</span><span class="p">,</span> <span class="ow">in</span> <span class="n">load_entry_point</span>
-    <span class="k">return</span> <span class="n">ep</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-  <span class="n">File</span> <span class="s2">&quot;/usr/lib/python3.7/site-packages/pkg_resources/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2434</span><span class="p">,</span> <span class="ow">in</span> <span class="n">load</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-  <span class="n">File</span> <span class="s2">&quot;/usr/lib/python3.7/site-packages/pkg_resources/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2440</span><span class="p">,</span> <span class="ow">in</span> <span class="n">resolve</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module_name</span><span class="p">,</span> <span class="n">fromlist</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;__name__&#39;</span><span class="p">],</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">File</span> <span class="s2">&quot;/home/daniel/.local/lib/python3.7/site-packages/netCDF4/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-    <span class="kn">from</span> <span class="nn">._netCDF4</span> <span class="k">import</span> <span class="o">*</span>
-<span class="ne">ImportError</span><span class="p">:</span> <span class="n">libnetcdf</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="mi">13</span><span class="p">:</span> <span class="n">cannot</span> <span class="nb">open</span> <span class="n">shared</span> <span class="nb">object</span> <span class="n">file</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
+root group (NETCDF4 data model, file format HDF5):
+    Conventions: CF-1.6
+    Metadata_Conventions: CF-1.6, Unidata Dataset Discovery v1.0, GDS v2.0
+    standard_name_vocabulary: CF Standard Name Table (v22, 12 February 2013)
+    id: vel_nsidc.CF16.nc
+    title: MEaSURES Antarctica Ice Velocity Map 450m spacing
+    product_version:
+    summary:
+    keywords:
+    keywords_vocabulary:
+    platform:
+    sensor:
+    date_created: 2017-04-06T17:47:44.00004923343322Z
+    institution: Department of Earth System Science, University of California, Irvine
+    cdm_data_type: Grid
+    geospatial_lat_units: degrees_north
+    geospatial_lon_units: degrees_east
+    geospatial_lat_min: -90
+    geospatial_lat_max: -60
+    geospatial_lon_min: -180
+    geospatial_lon_max: 180
+    spatial_resolution: 450m
+    time_coverage_start: 1995-01-01
+    time_coverage_end: 2016-12-31
+    project: NASA/MEaSUREs
+    creator_name: J. Mouginot
+    license: No restrictions on access or use
+    dimensions(sizes): x(12445), y(12445)
+    variables(dimensions): |S1 [4mcoord_system[0m(), float64 [4mx[0m(x), float64 [4my[0m(y), float64 [4mlat[0m(y,x), float64 [4mlon[0m(y,x), float32 [4mVX[0m(y,x), float32 [4mVY[0m(y,x), float32 [4mSTDX[0m(y,x), float32 [4mSTDY[0m(y,x), float32 [4mERRX[0m(y,x), float32 [4mERRY[0m(y,x), int32 [4mCNT[0m(y,x)
+    groups:
 </pre></div>
 </div>
 <p>The fields we want are <code class="docutils literal notranslate"><span class="pre">VX</span></code> and <code class="docutils literal notranslate"><span class="pre">VY</span></code>. We can use rasterio can read
