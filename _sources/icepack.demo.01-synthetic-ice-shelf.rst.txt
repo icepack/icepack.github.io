@@ -140,20 +140,20 @@ notebook.
 .. parsed-literal::
 
     Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.0.7, 1 node, max. 1 thread]
-    Info    : Started on Wed Jun 26 16:47:42 2019
+    Info    : Started on Wed Jul 31 08:11:51 2019
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
     Info    : Meshing curve 1 (Circle)
     Info    : Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.001202 s)
+    Info    : Done meshing 1D (0.000285 s)
     Info    : Meshing 2D...
     Info    : Meshing surface 4 (Plane, Delaunay)
-    Info    : Done meshing 2D (0.105858 s)
+    Info    : Done meshing 2D (0.073861 s)
     Info    : 3793 vertices 7584 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Wed Jun 26 16:47:42 2019
+    Info    : Stopped on Wed Jul 31 08:11:51 2019
 
 
 The terminal output from gmsh gives us some diagnostics like how many
@@ -285,7 +285,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fdc3ba7d908>
+    <matplotlib.colorbar.Colorbar at 0x7f73f37c9f60>
 
 
 
@@ -305,7 +305,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fdc67f49c50>
+    <matplotlib.colorbar.Colorbar at 0x7f74216c98d0>
 
 
 

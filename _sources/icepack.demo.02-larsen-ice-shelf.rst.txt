@@ -27,14 +27,15 @@ institutions is hosted at the `National Snow and Ice Data Center
 (NSIDC) <https://www.nsidc.org>`__ and an EarthData login is necessary
 to access data from NSIDC.
 
-The external data that we will use are: \* a velocity map of Antarctica
-produced as part of the MEaSUREs program, which you can read more about
-`here <https://nsidc.org/data/nsidc-0484>`__ \* an ice thickness map
-from the `bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ data set,
-which is available from the British Antarctic Survey \* an outline of
-the Larsen C Ice Shelf that I created by tracing over satellite imagery
-in a `geographic information
-system <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
+The external data that we will use are:
+
+-  a `velocity map <https://nsidc.org/data/nsidc-0484>`__ of Antarctica
+   from the MEaSUREs program
+-  the `bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ thickness
+   data set from the British Antarctic Survey
+-  an outline of the ice shelf that I digitized by hand from satellite
+   imagery in a
+   `GIS <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
 
 Rather than manually download these data sets from the websites they’re
 hosted on, we’ll call a few functions in the module ``data.py`` in this
@@ -167,7 +168,7 @@ segments are where ice is flowing in from.
     fig, axes = icepack.plot.subplots()
     axes.grid()
     axes.set_xlabel('meters')
-    icepack.plot.triplot(mesh, axes=axes, linewidth=1)
+    icepack.plot.triplot(mesh, axes=axes, linewidth=1, bnd_linewidth=2)
     plt.show(fig)
 
 

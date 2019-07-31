@@ -298,20 +298,20 @@ notebook.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Info</span>    <span class="p">:</span> <span class="n">Running</span> <span class="s1">&#39;gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo&#39;</span> <span class="p">[</span><span class="n">Gmsh</span> <span class="mf">4.0</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span> <span class="n">node</span><span class="p">,</span> <span class="nb">max</span><span class="o">.</span> <span class="mi">1</span> <span class="n">thread</span><span class="p">]</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">16</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2019</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jul</span> <span class="mi">31</span> <span class="mi">08</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2019</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">reading</span> <span class="s1">&#39;ice-shelf.geo&#39;</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">1</span><span class="n">D</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">1</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">curve</span> <span class="mi">2</span> <span class="p">(</span><span class="n">Circle</span><span class="p">)</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">1</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.001202</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">1</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.000285</span> <span class="n">s</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="mi">2</span><span class="n">D</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Meshing</span> <span class="n">surface</span> <span class="mi">4</span> <span class="p">(</span><span class="n">Plane</span><span class="p">,</span> <span class="n">Delaunay</span><span class="p">)</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">2</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.105858</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">meshing</span> <span class="mi">2</span><span class="n">D</span> <span class="p">(</span><span class="mf">0.073861</span> <span class="n">s</span><span class="p">)</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="mi">3793</span> <span class="n">vertices</span> <span class="mi">7584</span> <span class="n">elements</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span><span class="o">...</span>
 <span class="n">Info</span>    <span class="p">:</span> <span class="n">Done</span> <span class="n">writing</span> <span class="s1">&#39;ice-shelf.msh&#39;</span>
-<span class="n">Info</span>    <span class="p">:</span> <span class="n">Stopped</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jun</span> <span class="mi">26</span> <span class="mi">16</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2019</span>
+<span class="n">Info</span>    <span class="p">:</span> <span class="n">Stopped</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Jul</span> <span class="mi">31</span> <span class="mi">08</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">51</span> <span class="mi">2019</span>
 </pre></div>
 </div>
 <p>The terminal output from gmsh gives us some diagnostics like how many
@@ -417,7 +417,7 @@ should be more illuminating.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7fdc3ba7d908</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f73f37c9f60</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_27_1.png" />
@@ -427,7 +427,7 @@ should be more illuminating.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7fdc67f49c50</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f74216c98d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" src="_images/icepack.demo.01-synthetic-ice-shelf_28_1.png" />

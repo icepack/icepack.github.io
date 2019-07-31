@@ -102,7 +102,7 @@ Shelf, but we also need to use the error estimates for the velocities.
     fig, axes = icepack.plot.subplots()
     axes.set_xlabel('meters')
     axes.grid()
-    icepack.plot.triplot(mesh, axes=axes, linewidth=1)
+    icepack.plot.triplot(mesh, axes=axes, linewidth=1, bnd_linewidth=2)
     plt.show(fig)
 
 
