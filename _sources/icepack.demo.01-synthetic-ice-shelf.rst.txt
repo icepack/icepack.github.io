@@ -1,4 +1,3 @@
-
 .. code:: ipython3
 
     %matplotlib inline
@@ -140,20 +139,20 @@ notebook.
 .. parsed-literal::
 
     Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.0.7, 1 node, max. 1 thread]
-    Info    : Started on Wed Jul 31 08:11:51 2019
+    Info    : Started on Sat Aug 10 09:52:26 2019
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
     Info    : Meshing curve 1 (Circle)
     Info    : Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.000285 s)
+    Info    : Done meshing 1D (0.00691 s)
     Info    : Meshing 2D...
     Info    : Meshing surface 4 (Plane, Delaunay)
-    Info    : Done meshing 2D (0.073861 s)
+    Info    : Done meshing 2D (0.179588 s)
     Info    : 3793 vertices 7584 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Wed Jul 31 08:11:51 2019
+    Info    : Stopped on Sat Aug 10 09:52:27 2019
 
 
 The terminal output from gmsh gives us some diagnostics like how many
@@ -285,7 +284,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f73f37c9f60>
+    <matplotlib.colorbar.Colorbar at 0x7f66a8592128>
 
 
 
@@ -305,7 +304,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f74216c98d0>
+    <matplotlib.colorbar.Colorbar at 0x7f66a926bbe0>
 
 
 
@@ -530,7 +529,7 @@ set the accumulation rate to be zero.
 
 .. parsed-literal::
 
-    Influx: 38.15826841513586 km^3 / year
+    Influx: 38.15826841513585 km^3 / year
 
 
 The influx and outflux are reasonably close, with the influx slightly

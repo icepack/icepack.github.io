@@ -1,4 +1,3 @@
-
 .. code:: ipython3
 
     %matplotlib inline
@@ -99,15 +98,42 @@ Shelf, but we also need to use the error estimates for the velocities.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    features = [feature['geometry'] for feature in outline['features']]
+    xmin, ymin, xmax, ymax = np.inf, np.inf, -np.inf, -np.inf
+    δ = 50e3
+    for feature in outline['features']:
+        for line_string in feature['geometry']['coordinates']:
+            xs = np.array(line_string)
+            x, y = xs[:, 0], xs[:, 1]
+            xmin, ymin = min(xmin, x.min() - δ), min(ymin, y.min() - δ)
+            xmax, ymax = max(xmax, x.max() + δ), max(ymax, y.max() + δ)
+            
+    image_filename = data.fetch_mosaic_of_antarctica()
+    with rasterio.open(image_filename, 'r') as image_file:
+        height, width = image_file.height, image_file.width
+        transform = image_file.transform
+        window = rasterio.windows.from_bounds(left=xmin, bottom=ymin, right=xmax, top=ymax,
+                                              width=width, height=height, transform=transform)
+        image = image_file.read(indexes=1, window=window, masked=True)
+    
+    def subplots(*args, **kwargs):
+        fig, axes = icepack.plot.subplots()
+        xmin, ymin, xmax, ymax = rasterio.windows.bounds(window, transform)
+        axes.imshow(image, extent=(xmin, xmax, ymin, ymax),
+                    cmap='Greys_r', vmin=12e3, vmax=16.38e3)
+        
+        return fig, axes
+
+.. code:: ipython3
+
+    fig, axes = subplots()
     axes.set_xlabel('meters')
-    axes.grid()
     icepack.plot.triplot(mesh, axes=axes, linewidth=1, bnd_linewidth=2)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_6_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_7_0.png
 
 
 .. code:: ipython3
@@ -140,14 +166,14 @@ platform.
 .. code:: ipython3
 
     σ = firedrake.interpolate(firedrake.sqrt(σx**2 + σy**2), Q)
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(σ, 20, axes=axes)
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(σ, 20, alpha=0.9, axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_10_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_11_0.png
 
 
 We need to make an initial guess for the fluidity parameter. In this
@@ -171,14 +197,14 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(u, 20, axes=axes)
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(u, 20, alpha=0.6, axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_13_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_14_0.png
 
 
 Inferring the fluidity
@@ -284,15 +310,15 @@ direction.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(solver.search_direction, 20,
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(solver.search_direction, 20, alpha=0.6,
                                         cmap='RdBu', axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_23_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_24_0.png
 
 
 The search direction is obtained by multiplying the inverse of the
@@ -324,10 +350,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.15197, 0.279719
-    1.0196, 0.482157
-    1.0255, 0.443131
-    1.01802, 0.447144
+    2.15202, 0.279715
+    1.0159, 0.486082
+    1.02515, 0.443518
+    1.01796, 0.44724
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -352,29 +378,29 @@ First, let’s plot the parameter value and the fluidity.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     contours = icepack.plot.tricontourf(solver.parameter, np.linspace(-10, 10, 41),
-                                        cmap='RdBu', extend='both', axes=axes)
-    fig.colorbar(contours)
-    plt.show(fig)
-
-
-
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_28_0.png
-
-
-.. code:: ipython3
-
-    A = firedrake.interpolate(A0 * firedrake.exp(-solver.parameter / n), Q)
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(A, levels=np.linspace(0, 50, 51),
-                                        extend='both', axes=axes)
+                                        alpha=0.6, cmap='RdBu', extend='both', axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
 .. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_29_0.png
+
+
+.. code:: ipython3
+
+    A = firedrake.interpolate(A0 * firedrake.exp(-solver.parameter / n), Q)
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(A, levels=np.linspace(0, 50, 51),
+                                        alpha=0.6, extend='both', axes=axes)
+    fig.colorbar(contours)
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_30_0.png
 
 
 The fluidity is much higher around areas of heavy crevassing, such as
@@ -397,16 +423,16 @@ difference between the computed and observed velocities.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     δu = firedrake.interpolate((solver.state - u_obs)**2/(2*σ**2), Q)
-    contours = icepack.plot.tricontourf(δu, levels=np.linspace(0, 25, 51),
-                                        extend='both', axes=axes)
+    contours = icepack.plot.tricontourf(δu, levels=np.linspace(0, 6, 51),
+                                        alpha=0.6, cmap='Reds', extend='both', axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_32_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_33_0.png
 
 
 The computed ice velocity is mostly similar to observations aside from a
@@ -432,8 +458,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.4930984726165333
-    1.018024226555064
+    2.4902535127250984
+    1.0179624533483764
 
 
 The objective function has been reduced by a factor of 10 through the

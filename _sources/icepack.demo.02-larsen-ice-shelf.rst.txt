@@ -1,4 +1,3 @@
-
 .. code:: ipython3
 
     %matplotlib inline
@@ -19,7 +18,7 @@ up the simulation. The simulation itself – involving successive
 prognostic and diagnostic solves of the physics model – is virtually
 identical to what we saw in the last demo.
 
-To access the data we’ll use, you’ll need to have a login for
+To access the data, you’ll need to have a login for
 `EarthData <https://urs.earthdata.nasa.gov/>`__, the web portal through
 which NASA makes remote sensing data available to the public. Most of
 the ice sheet remote sensing data produced by American research
@@ -29,24 +28,30 @@ to access data from NSIDC.
 
 The external data that we will use are:
 
--  a `velocity map <https://nsidc.org/data/nsidc-0484>`__ of Antarctica
-   from the MEaSUREs program
--  the `bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ thickness
-   data set from the British Antarctic Survey
--  an outline of the ice shelf that I digitized by hand from satellite
-   imagery in a
-   `GIS <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
+-  an ice thickness map from the
+   `bedmap2 <https://www.bas.ac.uk/project/bedmap-2/>`__ data set, which
+   is available from the British Antarctic Survey
+-  a velocity map of Antarctica produced as part of the MEaSUREs
+   program, which you can read more about
+   `here <https://nsidc.org/data/nsidc-0484>`__
+-  a satellite image of all of Antarctica taken from
+   `MODIS <https://en.wikipedia.org/wiki/Moderate_Resolution_Imaging_Spectroradiometer>`__
+-  an outline of the Larsen C Ice Shelf, which I created by tracing over
+   this satellite image in a `geographic information
+   system <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
 
 Rather than manually download these data sets from the websites they’re
 hosted on, we’ll call a few functions in the module ``data.py`` in this
 directory to fetch them for us. (Internally, these functions use a
 library called `pooch <https://github.com/fatiando/pooch>`__ which
 handles things like caching the data so it doesn’t get downloaded twice,
-unzipping archived files, and so forth.) One we have the gridded data
-sets we’ll use the library
-`rasterio <https://rasterio.readthedocs.io/en/stable/>`__ to read them.
-Both pooch and rasterio will have been installed along with icepack, so
-you don’t need to do this yourself.
+unzipping archived files, and so forth.) One we have these data sets
+we’ll use the library
+`rasterio <https://rasterio.readthedocs.io/en/stable/>`__ to read the
+gridded data and
+`GeoJSON <https://github.com/jazzband/python-geojson>`__ for the vector
+data. Pooch, rasterio, and GeoJSON will have been installed along with
+icepack, so you don’t need to do this yourself.
 
 Geometry
 ~~~~~~~~
@@ -63,7 +68,7 @@ To retrieve the external data, we’ll use several functions in the module
 ``data.py``. All of these functions start with ``fetch``. These
 functions retrieve the external data from the internet and put them in a
 predictable location so they can be found easily later. The files will
-be will only be downloaded the first time you fetch them; this caching
+only be downloaded the first time you fetch them. This caching
 functionality will come in handy because we’ll be using much of the same
 data in later demos.
 
@@ -93,10 +98,10 @@ dictionary, and somewhere down the line are some arrays of coordinates.
 Here we’ll access the `coordinate reference system
 (CRS) <https://en.wikipedia.org/wiki/Spatial_reference_system>`__ that
 the data are stored in. The most common reference systems are
-standardized and given numeric ID codes by some standards body, in this
-case the European Petroleum Survey Group (EPSG). The most common CRS for
-Antarctic data sets is EPSG:3031, which is a polar stereographic
-projection centered on the South Pole.
+standardized and given numeric ID codes by a standards body, the
+European Petroleum Survey Group (EPSG). The most common CRS for
+Antarctic data sets is EPSG:3031, a stereographic projection centered on
+the South Pole.
 
 .. code:: ipython3
 
@@ -108,8 +113,33 @@ projection centered on the South Pole.
     urn:ogc:def:crs:EPSG::3031
 
 
-For good measure we’ll read every feature in the outline and plot the
-coordinates.
+The data we care about in this GeoJSON object are the coordinates of all
+the features. Here we’ll compute a bounding box for the domain to
+illustrate how one iterates over all of the features. In this case,
+every feature of this object is a ``MultiLineString``.
+
+.. code:: ipython3
+
+    features = [feature['geometry'] for feature in outline['features']]
+    xmin, ymin, xmax, ymax = np.inf, np.inf, -np.inf, -np.inf
+    δ = 50e3
+    for feature in outline['features']:
+        for line_string in feature['geometry']['coordinates']:
+            xs = np.array(line_string)
+            x, y = xs[:, 0], xs[:, 1]
+            xmin, ymin = min(xmin, x.min() - δ), min(ymin, y.min() - δ)
+            xmax, ymax = max(xmax, x.max() + δ), max(ymax, y.max() + δ)
+            
+    print('{:e}, {:e}, {:e}, {:e}'.format(xmin, ymin, xmax, ymax))
+
+
+.. parsed-literal::
+
+    -2.384857e+06, 9.358604e+05, -1.946497e+06, 1.325843e+06
+
+
+We can plot the domain outline below to see that everything lines up
+right.
 
 .. code:: ipython3
 
@@ -118,15 +148,118 @@ coordinates.
     for feature in outline['features']:
         for line_string in feature['geometry']['coordinates']:
             xs = np.array(line_string)
-            axes.plot(xs[:, 0], xs[:, 1])
-            
+            axes.plot(xs[:, 0], xs[:, 1], linewidth=2)
+    
     axes.set_xlabel('meters')
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_9_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_11_0.png
 
+
+But without some additional context you might not know what each segment
+of the boundary corresponds to on the real ice shelf. To make that
+context more apparent, we’ll show how to plot things on top of satellite
+imagery next.
+
+Imagery
+~~~~~~~
+
+We’ll use the `Mosaic of Antarctica
+(MOA) <https://nsidc.org/data/moa>`__ as a background for all the plots
+we make in the following. This mosaic was created by compiling several
+hundred images from
+`MODIS <https://en.wikipedia.org/wiki/Moderate_Resolution_Imaging_Spectroradiometer>`__.
+We could also use imagery from other satellites like Landsat-8 if we
+wanted higher spatial or radiometric resolution.
+
+The image mosaic is stored as a
+`GeoTIFF <https://en.wikipedia.org/wiki/GeoTIFF>`__ file. GeoTIFF is a
+common storage format for geospatial data; it adds georeferencing
+information on top of the TIFF file format, which is often used for
+lossless compression of images. The function ``rasterio.open`` will give
+us an object representing the raster data set that we can then read
+from.
+
+.. code:: ipython3
+
+    image_filename = data.fetch_mosaic_of_antarctica()
+    image_file = rasterio.open(image_filename, 'r')
+
+We’ve opened the file but we haven’t read any data yet. The image file
+covers all of Antarctica, so it would be wasteful to read the entire
+image. Instead, we’ll read a window that covers the bounding box we
+calculated above.
+
+.. code:: ipython3
+
+    height, width = image_file.height, image_file.width
+    transform = image_file.transform
+    window = rasterio.windows.from_bounds(left=xmin, bottom=ymin, right=xmax, top=ymax,
+                                          width=width, height=height, transform=transform)
+
+Now we can pass the window to the ``read`` method of ``image_file``,
+which will return a numpy array of the image values over the area that
+we want. The ``indexes`` argument specifies that we’re reading only band
+1; since this is a grayscale image, that’s all we can read. For RGB or
+other multi-spectral images, you might want to get more of the spectral
+bands.
+
+.. code:: ipython3
+
+    image = image_file.read(indexes=1, window=window, masked=True)
+
+Now we can make a figure showing the image of the Larsen Ice Shelf
+together with the various segments of the domain boundary. To add in the
+spatial coordinates of all the image pixels, we’ve passed in the
+bounding box of the window that we created earlier to ``imshow`` via the
+keyword ``extent``. The ``vmin`` and ``vmax`` arguments were tuned by
+trial and error to get a nice contrast level. You can make out where the
+ice is grounded or floating, where there are ice rises, and if you
+change the balance quite a bit you can even pick out rifts in the ice
+shelf.
+
+.. code:: ipython3
+
+    def subplots(*args, **kwargs):
+        fig, axes = icepack.plot.subplots()
+        xmin, ymin, xmax, ymax = rasterio.windows.bounds(window, transform)
+        axes.imshow(image, extent=(xmin, xmax, ymin, ymax),
+                    cmap='Greys_r', vmin=12e3, vmax=16.38e3)
+        
+        return fig, axes
+
+We’ll use this satellite image on every plot in this demo. Rather than
+add the same boilerplate code every time, the code above defines a
+wrapper function that creates figure and axes objects and adds the image
+to the plot.
+
+.. code:: ipython3
+
+    fig, axes = subplots()
+    
+    for feature in outline['features']:
+        for line_string in feature['geometry']['coordinates']:
+            xs = np.array(line_string)
+            axes.plot(xs[:, 0], xs[:, 1], linewidth=2)
+    
+    axes.set_xlabel('meters')
+    plt.show(fig)
+
+
+
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_22_0.png
+
+
+Checking that the domain boundary lines up well with features that are
+visible in the satellite image is a good sanity check. This way we know
+that the coordinate systems haven’t been mixed up, that you haven’t
+accidentally loaded up a mesh of a totally different ice shelf, and so
+forth.
+
+Meshing
+~~~~~~~
 
 Next we’ll take this GeoJSON object and translate it into a geometry
 object from pygmsh. The function to do that is contained in the module
@@ -165,15 +298,14 @@ segments are where ice is flowing in from.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
-    axes.grid()
+    fig, axes = subplots()
     axes.set_xlabel('meters')
     icepack.plot.triplot(mesh, axes=axes, linewidth=1, bnd_linewidth=2)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_18_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_32_0.png
 
 
 Input data
@@ -191,72 +323,34 @@ function did.
 
     bedmap2_files = data.fetch_bedmap2()
     for filename in bedmap2_files:
-        print(filename)
+        print(os.path.basename(filename))
 
 
 .. parsed-literal::
 
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_thickness.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_icemask_grounded_and_shelves.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_lakemask_vostok.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_coverage.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_grounded_bed_uncertainty.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_bed.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_surface.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/gl04c_geiod_to_WGS84.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_rockmask.tif
-    /home/daniel/.cache/icepack/bedmap2_tiff.zip.unzip/bedmap2_tiff/bedmap2_thickness_uncertainty_5km.tif
+    bedmap2_coverage.tif
+    bedmap2_icemask_grounded_and_shelves.tif
+    gl04c_geiod_to_WGS84.tif
+    bedmap2_thickness.tif
+    bedmap2_thickness_uncertainty_5km.tif
+    bedmap2_grounded_bed_uncertainty.tif
+    bedmap2_bed.tif
+    bedmap2_lakemask_vostok.tif
+    bedmap2_rockmask.tif
+    bedmap2_surface.tif
 
 
 We’re only interested in the thickness data itself, so the following
 command will pull it out from the list of all the other files in the
-bedmap2 dataset.
+bedmap2 dataset. We can then read the thickness data just like we did
+for the image mosaic.
 
 .. code:: ipython3
 
     thickness_filename = [f for f in bedmap2_files if
                           os.path.basename(f) == 'bedmap2_thickness.tif'][0]
-
-The thickness data are stored in a
-`GeoTIFF <https://en.wikipedia.org/wiki/GeoTIFF>`__ file. GeoTIFF is a
-common storage format for geospatial data; it adds georeferencing
-information on top of the TIFF file format, which is often used for
-lossless compression of images. The function ``rasterio.open`` will give
-us an object representing the raster data set that we can then read
-from.
-
-.. code:: ipython3
-
+    
     thickness = rasterio.open(thickness_filename, 'r')
-
-Opening the file doesn’t immediately read all the data at once. Instead,
-that occurs through calls to the ``read`` method of the data set, in our
-case the variable ``thickness``. The actual reading will occur entirely
-within the functions that interpolate the raster data to our
-computational mesh. This two-step procedure involves a little extra
-code, but the nice part is that you can read only as small a chunk of
-the data as need be. It would be awfully wasteful if you had to load up
-the thickness of all of Antarctica only to focus on a little piece like
-the Larsen Ice Shelf.
-
-Before going on, let’s make a plot of the thickness data. Plotting all
-your data first is a good sanity check to make sure that it isn’t, say,
-stored upside-down, or in a different coordinate system than you
-expected. To visualize our data, we’ll use the function ``contourf`` in
-the module ``icepack.plot``, which works just like the equivalent
-matplotlib function.
-
-.. code:: ipython3
-
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.contourf(thickness, 40, axes=axes)
-    fig.colorbar(contours, label='meters')
-    plt.show(fig)
-
-
-
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_27_0.png
-
 
 Next, we have to fetch the velocity data, which are hosted on NSIDC. The
 following will prompt for your EarthData login if need be. The file is
@@ -356,14 +450,14 @@ interpolate function and knows what to do with gridded data sets.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     streamlines = icepack.plot.streamplot(u0, precision=1000, density=2500, axes=axes)
     fig.colorbar(streamlines, label='meters/year')
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_36_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_45_0.png
 
 
 .. code:: ipython3
@@ -377,14 +471,14 @@ interpolate function and knows what to do with gridded data sets.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     streamlines = icepack.plot.streamplot(u, precision=1000, density=2500, axes=axes)
     fig.colorbar(streamlines, label='meters/year')
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_38_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_47_0.png
 
 
 We get a fairly reasonable approximation for the velocity even with a
@@ -397,7 +491,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.1148285049798471
+    0.11482850497984719
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -411,20 +505,25 @@ for this loop should be familiar from the previous example.
     h = h0.copy(deepcopy=True)
     
     dt = 0.5
-    for n in range(int(10 / dt) + 1):
+    num_steps = int(10 / dt)
+    for n in range(num_steps + 1):
         h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h0)
         u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
 
+In the plot below we’re using the ``alpha`` keyword argument to the
+contouring function. This makes the thickness contours about half-way
+transparent so we can see the satellite image underneath.
+
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(h, 96, axes=axes)
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(h, 20, alpha=0.6, axes=axes)
     fig.colorbar(contours, label='meters')
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_43_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_53_0.png
 
 
 By plotting the difference between the modeled thickness after 10 years
@@ -437,15 +536,15 @@ that makes the 0-contour really obvious.
     δh = firedrake.Function(Q)
     δh.assign(h - h0)
     
-    fig, axes = icepack.plot.subplots()
-    contours = icepack.plot.tricontourf(δh, axes=axes, cmap='RdBu',
-                                        levels=np.linspace(-10, +10, 101), extend='both')
+    fig, axes = subplots()
+    contours = icepack.plot.tricontourf(δh, axes=axes, cmap='RdBu', alpha=0.25,
+                                        levels=np.linspace(-10, +10, 11), extend='both')
     fig.colorbar(contours, label='meters')
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_45_0.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_55_0.png
 
 
 The oscillatory pattern makes it less than obvious whether the ice shelf
@@ -460,7 +559,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.781448124076765
+    -3.7814481240767486
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly
