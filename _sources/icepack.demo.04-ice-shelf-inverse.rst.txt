@@ -192,7 +192,7 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
     θ = firedrake.Function(Q)
     
     ice_shelf = icepack.models.IceShelf(viscosity=viscosity)
-    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8], 'tol': 1e-6}
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tol': 1e-6}
     u = ice_shelf.diagnostic_solve(u0=u_obs, h=h, θ=θ, **opts)
 
 .. code:: ipython3
@@ -302,7 +302,7 @@ represented by the ``GaussNewtonSolver`` class.
 
 .. parsed-literal::
 
-    12.2342, 0
+    12.2452, 0
 
 
 Before setting the solver loose, let’s look at the initial search
@@ -350,10 +350,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.15202, 0.279715
-    1.0159, 0.486082
-    1.02515, 0.443518
-    1.01796, 0.44724
+    2.12412, 0.271017
+    0.992642, 0.475004
+    1.00204, 0.432457
+    0.994573, 0.436382
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -458,8 +458,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.4902535127250984
-    1.0179624533483764
+    2.4940811031626824
+    0.9945733758897942
 
 
 The objective function has been reduced by a factor of 10 through the

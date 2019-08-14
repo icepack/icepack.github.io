@@ -328,16 +328,16 @@ function did.
 
 .. parsed-literal::
 
-    bedmap2_coverage.tif
-    bedmap2_icemask_grounded_and_shelves.tif
-    gl04c_geiod_to_WGS84.tif
     bedmap2_thickness.tif
-    bedmap2_thickness_uncertainty_5km.tif
+    bedmap2_icemask_grounded_and_shelves.tif
+    bedmap2_lakemask_vostok.tif
+    bedmap2_coverage.tif
     bedmap2_grounded_bed_uncertainty.tif
     bedmap2_bed.tif
-    bedmap2_lakemask_vostok.tif
-    bedmap2_rockmask.tif
     bedmap2_surface.tif
+    gl04c_geiod_to_WGS84.tif
+    bedmap2_rockmask.tif
+    bedmap2_thickness_uncertainty_5km.tif
 
 
 We’re only interested in the thickness data itself, so the following
@@ -466,7 +466,7 @@ interpolate function and knows what to do with gridded data sets.
     A = firedrake.interpolate(firedrake.Constant(icepack.rate_factor(T)), Q)
     
     ice_shelf = icepack.models.IceShelf()
-    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8], 'tol': 1e-6}
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tol': 1e-6}
     u = ice_shelf.diagnostic_solve(u0=u0, h=h0, A=A, **opts)
 
 .. code:: ipython3
@@ -491,7 +491,7 @@ spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.11482850497984719
+    0.11486367672087092
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -559,7 +559,7 @@ change to see.
 
 .. parsed-literal::
 
-    -3.7814481240767486
+    -3.768091191224985
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

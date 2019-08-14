@@ -245,22 +245,22 @@ However, it does introduce an annoying layer of bureaucracy in that you have to 
 </pre></div>
 </div>
 <p>Activating a virtual environment affects only the current shell session and doesn’t do anything permanent.</p>
+<p>You can save yourself the trouble of remembering things by adding a function like this to your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firedrake-env<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>When you type <cite>firedrake-env</cite> at the terminal, the firedrake virtual environment will be activated.
+If you find yourself using lots of different virtual environments, you might also like <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>
 <p>Firedrake uses the library <a class="reference external" href="https://www.mcs.anl.gov/petsc/">PETSc</a> for many of its internal data structures (meshes, vectors, matrices).
 PETSc has loads of optional features, chiefly interfaces to other computational libraries.
 Some of these features are mandatory for firedrake.
 Rather than require you to have a PETSc installation properly configured in the way that firedrake expects, the firedrake install script builds its own version of PETSc.
 This can create problems if you already do have PETSc installed on your system.
 In that case, you will need to unset <code class="docutils literal notranslate"><span class="pre">$PETSC_DIR</span></code> and <code class="docutils literal notranslate"><span class="pre">$PETSC_ARCH</span></code> while installing firedrake and every time you activate the firedrake virtual environment.
+You can add an extra line to the <cite>firedrake-env</cite> command above to unset these variables if you want to keep a pre-existing PETSc installation and also use firedrake.
 While installing firedrake will fail with an error if you have a pre-existing PETSc installation, trying to run a script that uses firedrake will instead crash with a segmentation fault if you have not first unset the PETSc environment variables.</p>
-<p>You can save yourself the trouble of remembering things by adding a function like this to your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firedrake-env<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">unset</span> PETSC_DIR PETSC_ARCH
-    <span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
-<span class="o">}</span>
-</pre></div>
-</div>
-<p>When you type <cite>firedrake-env</cite> at the terminal, the PETSc environment variables from any pre-existing installation will be unset and the firedrake virtual environment will be activated.
-If you find yourself using lots of different virtual environments, you might also like <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>
 <p>The configuration options that firedrake uses to build PETSc do not include building the sparse direct solver <a class="reference external" href="http://faculty.cse.tamu.edu/davis/suitesparse.html">UMFPACK</a>.
 In the recommended installation instructions above, I’ve added an environment variable that will tell firedrake to download and link PETSc with UMFPACK in addition to the other extras.
 Having a good and fast direct solver like UMFPACK is very useful for isolating errors when they happen (and they will happen).</p>

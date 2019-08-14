@@ -142,7 +142,7 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.632619056012439e-17
+    -2.5153490401663703e-17
     [ 3.46901282e-15 -2.52175273e-15]
 
 
@@ -166,9 +166,9 @@ call the function ``firedrake.assemble`` to evaluate it.
 
 .. parsed-literal::
 
-    0.24999999999999994
-    2.083334604899089
-    172.01609669791307
+    0.25000000000000006
+    2.0833346048990866
+    172.0160966979131
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary

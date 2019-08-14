@@ -341,7 +341,7 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 <span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
 <span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
-<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -433,7 +433,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.2342</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.2452</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -468,10 +468,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.15202</span><span class="p">,</span> <span class="mf">0.279715</span>
-<span class="mf">1.0159</span><span class="p">,</span> <span class="mf">0.486082</span>
-<span class="mf">1.02515</span><span class="p">,</span> <span class="mf">0.443518</span>
-<span class="mf">1.01796</span><span class="p">,</span> <span class="mf">0.44724</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12412</span><span class="p">,</span> <span class="mf">0.271017</span>
+<span class="mf">0.992642</span><span class="p">,</span> <span class="mf">0.475004</span>
+<span class="mf">1.00204</span><span class="p">,</span> <span class="mf">0.432457</span>
+<span class="mf">0.994573</span><span class="p">,</span> <span class="mf">0.436382</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -548,8 +548,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.4902535127250984</span>
-<span class="mf">1.0179624533483764</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.4940811031626824</span>
+<span class="mf">0.9945733758897942</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the
