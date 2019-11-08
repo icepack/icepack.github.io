@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Background &mdash; icepack 0.0.3 documentation</title>
+  <title>icepack.meshing module &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" />
-    <link rel="prev" title="Overview" href="overview.html" /> 
+    <link rel="next" title="icepack.norms module" href="icepack.norms.html" />
+    <link rel="prev" title="icepack.inverse module" href="icepack.inverse.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,13 +86,9 @@
             
             
               <p class="caption"><span class="caption-text">Basics</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Background</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#symbols">Symbols</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reading">Reading</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 </ul>
@@ -112,8 +108,26 @@
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">icepack</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="icepack.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="icepack.constants.html">icepack.constants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.datasets.html">icepack.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.interpolate.html">icepack.interpolate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.inverse.html">icepack.inverse module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">icepack.meshing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.norms.html">icepack.norms module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.optimization.html">icepack.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.plot.html">icepack.plot module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.utilities.html">icepack.utilities module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -159,13 +173,17 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Background</li>
+          <li><a href="modules.html">icepack</a> &raquo;</li>
+        
+          <li><a href="icepack.html">icepack package</a> &raquo;</li>
+        
+      <li>icepack.meshing module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/background.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.meshing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,61 +196,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="background">
-<h1>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h1>
-<p>Understanding the tutorials that follow will require some knowledge of glacier physics.
-In particular, we’ll expect that you have a basic understanding of:</p>
-<ul class="simple">
-<li><p>mass, momentum, and heat transport</p></li>
-<li><p>the Stokes equations and simplified models</p></li>
-<li><p>Glen’s flow law</p></li>
-</ul>
-<p>We use a slightly unconventional unit system borrowed from the package <a class="reference external" href="http://elmerice.elmerfem.org/">Elmer/Ice</a>.
-The fundamental units are megapascals (MPa), meters (m) and years (yr).
-In this unit system, most of the quantities we’re interested in, including physical constants, are between 1/10 and 1000.</p>
-<div class="section" id="symbols">
-<h2>Symbols<a class="headerlink" href="#symbols" title="Permalink to this headline">¶</a></h2>
-<p>In the tutorials and in the icepack API we’ve tried to use variable names that correspond as closely to the symbols used for each field in the literature and standard textbooks.
-Our goal is to make the code look as much like the mathematics as possible.
-The variable names and corresponding fields are:</p>
-<ul class="simple">
-<li><p><strong>u</strong> - velocity</p></li>
-<li><p><strong>h</strong> - thickness</p></li>
-<li><p><strong>s</strong> - surface elevation</p></li>
-<li><p><strong>b</strong> - bed elevation</p></li>
-<li><p><strong>A</strong> - rheology coefficient</p></li>
-<li><p><strong>n</strong> - exponent in Glen’s flow law</p></li>
-<li><p><strong>C</strong> - friction coefficient</p></li>
-<li><p><strong>m</strong> - exponent in Weertman’s sliding law</p></li>
-<li><p><strong>E</strong> - internal energy density</p></li>
-</ul>
-<p>Many references in the glaciological literature use a lower-case <span class="math notranslate nohighlight">\(h\)</span> for surface elevation and a capital <span class="math notranslate nohighlight">\(H\)</span> for thickness.
-We’ve chosen a slightly different convention, so this is something to be aware of.</p>
-</div>
-<div class="section" id="reading">
-<h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
-<p>The standard textbook on glaciology is <em>The Physics of Glaciers</em> by Cuffey and Paterson <a class="bibtex reference internal" href="#cuffey2010physics" id="id1">[1]</a>.
-This book is great for breadth and covers many more topics than modeling.
-<em>Dynamics of Ice Sheets and Glaciers</em> by Greve and Blatter <a class="bibtex reference internal" href="#greve2009dynamics" id="id2">[2]</a> focuses more on continuum mechanics and modeling and has some nice introductions to various numerical methods.
-While a thorough knowledge of the finite element method shouldn’t be necessary to use icepack, some familiarity is definitely helpful.
-<em>Understanding and Implementing the Finite Element Method</em> by Gockenbach is a good introduction <a class="bibtex reference internal" href="#gockenbach2006understanding" id="id3">[3]</a>.
-<em>Finite Elements: Theory, Fast Solvers, and Applications in Solid Mechanics</em> by Braess goes into much greater depth <a class="bibtex reference internal" href="#braess2007finite" id="id4">[4]</a>.</p>
-<p id="bibtex-bibliography-background-0"><dl class="citation">
-<dt class="bibtex label" id="cuffey2010physics"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Kurt M Cuffey and William Stanley Bryce Paterson. <em>The physics of glaciers</em>. Academic Press, 2010.</p>
-</dd>
-<dt class="bibtex label" id="greve2009dynamics"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><p>Ralf Greve and Heinz Blatter. <em>Dynamics of ice sheets and glaciers</em>. Springer, 2009.</p>
-</dd>
-<dt class="bibtex label" id="gockenbach2006understanding"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
-<dd><p>Mark S Gockenbach. <em>Understanding and implementing the finite element method</em>. SIAM, 2006.</p>
-</dd>
-<dt class="bibtex label" id="braess2007finite"><span class="brackets"><a class="fn-backref" href="#id4">4</a></span></dt>
-<dd><p>Dietrich Braess. <em>Finite elements: Theory, fast solvers, and applications in solid mechanics</em>. Cambridge University Press, 2007.</p>
-</dd>
-</dl>
-</p>
-</div>
+  <div class="section" id="module-icepack.meshing">
+<span id="icepack-meshing-module"></span><h1>icepack.meshing module<a class="headerlink" href="#module-icepack.meshing" title="Permalink to this headline">¶</a></h1>
+<p>Utilities for turning glacier outlines into unstructured meshes</p>
+<dl class="function">
+<dt id="icepack.meshing.collection_to_geo">
+<code class="sig-prename descclassname">icepack.meshing.</code><code class="sig-name descname">collection_to_geo</code><span class="sig-paren">(</span><em class="sig-param">collection</em>, <em class="sig-param">lcar=10000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/meshing.html#collection_to_geo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.meshing.collection_to_geo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a GeoJSON FeatureCollection into pygmsh geometry that can then
+be transformed into an unstructured triangular mesh</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="icepack.meshing.normalize">
+<code class="sig-prename descclassname">icepack.meshing.</code><code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param">input_collection</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/meshing.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.meshing.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a GeoJSON feature collection into a form that can easily be
+transformed into the input for a mesh generator</p>
+</dd></dl>
+
 </div>
 
 
@@ -243,10 +223,10 @@ While a thorough knowledge of the finite element method shouldn’t be necessary
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.norms.html" class="btn btn-neutral float-right" title="icepack.norms module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.inverse.html" class="btn btn-neutral float-left" title="icepack.inverse module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

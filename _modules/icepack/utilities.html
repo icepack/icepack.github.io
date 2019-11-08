@@ -199,6 +199,11 @@
     <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">((</span><span class="n">q</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span></div>
 
 
+<div class="viewcode-block" id="div_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.div_2">[docs]</a><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal divergence of a 3D field&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="diameter"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.diameter">[docs]</a><span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the diameter of the mesh in the L-infinity metric&quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>

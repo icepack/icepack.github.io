@@ -242,14 +242,13 @@ create a triangulation of the interior. For this demo, we’ll use a
 different helper script that will turn our .geojson file into the .geo
 format that gmsh expects.</p>
 <p>To retrieve the external data, we’ll use several functions in the module
-<code class="docutils literal notranslate"><span class="pre">data.py</span></code>. All of these functions start with <code class="docutils literal notranslate"><span class="pre">fetch</span></code>. These
+<code class="docutils literal notranslate"><span class="pre">icepack.datasets</span></code>. All of these functions start with <code class="docutils literal notranslate"><span class="pre">fetch</span></code>. These
 functions retrieve the external data from the internet and put them in a
 predictable location so they can be found easily later. The files will
 only be downloaded the first time you fetch them. This caching
 functionality will come in handy because we’ll be using much of the same
 data in later demos.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">data</span>
-<span class="n">outline_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_larsen_outline</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outline_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_larsen_outline</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">outline_filename</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -333,7 +332,7 @@ information on top of the TIFF file format, which is often used for
 lossless compression of images. The function <code class="docutils literal notranslate"><span class="pre">rasterio.open</span></code> will give
 us an object representing the raster data set that we can then read
 from.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_mosaic_of_antarctica</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_mosaic_of_antarctica</span><span class="p">()</span>
 <span class="n">image_file</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -400,10 +399,9 @@ forth.</p>
 <h2>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">¶</a></h2>
 <p>Next we’ll take this GeoJSON object and translate it into a geometry
 object from pygmsh. The function to do that is contained in the module
-<code class="docutils literal notranslate"><span class="pre">meshing.py</span></code>. We can then save this to a .geo file and run gmsh on the
-result, just like we did in the previous demo.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">meshing</span>
-<span class="n">geometry</span> <span class="o">=</span> <span class="n">meshing</span><span class="o">.</span><span class="n">collection_to_geo</span><span class="p">(</span><span class="n">outline</span><span class="p">)</span>
+<code class="docutils literal notranslate"><span class="pre">icepack.meshing</span></code>. We can then save this to a .geo file and run gmsh
+on the result, just like we did in the previous demo.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">geometry</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">meshing</span><span class="o">.</span><span class="n">collection_to_geo</span><span class="p">(</span><span class="n">outline</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;larsen.geo&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">geo_file</span><span class="p">:</span>
@@ -442,21 +440,21 @@ etc. The function <code class="docutils literal notranslate"><span class="pre">f
 internet, unzip it, and return a list of the paths of all the files it
 retrieved rather than just a single file like the <code class="docutils literal notranslate"><span class="pre">fetch_larsen_mesh</span></code>
 function did.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_files</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_bedmap2</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_files</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_bedmap2</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">bedmap2_files</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_thickness</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_icemask_grounded_and_shelves</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_lakemask_vostok</span><span class="o">.</span><span class="n">tif</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_thickness_uncertainty_5km</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">bedmap2_coverage</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_lakemask_vostok</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_thickness</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_icemask_grounded_and_shelves</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_rockmask</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">bedmap2_grounded_bed_uncertainty</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_bed</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">bedmap2_surface</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">gl04c_geiod_to_WGS84</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_rockmask</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_thickness_uncertainty_5km</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_bed</span><span class="o">.</span><span class="n">tif</span>
 </pre></div>
 </div>
 <p>We’re only interested in the thickness data itself, so the following
@@ -472,7 +470,7 @@ for the image mosaic.</p>
 <p>Next, we have to fetch the velocity data, which are hosted on NSIDC. The
 following will prompt for your EarthData login if need be. The file is
 ~6GiB, so if you run this demo yourself, this step could take a while.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The velocity data are stored in a
@@ -492,7 +490,7 @@ root group (NETCDF4 data model, file format HDF5):
     Conventions: CF-1.6
     Metadata_Conventions: CF-1.6, Unidata Dataset Discovery v1.0, GDS v2.0
     standard_name_vocabulary: CF Standard Name Table (v22, 12 February 2013)
-    id: vel_nsidc.CF16.nc
+    id: v_mix.v8Jul2019.nc
     title: MEaSURES Antarctica Ice Velocity Map 450m spacing
     product_version:
     summary:
@@ -500,8 +498,8 @@ root group (NETCDF4 data model, file format HDF5):
     keywords_vocabulary:
     platform:
     sensor:
-    date_created: 2017-04-06T17:47:44.00004923343322Z
-    institution: Department of Earth System Science, University of California, Irvine
+    date_created: 2019-07-08T14:43:24.00005131959583Z
+    institution: Department of Earth System Science, University of California, Irvine, CA, USA; Univ. Grenoble Alpes, CNRS, IRD, Grenoble INP, IGE, 38000 Grenoble, France
     cdm_data_type: Grid
     geospatial_lat_units: degrees_north
     geospatial_lon_units: degrees_east
@@ -509,14 +507,15 @@ root group (NETCDF4 data model, file format HDF5):
     geospatial_lat_max: -60
     geospatial_lon_min: -180
     geospatial_lon_max: 180
-    spatial_resolution: 450m
+    spatial_resolution: 450 m
     time_coverage_start: 1995-01-01
     time_coverage_end: 2016-12-31
     project: NASA/MEaSUREs
     creator_name: J. Mouginot
-    license: No restrictions on access or use
+    comment:
+    license: No restrictions on access or use.
     dimensions(sizes): x(12445), y(12445)
-    variables(dimensions): |S1 [4mcoord_system[0m(), float64 [4mx[0m(x), float64 [4my[0m(y), float64 [4mlat[0m(y,x), float64 [4mlon[0m(y,x), float32 [4mVX[0m(y,x), float32 [4mVY[0m(y,x), float32 [4mSTDX[0m(y,x), float32 [4mSTDY[0m(y,x), float32 [4mERRX[0m(y,x), float32 [4mERRY[0m(y,x), int32 [4mCNT[0m(y,x)
+    variables(dimensions): |S1 coord_system(), float64 x(x), float64 y(y), float64 lat(y,x), float64 lon(y,x), float32 VX(y,x), float32 VY(y,x), float32 STDX(y,x), float32 STDY(y,x), float32 ERRX(y,x), float32 ERRY(y,x), int32 CNT(y,x), int8 SOURCE(y,x)
     groups:
 </pre></div>
 </div>
@@ -544,9 +543,8 @@ we work with real data, we instead use icepack’s <code class="docutils literal
 which firedrake doesn’t know how to interpolate. The function
 <code class="docutils literal notranslate"><span class="pre">icepack.interpolate</span></code> works as a layer on top of the firedrake
 interpolate function and knows what to do with gridded data sets.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">h0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">u0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
@@ -579,7 +577,7 @@ spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11486367672087092</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11444950134920068</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -628,7 +626,7 @@ change to see.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.768091191224985</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.7704420137915995</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

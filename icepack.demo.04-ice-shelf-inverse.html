@@ -245,13 +245,11 @@ the true value of the fluidity coefficient.</p>
 <h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h2>
 <p>The input data are just as in the previous demo for the Larsen Ice
 Shelf, but we also need to use the error estimates for the velocities.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">data</span>
-<span class="kn">import</span> <span class="nn">meshing</span>
-<span class="n">outline_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_larsen_outline</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outline_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_larsen_outline</span><span class="p">()</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outline_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outline_file</span><span class="p">:</span>
     <span class="n">outline</span> <span class="o">=</span> <span class="n">geojson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">outline_file</span><span class="p">)</span>
 
-<span class="n">geometry</span> <span class="o">=</span> <span class="n">meshing</span><span class="o">.</span><span class="n">collection_to_geo</span><span class="p">(</span><span class="n">outline</span><span class="p">)</span>
+<span class="n">geometry</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">meshing</span><span class="o">.</span><span class="n">collection_to_geo</span><span class="p">(</span><span class="n">outline</span><span class="p">)</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;larsen.geo&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">geo_file</span><span class="p">:</span>
     <span class="n">geo_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_code</span><span class="p">())</span>
 </pre></div>
@@ -272,7 +270,7 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
         <span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">δ</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">δ</span><span class="p">)</span>
         <span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">δ</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ymax</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">δ</span><span class="p">)</span>
 
-<span class="n">image_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_mosaic_of_antarctica</span><span class="p">()</span>
+<span class="n">image_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_mosaic_of_antarctica</span><span class="p">()</span>
 <span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image_file</span><span class="p">:</span>
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">image_file</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">image_file</span><span class="o">.</span><span class="n">width</span>
     <span class="n">transform</span> <span class="o">=</span> <span class="n">image_file</span><span class="o">.</span><span class="n">transform</span>
@@ -296,9 +294,9 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.04-ice-shelf-inverse_7_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_7_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thickness_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_bedmap2</span><span class="p">()</span> <span class="k">if</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thickness_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_bedmap2</span><span class="p">()</span> <span class="k">if</span>
                       <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;bedmap2_thickness.tif&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
+<span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
 
 <span class="n">thickness</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">thickness_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 <span class="n">vx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:VX&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -307,9 +305,8 @@ Shelf, but we also need to use the error estimates for the velocities.</p>
 <span class="n">stdy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;netcdf:&#39;</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">&#39;:STDY&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">degree</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
-<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="n">h</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">u_obs</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
@@ -372,7 +369,7 @@ pass these functions to the inverse problem when we create it.</p>
 <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(((</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">σx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">σy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
 
-<span class="n">L</span> <span class="o">=</span> <span class="mf">5e3</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mf">5.5e3</span>
 <span class="k">def</span> <span class="nf">regularization</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span>
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
 </pre></div>
@@ -433,7 +430,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.2452</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">12.0653</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -468,10 +465,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.12412</span><span class="p">,</span> <span class="mf">0.271017</span>
-<span class="mf">0.992642</span><span class="p">,</span> <span class="mf">0.475004</span>
-<span class="mf">1.00204</span><span class="p">,</span> <span class="mf">0.432457</span>
-<span class="mf">0.994573</span><span class="p">,</span> <span class="mf">0.436382</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.88961</span><span class="p">,</span> <span class="mf">0.28444</span>
+<span class="mf">1.02449</span><span class="p">,</span> <span class="mf">0.45325</span>
+<span class="mf">1.02607</span><span class="p">,</span> <span class="mf">0.424421</span>
+<span class="mf">1.01922</span><span class="p">,</span> <span class="mf">0.428243</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -548,8 +545,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.4940811031626824</span>
-<span class="mf">0.9945733758897942</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.480036012020176</span>
+<span class="mf">1.0192160296602175</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

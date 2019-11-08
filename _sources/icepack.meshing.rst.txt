@@ -1,0 +1,7 @@
+icepack.meshing module
+======================
+
+.. automodule:: icepack.meshing
+   :members:
+   :undoc-members:
+   :show-inheritance:

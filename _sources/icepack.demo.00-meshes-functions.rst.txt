@@ -8,14 +8,16 @@
 Meshes, functions
 =================
 
-This demo will show you how to create a simple mesh, define a function
-on that mesh, and postprocess the results. A function on a domain can be
-defined analytically by getting some handles for the x- and
-y-coordinates of the points of the domain, and manipulating the
-coordinate functions algebraically. Firedrake includes some routines for
-plotting functions defined on unstructured meshes so we can visualize
-the results. Finally, we’ll demonstrate the possibilities for how to
-analyze a function by evaluating some area and contour integrals.
+This demo will show some of the basic features of the finite element
+modeling package `firedrake <https://www.firedrakeproject.org>`__, which
+icepack is built on. These are the kinds of things you'd need to know
+before you begin to model anything. First, we'll show to create a simple
+mesh, and how to define a function on that mesh symbolically using
+handles for the x- and y-coordinates of the points of the domain. Then
+we'll demonstrate some of the plotting routines included in icepack,
+which are meant to mimic as closely as possible the corresponding
+routines in matplotlib. Finally, we'll show how to analyze a function by
+evaluating some area and contour integrals.
 
 Meshes
 ~~~~~~
@@ -26,9 +28,9 @@ available, you can type
 
 ::
 
-   help(firedrake.utility_meshes)
+    help(firedrake.utility_meshes)
 
-from the python interpreter. In this demo we’ll use a mesh of the unit
+from the python interpreter. In this demo we'll use a mesh of the unit
 square.
 
 .. code:: ipython3
@@ -62,16 +64,16 @@ functions.
 
 First, we have to construct a function space ``Q``. We already have a
 mesh, and we need to decide what element family and polynomial degree.
-In almost all the cases you’ll encounter, the element family consists of
+In almost all the cases you'll encounter, the element family consists of
 continuous piecewise-polynomial functions in each triangle, which is
-abbreviated to ``CG`` for “continuous Galerkin”.
+abbreviated to ``CG`` for "continuous Galerkin".
 
 Next, we have to make an expression for the function and interpolate it
 to the function space ``Q``. The function
 ``firedrake.SpatialCoordinate`` returns two symbolic objects ``x``,
 ``y`` for the coordinates of each point of the mesh. We can then use
-these symbols to define expressions for the function we’d like to
-analyze. In this case, I’ve chosen the `Rosenbrock
+these symbols to define expressions for the function we'd like to
+analyze. In this case, I've chosen the `Rosenbrock
 function <https://en.wikipedia.org/wiki/Rosenbrock_function>`__.
 Firedrake has built-in functions for evaluating various transcendental
 functions of the coordinates, for example the sine, cosine, exponential,
@@ -83,8 +85,7 @@ and a function space, and returns a field from that function space.
 
 .. code:: ipython3
 
-    degree = 2
-    Q = firedrake.FunctionSpace(mesh, 'CG', degree)
+    Q = firedrake.FunctionSpace(mesh, family='CG', degree=2)
     
     x, y = firedrake.SpatialCoordinate(mesh)
     a, b = 0.5, 10.0
@@ -111,7 +112,7 @@ graphics.
 
 .. code:: ipython3
 
-    V = firedrake.VectorFunctionSpace(mesh, 'CG', degree)
+    V = firedrake.VectorFunctionSpace(mesh, family='CG', degree=2)
     v = firedrake.interpolate(firedrake.grad(expr), V)
     
     fig, axes = icepack.plot.subplots()
@@ -128,7 +129,7 @@ graphics.
 Post-processing
 ~~~~~~~~~~~~~~~
 
-We’ve already seen about how to visualize a scalar or a vector field;
+We've already seen about how to visualize a scalar or a vector field;
 this is just a call to the function ``icepack.plot``. To analyze the
 results of a simulation, you might also want to evaluate scalar or
 vector fields at points in the domain:
@@ -142,7 +143,7 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.5153490401663703e-17
+    -2.6731072308911782e-17
     [ 3.46901282e-15 -2.52175273e-15]
 
 
@@ -198,7 +199,7 @@ unit outward normal by calling the function ``firedrake.FacetNormal``.
 .. parsed-literal::
 
     14.666669209798183
-    3.583333333333335
+    3.5833333333333344
     42.000000000000014
 
 
@@ -207,13 +208,13 @@ Conclusion
 
 Icepack uses the functions in firedrake to implement solvers for the
 various physics problems that show up in ice sheet modeling. The
-firedrake routines that we’ve demonstrated here can be used for
+firedrake routines that we've demonstrated here can be used for
 analyzing simulation results, either through visualization, evaluating
 fields at points, or evaluating integrals of fields. They can also be
 used to define input fields of simulations, if those fields have a
-simple analytical expression. In the next demo, we’ll show how to use
+simple analytical expression. In the next demo, we'll show how to use
 icepack to solve for the velocity and thickness of a floating ice shelf
-with a synthetic geometry. In later demos, we’ll show how to use real
+with a synthetic geometry. In later demos, we'll show how to use real
 observational data sets, as well as more complicated geometries imported
 from mesh generators.
 

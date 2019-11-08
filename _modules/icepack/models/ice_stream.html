@@ -190,7 +190,7 @@
 <span class="kn">from</span> <span class="nn">icepack.models.viscosity</span> <span class="k">import</span> <span class="n">viscosity_depth_averaged</span> <span class="k">as</span> <span class="n">viscosity</span>
 <span class="kn">from</span> <span class="nn">icepack.models.friction</span> <span class="k">import</span> <span class="p">(</span><span class="n">bed_friction</span><span class="p">,</span> <span class="n">side_friction</span><span class="p">,</span>
                                      <span class="n">normal_flow_penalty</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">icepack.models.mass_transport</span> <span class="k">import</span> <span class="n">MassTransport</span>
+<span class="kn">from</span> <span class="nn">icepack.models.mass_transport</span> <span class="k">import</span> <span class="n">LaxWendroff</span>
 <span class="kn">from</span> <span class="nn">icepack.optimization</span> <span class="k">import</span> <span class="n">newton_search</span>
 <span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="k">import</span> <span class="n">add_kwarg_wrapper</span>
 
@@ -260,11 +260,11 @@
 <span class="sd">       :py:func:`icepack.models.viscosity.viscosity_depth_averaged`</span>
 <span class="sd">          Default implementation of the ice stream viscous action</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="n">bed_friction</span><span class="p">,</span>
                  <span class="n">side_friction</span><span class="o">=</span><span class="n">side_friction</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">normal_flow_penalty</span><span class="p">,</span>
-                 <span class="n">gravity</span><span class="o">=</span><span class="n">gravity</span><span class="p">,</span> <span class="n">terminus</span><span class="o">=</span><span class="n">terminus</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span> <span class="o">=</span> <span class="n">MassTransport</span><span class="p">()</span>
+                 <span class="n">gravity</span><span class="o">=</span><span class="n">gravity</span><span class="p">,</span> <span class="n">terminus</span><span class="o">=</span><span class="n">terminus</span><span class="p">,</span>
+                 <span class="n">mass_transport</span><span class="o">=</span><span class="n">LaxWendroff</span><span class="p">()):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span> <span class="o">=</span> <span class="n">mass_transport</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viscosity</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">viscosity</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">friction</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">friction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">side_friction</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">side_friction</span><span class="p">)</span>
@@ -354,12 +354,12 @@
         <span class="k">return</span> <span class="n">newton_search</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bcs</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
                              <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IceStream.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
 
-<span class="sd">        See :meth:`icepack.models.mass_transport.MassTransport.solve`</span>
+<span class="sd">        See :meth:`icepack.models.mass_transport.ImplicitEuler.solve`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h_inflow</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IceStream.compute_surface"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.compute_surface">[docs]</a>    <span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the ice surface elevation consistent with a given</span>

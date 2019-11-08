@@ -19,8 +19,10 @@ Submodules
 .. toctree::
 
    icepack.constants
+   icepack.datasets
    icepack.interpolate
    icepack.inverse
+   icepack.meshing
    icepack.norms
    icepack.optimization
    icepack.plot

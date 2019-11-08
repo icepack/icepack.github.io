@@ -1,0 +1,7 @@
+icepack.datasets module
+=======================
+
+.. automodule:: icepack.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:

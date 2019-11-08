@@ -207,6 +207,7 @@
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">firedrake.plot</span> <span class="k">import</span> <span class="n">_two_dimension_triangle_func_val</span>
 <span class="kn">import</span> <span class="nn">icepack</span>
 
 
@@ -322,28 +323,37 @@
     <span class="k">return</span> <span class="n">function</span> <span class="k">if</span> <span class="n">mesh</span><span class="o">.</span><span class="n">layers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="tricontourf"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.tricontourf">[docs]</a><span class="k">def</span> <span class="nf">tricontourf</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Plot a finite element field&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">_plot_field</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">function</span> <span class="o">=</span> <span class="n">_project_to_2d</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">())</span>
 
-    <span class="n">mesh</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
-    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_get_coordinates</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-
-    <span class="n">triangles</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">cell_node_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">triangulation</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">tri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">ufl_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">()</span>
         <span class="n">element</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">sub_elements</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">function</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">ufl_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">function</span><span class="p">)),</span> <span class="n">Q</span><span class="p">)</span>
 
-    <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">axes</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">triangulation</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">num_sample_points</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">triangulation</span><span class="p">,</span> <span class="n">vals</span> <span class="o">=</span> <span class="n">_two_dimension_triangle_func_val</span><span class="p">(</span><span class="n">function</span><span class="p">,</span>
+                                                           <span class="n">num_sample_points</span><span class="p">)</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">triangulation</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="tricontourf"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.tricontourf">[docs]</a><span class="k">def</span> <span class="nf">tricontourf</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a filled contour plot of a finite element field&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_plot_field</span><span class="p">(</span><span class="s1">&#39;tricontourf&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tricontour"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.tricontour">[docs]</a><span class="k">def</span> <span class="nf">tricontour</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a contour plot of a finite element field&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_plot_field</span><span class="p">(</span><span class="s1">&#39;tricontour&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tripcolor"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.tripcolor">[docs]</a><span class="k">def</span> <span class="nf">tripcolor</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a pseudo-color plot of a finite element field&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_plot_field</span><span class="p">(</span><span class="s1">&#39;tripcolor&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="quiver"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.quiver">[docs]</a><span class="k">def</span> <span class="nf">quiver</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

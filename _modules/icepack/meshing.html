@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>icepack.meshing &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">icepack</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>icepack.meshing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for icepack.meshing</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This file is part of icepack.</span>
+<span class="c1">#</span>
+<span class="c1"># icepack is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
+<span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Utilities for turning glacier outlines into unstructured meshes&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">shapely.geometry</span>
+<span class="kn">import</span> <span class="nn">geojson</span>
+<span class="kn">import</span> <span class="nn">pygmsh</span>
+
+<span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand all MultiLineString features in the input list to individual</span>
+<span class="sd">    LineString features&quot;&quot;&quot;</span>
+    <span class="n">flat_features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;LineString&#39;</span><span class="p">:</span>
+            <span class="n">flat_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;MultiLineString&#39;</span><span class="p">:</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">line_string</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]:</span>
+                <span class="n">geometry</span> <span class="o">=</span> <span class="n">geojson</span><span class="o">.</span><span class="n">LineString</span><span class="p">(</span><span class="n">coordinates</span><span class="o">=</span><span class="n">line_string</span><span class="p">)</span>
+                <span class="n">flat_feature</span> <span class="o">=</span> <span class="n">geojson</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
+                                               <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">)</span>
+                <span class="n">flat_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flat_feature</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">flat_features</span>
+
+
+<span class="k">def</span> <span class="nf">_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_closest_endpoint</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">feature_index</span><span class="p">,</span> <span class="n">point_index</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the feature and endpoint in a collection that is closest to the</span>
+<span class="sd">    given feature and endpoint</span>
+
+<span class="sd">    The result could be the opposite endpoint of the same feature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">feature_index</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">point_index</span><span class="p">])</span>
+
+    <span class="n">min_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">min_findex</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">min_pindex</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">findex</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">feature_index</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">pindex</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">findex</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">pindex</span><span class="p">]</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">min_distance</span><span class="p">:</span>
+                <span class="n">min_distance</span> <span class="o">=</span> <span class="n">distance</span>
+                <span class="n">min_findex</span> <span class="o">=</span> <span class="n">findex</span>
+                <span class="n">min_pindex</span> <span class="o">=</span> <span class="n">pindex</span>
+
+    <span class="n">pindex</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">point_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">feature_index</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">pindex</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_distance</span><span class="p">:</span>
+        <span class="n">min_findex</span> <span class="o">=</span> <span class="n">feature_index</span>
+        <span class="n">min_pindex</span> <span class="o">=</span> <span class="n">pindex</span>
+
+    <span class="k">return</span> <span class="n">min_findex</span><span class="p">,</span> <span class="n">min_pindex</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_feature_adjacency</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a dictionary representing the adjacency between features</span>
+
+<span class="sd">    For all feature indices `i` and endpoint indices `ei` in `(0, -1)`,</span>
+<span class="sd">    `A[(i, ei)] = (j, ej)` where `j`, `ej` are the feature and endpoint</span>
+<span class="sd">    indices of the adjacent segment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)):</span>
+        <span class="n">adjacency</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_closest_endpoint</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">adjacency</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_closest_endpoint</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">adjacency</span>
+
+
+<span class="k">def</span> <span class="nf">_snap</span><span class="p">(</span><span class="n">input_features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reposition the endpoints of all features so that they are identical to</span>
+<span class="sd">    the endpoint of the feature they are adjacent to&quot;&quot;&quot;</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">input_features</span><span class="p">)</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="n">_compute_feature_adjacency</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">ei</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">j</span><span class="p">,</span> <span class="n">ej</span> <span class="o">=</span> <span class="n">adjacency</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">ei</span><span class="p">)]</span>
+
+            <span class="n">xi</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">ei</span><span class="p">]</span>
+            <span class="n">xj</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">ej</span><span class="p">]</span>
+            <span class="n">average</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xj</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">ei</span><span class="p">]</span> <span class="o">=</span> <span class="n">average</span>
+            <span class="n">features</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">ej</span><span class="p">]</span> <span class="o">=</span> <span class="n">average</span>
+
+    <span class="k">return</span> <span class="n">features</span>
+
+
+<span class="k">def</span> <span class="nf">_powerset</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                                         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_reorient</span><span class="p">(</span><span class="n">input_features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Flip the order of all features so that they are always oriented head-</span>
+<span class="sd">    to-tail&quot;&quot;&quot;</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">input_features</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="n">_compute_feature_adjacency</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="n">sets</span> <span class="o">=</span> <span class="n">_powerset</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">adjacency</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">j0</span><span class="p">,</span> <span class="n">ej0</span> <span class="o">=</span> <span class="n">A</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+            <span class="n">j1</span><span class="p">,</span> <span class="n">ej1</span> <span class="o">=</span> <span class="n">A</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+            <span class="n">A</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">j1</span><span class="p">,</span> <span class="n">ej1</span><span class="p">)</span>
+            <span class="n">A</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">j0</span><span class="p">,</span> <span class="n">ej0</span><span class="p">)</span>
+
+            <span class="n">A</span><span class="p">[(</span><span class="n">j0</span><span class="p">,</span> <span class="n">ej0</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">A</span><span class="p">[(</span><span class="n">j1</span><span class="p">,</span> <span class="n">ej1</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">A</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">ei</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ei</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">ei</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
+                <span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">features</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input collection is not orientable! How did you even?!&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_features_to_loops</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a list of lists of the segments in each loop, in order&quot;&quot;&quot;</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <span class="n">_compute_feature_adjacency</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="c1"># Add all the single-feature loops</span>
+    <span class="n">feature_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)))</span>
+    <span class="n">loops</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">adjacency</span><span class="p">[(</span><span class="n">index</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">==</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">loops</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">feature_indices</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c1"># Add all the multi-feature loops</span>
+    <span class="k">while</span> <span class="n">feature_indices</span><span class="p">:</span>
+        <span class="n">start_index</span> <span class="o">=</span> <span class="n">feature_indices</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_index</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">adjacency</span><span class="p">[(</span><span class="n">start_index</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">!=</span> <span class="n">start_index</span><span class="p">:</span>
+            <span class="n">feature_indices</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">adjacency</span><span class="p">[(</span><span class="n">index</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">loops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">loops</span>
+
+
+<span class="k">def</span> <span class="nf">_topologize</span><span class="p">(</span><span class="n">input_features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a FeatureCollection of MultiLineStrings, one for each loop&quot;&quot;&quot;</span>
+    <span class="n">loops</span> <span class="o">=</span> <span class="n">_features_to_loops</span><span class="p">(</span><span class="n">input_features</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">loop</span> <span class="ow">in</span> <span class="n">loops</span><span class="p">:</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">geojson</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">coords</span><span class="p">(</span><span class="n">input_features</span><span class="p">[</span><span class="n">index</span><span class="p">]))</span>
+                  <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">loop</span><span class="p">]</span>
+        <span class="n">multi_line_string</span> <span class="o">=</span> <span class="n">geojson</span><span class="o">.</span><span class="n">MultiLineString</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geojson</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">multi_line_string</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">features</span>
+
+
+<span class="k">def</span> <span class="nf">_find_bounding_feature</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the index of the feature in the collection that contains all</span>
+<span class="sd">    other features&quot;&quot;&quot;</span>
+    <span class="n">line_strings</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">],</span> <span class="p">[])</span>
+                    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+    <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">line_string</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">line_string</span> <span class="ow">in</span> <span class="n">line_strings</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">poly</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">polygons</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">polygons</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">poly</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">index</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No polygon contains all other polygons!&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_reorder</span><span class="p">(</span><span class="n">input_features</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">input_features</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">_find_bounding_feature</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">bounding_feature</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">bounding_feature</span><span class="p">]</span> <span class="o">+</span> <span class="n">features</span>
+
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../../icepack.meshing.html#icepack.meshing.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">input_collection</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Normalize a GeoJSON feature collection into a form that can easily be</span>
+<span class="sd">    transformed into the input for a mesh generator&quot;&quot;&quot;</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">input_collection</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_flatten</span><span class="p">,</span> <span class="n">_snap</span><span class="p">,</span> <span class="n">_reorient</span><span class="p">,</span> <span class="n">_topologize</span><span class="p">,</span> <span class="n">_reorder</span><span class="p">]:</span>
+        <span class="n">collection</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">collection</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">collection</span></div>
+
+
+<span class="k">def</span> <span class="nf">_add_loop_to_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">multi_line_string</span><span class="p">):</span>
+    <span class="n">line_loop</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">line_string</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">multi_line_string</span><span class="p">):</span>
+        <span class="n">arc</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line_string</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">line_string</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">line_string</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">arc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+
+        <span class="n">num_lines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_line_string</span><span class="p">)</span>
+        <span class="n">next_line_string</span> <span class="o">=</span> <span class="n">multi_line_string</span><span class="p">[(</span><span class="n">line_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">num_lines</span><span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">line_string</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">next_line_string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">arc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+
+        <span class="n">geometry</span><span class="o">.</span><span class="n">add_physical</span><span class="p">(</span><span class="n">arc</span><span class="p">)</span>
+        <span class="n">line_loop</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">arc</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_line_loop</span><span class="p">(</span><span class="n">line_loop</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="collection_to_geo"><a class="viewcode-back" href="../../icepack.meshing.html#icepack.meshing.collection_to_geo">[docs]</a><span class="k">def</span> <span class="nf">collection_to_geo</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">lcar</span><span class="o">=</span><span class="mf">10e3</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert a GeoJSON FeatureCollection into pygmsh geometry that can then</span>
+<span class="sd">    be transformed into an unstructured triangular mesh&quot;&quot;&quot;</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">pygmsh</span><span class="o">.</span><span class="n">built_in</span><span class="o">.</span><span class="n">Geometry</span><span class="p">()</span>
+
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">collection</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
+    <span class="n">num_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">geometry</span><span class="o">.</span><span class="n">add_point</span><span class="p">((</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">lcar</span><span class="o">=</span><span class="n">lcar</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">line_string</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+               <span class="k">for</span> <span class="n">line_string</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]]</span>
+              <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+
+    <span class="n">line_loops</span> <span class="o">=</span> <span class="p">[</span><span class="n">_add_loop_to_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">multi_line_string</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">multi_line_string</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+    <span class="n">plane_surface</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_plane_surface</span><span class="p">(</span><span class="n">line_loops</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line_loops</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">physical_surface</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">add_physical</span><span class="p">(</span><span class="n">plane_surface</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">geometry</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
