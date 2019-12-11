@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>icepack package &mdash; icepack 0.0.3 documentation</title>
+  <title>icepack.models.damage_transport module &mdash; icepack 0.0.3 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="icepack.models package" href="icepack.models.html" />
-    <link rel="prev" title="icepack" href="modules.html" /> 
+    <link rel="next" title="icepack.models.friction module" href="icepack.models.friction.html" />
+    <link rel="prev" title="icepack.models package" href="icepack.models.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,23 +110,12 @@
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">icepack</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">icepack package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="icepack.constants.html">icepack.constants module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.datasets.html">icepack.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.interpolate.html">icepack.interpolate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.inverse.html">icepack.inverse module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.meshing.html">icepack.meshing module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.norms.html">icepack.norms module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.optimization.html">icepack.optimization module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.plot.html">icepack.plot module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="icepack.utilities.html">icepack.utilities module</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
@@ -178,13 +167,17 @@
         
           <li><a href="modules.html">icepack</a> &raquo;</li>
         
-      <li>icepack package</li>
+          <li><a href="icepack.html">icepack package</a> &raquo;</li>
+        
+          <li><a href="icepack.models.html">icepack.models package</a> &raquo;</li>
+        
+      <li>icepack.models.damage_transport module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/icepack.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/icepack.models.damage_transport.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -197,45 +190,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-icepack">
-<span id="icepack-package"></span><h1>icepack package<a class="headerlink" href="#module-icepack" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.models.html">icepack.models package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="icepack.models.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.damage_transport.html">icepack.models.damage_transport module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.friction.html">icepack.models.friction module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.heat_transport.html">icepack.models.heat_transport module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.hybrid.html">icepack.models.hybrid module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.ice_shelf.html">icepack.models.ice_shelf module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.ice_stream.html">icepack.models.ice_stream module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.mass_transport.html">icepack.models.mass_transport module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="icepack.models.viscosity.html">icepack.models.viscosity module</a></li>
+  <div class="section" id="module-icepack.models.damage_transport">
+<span id="icepack-models-damage-transport-module"></span><h1>icepack.models.damage_transport module<a class="headerlink" href="#module-icepack.models.damage_transport" title="Permalink to this headline">¶</a></h1>
+<p>Solver for the damage advection equation</p>
+<p>This module contains a solver for the conservative advection equation that
+describes the evolution of ice damage (Albrecht and Levermann 2014).</p>
+<dl class="class">
+<dt id="icepack.models.damage_transport.DamageTransport">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.damage_transport.</code><code class="sig-name descname">DamageTransport</code><span class="sig-paren">(</span><em class="sig-param">damage_stress=0.07</em>, <em class="sig-param">damage_rate=0.3</em>, <em class="sig-param">healing_strain_rate=0.00631152</em>, <em class="sig-param">healing_rate=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="icepack.models.damage_transport.DamageTransport.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">D0</em>, <em class="sig-param">u</em>, <em class="sig-param">A</em>, <em class="sig-param">D_inflow=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propogate the damage forward by one timestep</p>
+<p>This function uses a Runge-Kutta scheme to upwind damage
+(limiting damage diffusion) while sourcing and sinking
+damage assocaited with crevasse opening/crevasse healing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> (<em>float</em>) – Timestep</p></li>
+<li><p><strong>D0</strong> (<em>firedrake.Function</em>) – initial damage feild should be discontinuous</p></li>
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – Ice velocity</p></li>
+<li><p><strong>A</strong> (<em>firedrake.Function</em>) – fluidity parameter</p></li>
+<li><p><strong>D_inflow</strong> (<em>firedrake.Function</em>) – Damage of the upstream ice that advects into the domain</p></li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.constants.html">icepack.constants module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.datasets.html">icepack.datasets module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.interpolate.html">icepack.interpolate module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.inverse.html">icepack.inverse module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.meshing.html">icepack.meshing module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.norms.html">icepack.norms module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.optimization.html">icepack.optimization module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.plot.html">icepack.plot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.utilities.html">icepack.utilities module</a></li>
-</ul>
-</div>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>D</strong> – Ice damage at <cite>t + dt</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -246,10 +237,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="icepack.models.html" class="btn btn-neutral float-right" title="icepack.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.models.friction.html" class="btn btn-neutral float-right" title="icepack.models.friction module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral float-left" title="icepack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="icepack.models.html" class="btn btn-neutral float-left" title="icepack.models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

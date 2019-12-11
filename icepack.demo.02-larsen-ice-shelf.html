@@ -221,12 +221,11 @@ this satellite image in a <a class="reference external" href="https://en.wikiped
 system</a>.</p></li>
 </ul>
 <p>Rather than manually download these data sets from the websites they’re
-hosted on, we’ll call a few functions in the module <code class="docutils literal notranslate"><span class="pre">data.py</span></code> in this
-directory to fetch them for us. (Internally, these functions use a
-library called <a class="reference external" href="https://github.com/fatiando/pooch">pooch</a> which
-handles things like caching the data so it doesn’t get downloaded twice,
-unzipping archived files, and so forth.) One we have these data sets
-we’ll use the library
+hosted on, we’ll call a few functions in the module <code class="docutils literal notranslate"><span class="pre">icepack.datasets</span></code>
+to fetch them for us. (Internally, these functions use a library called
+<a class="reference external" href="https://github.com/fatiando/pooch">pooch</a> which handles things like
+caching the data so it doesn’t get downloaded twice, unzipping archived
+files, and so forth.) One we have these data sets we’ll use the library
 <a class="reference external" href="https://rasterio.readthedocs.io/en/stable/">rasterio</a> to read the
 gridded data and
 <a class="reference external" href="https://github.com/jazzband/python-geojson">GeoJSON</a> for the vector
@@ -445,16 +444,16 @@ function did.</p>
     <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_thickness_uncertainty_5km</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_coverage</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_lakemask_vostok</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_thickness</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_icemask_grounded_and_shelves</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_rockmask</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_grounded_bed_uncertainty</span><span class="o">.</span><span class="n">tif</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bedmap2_bed</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_thickness_uncertainty_5km</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">bedmap2_surface</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_icemask_grounded_and_shelves</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_lakemask_vostok</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_grounded_bed_uncertainty</span><span class="o">.</span><span class="n">tif</span>
 <span class="n">gl04c_geiod_to_WGS84</span><span class="o">.</span><span class="n">tif</span>
-<span class="n">bedmap2_bed</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_rockmask</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_thickness</span><span class="o">.</span><span class="n">tif</span>
+<span class="n">bedmap2_coverage</span><span class="o">.</span><span class="n">tif</span>
 </pre></div>
 </div>
 <p>We’re only interested in the thickness data itself, so the following
@@ -485,38 +484,7 @@ all the fields stored in a NetCDF file.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>ncinfo <span class="s2">&quot;</span><span class="nv">$velocity_filename</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
-root group (NETCDF4 data model, file format HDF5):
-    Conventions: CF-1.6
-    Metadata_Conventions: CF-1.6, Unidata Dataset Discovery v1.0, GDS v2.0
-    standard_name_vocabulary: CF Standard Name Table (v22, 12 February 2013)
-    id: v_mix.v8Jul2019.nc
-    title: MEaSURES Antarctica Ice Velocity Map 450m spacing
-    product_version:
-    summary:
-    keywords:
-    keywords_vocabulary:
-    platform:
-    sensor:
-    date_created: 2019-07-08T14:43:24.00005131959583Z
-    institution: Department of Earth System Science, University of California, Irvine, CA, USA; Univ. Grenoble Alpes, CNRS, IRD, Grenoble INP, IGE, 38000 Grenoble, France
-    cdm_data_type: Grid
-    geospatial_lat_units: degrees_north
-    geospatial_lon_units: degrees_east
-    geospatial_lat_min: -90
-    geospatial_lat_max: -60
-    geospatial_lon_min: -180
-    geospatial_lon_max: 180
-    spatial_resolution: 450 m
-    time_coverage_start: 1995-01-01
-    time_coverage_end: 2016-12-31
-    project: NASA/MEaSUREs
-    creator_name: J. Mouginot
-    comment:
-    license: No restrictions on access or use.
-    dimensions(sizes): x(12445), y(12445)
-    variables(dimensions): |S1 coord_system(), float64 x(x), float64 y(y), float64 lat(y,x), float64 lon(y,x), float32 VX(y,x), float32 VY(y,x), float32 STDX(y,x), float32 STDY(y,x), float32 ERRX(y,x), float32 ERRY(y,x), int32 CNT(y,x), int8 SOURCE(y,x)
-    groups:
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">ncinfo</span><span class="p">:</span> <span class="n">command</span> <span class="ow">not</span> <span class="n">found</span>
 </pre></div>
 </div>
 <p>The fields we want are <code class="docutils literal notranslate"><span class="pre">VX</span></code> and <code class="docutils literal notranslate"><span class="pre">VY</span></code>. We can use rasterio can read
@@ -577,7 +545,7 @@ spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11444950134920068</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.11444950134920095</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -622,11 +590,11 @@ that makes the 0-contour really obvious.</p>
 <p>The oscillatory pattern makes it less than obvious whether the ice shelf
 gained or lost mass, so let’s evaluate the integral of the thickness
 change to see.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">dx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">dx</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">)))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.7704420137915995</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.770442013791595</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

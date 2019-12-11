@@ -192,8 +192,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span>
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">year</span><span class="p">,</span> <span class="n">ideal_gas</span> <span class="k">as</span> <span class="n">R</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">year</span><span class="p">,</span> <span class="n">ideal_gas</span> <span class="k">as</span> <span class="n">R</span><span class="p">,</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 
 <span class="n">transition_temperature</span> <span class="o">=</span> <span class="mf">263.15</span>      <span class="c1"># K</span>
 <span class="n">A0_cold</span> <span class="o">=</span> <span class="mf">3.985e-13</span> <span class="o">*</span> <span class="n">year</span> <span class="o">*</span> <span class="mf">1.0e18</span>  <span class="c1"># mPa**-3 yr**-1</span>
@@ -267,7 +267,7 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        E(u) = \frac{n}{n+1}\int_\Omega h\cdot</span>
-<span class="sd">        M(\dot\varepsilon, A):\dot\varepsilon\hspace{2pt} dx</span>
+<span class="sd">        M(\dot\varepsilon, A):\dot\varepsilon\; dx</span>
 
 <span class="sd">    where :math:`M(\dot\varepsilon, A)` is the membrane stress tensor</span>
 

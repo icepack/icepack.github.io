@@ -195,7 +195,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.optimize</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">adjoint</span><span class="p">,</span> <span class="n">derivative</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">ln</span><span class="p">,</span> <span class="n">dx</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">adjoint</span><span class="p">,</span> <span class="n">derivative</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="n">ln</span><span class="p">,</span> <span class="n">dx</span>
 
 
 <span class="k">def</span> <span class="nf">_bracket</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -235,7 +235,7 @@
 <span class="sd">    with, say, the mass conservation equation, which is hyperbolic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">regularization</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">regularization</span><span class="p">,</span>
                  <span class="n">state_name</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span>
                  <span class="n">model_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">dirichlet_ids</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize the inverse problem</span>
@@ -496,7 +496,7 @@
 <span class="sd">    gradient of the objective functional. The search direction is easy to</span>
 <span class="sd">    compute using this method, but is often poorly scaled, resulting in more</span>
 <span class="sd">    expensive bracketing and line search phases.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">)):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_adjoint_state</span><span class="p">()</span>
@@ -538,7 +538,7 @@
 <span class="sd">    scaled to the dimensions of the problem and converges in far fewer</span>
 <span class="sd">    iterations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">),</span>
                  <span class="n">search_tolerance</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">()</span>
@@ -656,7 +656,7 @@
 
 <span class="sd">    See chapters 6-7 of Nocedal and Wright, Numerical Optimization, 2nd ed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">),</span> <span class="n">memory</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">),</span> <span class="n">memory</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_state</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_adjoint_state</span><span class="p">()</span>

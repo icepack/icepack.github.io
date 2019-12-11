@@ -11,6 +11,7 @@ Submodules
 
 .. toctree::
 
+   icepack.models.damage_transport
    icepack.models.friction
    icepack.models.heat_transport
    icepack.models.hybrid

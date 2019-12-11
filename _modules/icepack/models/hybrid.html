@@ -186,14 +186,14 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">sympy</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">outer</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">tr</span> <span class="k">as</span> <span class="n">trace</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span>
                        <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ds_b</span><span class="p">,</span> <span class="n">ds_v</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">icepack.models.mass_transport</span> <span class="k">import</span> <span class="n">LaxWendroff</span>
-<span class="kn">from</span> <span class="nn">icepack.optimization</span> <span class="k">import</span> <span class="n">newton_search</span>
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">icepack.models.mass_transport</span> <span class="kn">import</span> <span class="n">LaxWendroff</span>
+<span class="kn">from</span> <span class="nn">icepack.optimization</span> <span class="kn">import</span> <span class="n">newton_search</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
                                <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span><span class="p">,</span> <span class="n">weertman_sliding_law</span> <span class="k">as</span> <span class="n">m</span><span class="p">,</span>
                                <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="k">import</span> <span class="p">(</span><span class="n">facet_normal_2</span><span class="p">,</span> <span class="n">grad_2</span><span class="p">,</span> <span class="n">diameter</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="p">(</span><span class="n">facet_normal_2</span><span class="p">,</span> <span class="n">grad_2</span><span class="p">,</span> <span class="n">diameter</span><span class="p">,</span>
                                <span class="n">add_kwarg_wrapper</span><span class="p">)</span>
 
 <div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.hybrid.html#icepack.models.hybrid.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -202,8 +202,7 @@
 <span class="sd">    The gravitational part of the hybrid model action functional is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       E(u) = -\int_\Omega\int_0^1\rho_Ig\nabla s\cdot u</span>
-<span class="sd">       \hspace{2pt}hd\zeta \hspace{2pt}dx</span>
+<span class="sd">       E(u) = -\int_\Omega\int_0^1\rho_Ig\nabla s\cdot u\; h\, d\zeta\; dx</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -241,10 +240,10 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        E(u) = \int_\Gamma\int_0^1\left(\rho_Ig(1 - \zeta) -</span>
-<span class="sd">        \rho_Wg(\zeta_{\text{sl}} - \zeta)_+\right)hd\zeta ds</span>
+<span class="sd">        \rho_Wg(\zeta_{\text{sl}} - \zeta)_+\right)u\cdot\nu\; h\, d\zeta\; ds</span>
 
 <span class="sd">    where :math:`\zeta_\text{sl}` is the relative depth to sea level and the</span>
-<span class="sd">    :math:`(\zeta - \zeta_\text{sl})` denotes only the positive part.</span>
+<span class="sd">    :math:`(\zeta_\text{sl} - \zeta)_+` denotes only the positive part.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -308,8 +307,7 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        E(u) = \frac{n}{n + 1}\int_\Omega\int_0^1\left(</span>
-<span class="sd">        M : \dot\varepsilon_x + \tau_z\cdot\varepsilon_z\right)</span>
-<span class="sd">        hd\zeta\hspace{2pt}dx</span>
+<span class="sd">        M : \dot\varepsilon_x + \tau_z\cdot\varepsilon_z\right)h\, d\zeta\; dx</span>
 
 <span class="sd">    where :math:`M(\dot\varepsilon, A)` is the membrane stress tensor and</span>
 <span class="sd">    :math:`\tau_z` is the vertical shear stress vector.</span>
@@ -351,7 +349,7 @@
 <span class="sd">    The frictional part of the ice stream action functional is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\hspace{2pt}dx,</span>
+<span class="sd">       E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\; dx,</span>
 
 <span class="sd">    where everything is evaluated at the ice base (:math:`\zeta = 0`) and</span>
 <span class="sd">    :math:`\tau(u, C)` is the basal shear stress</span>
@@ -371,7 +369,7 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">       E(u) = -\frac{m}{m + 1}\int_\Gamma\int_0^1 \tau(u, C_s)\cdot u</span>
-<span class="sd">       \hspace{2pt}hd\zeta\hspace{2pt}ds</span>
+<span class="sd">       \; h\, d\zeta\;ds</span>
 
 <span class="sd">    where :math:`\tau(u, C_s)` is the side wall shear stress, :math:`ds`</span>
 <span class="sd">    is the element of surface area and :math:`\Gamma` are the side walls.</span>
@@ -419,7 +417,7 @@
 <span class="sd">    have a uniform thickness of 1, i.e. it has not been stretch to the bed</span>
 <span class="sd">    and surface topography.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="n">bed_friction</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">,</span> <span class="n">friction</span><span class="o">=</span><span class="n">bed_friction</span><span class="p">,</span>
                  <span class="n">gravity</span><span class="o">=</span><span class="n">gravity</span><span class="p">,</span> <span class="n">terminus</span><span class="o">=</span><span class="n">terminus</span><span class="p">,</span>
                  <span class="n">mass_transport</span><span class="o">=</span><span class="n">LaxWendroff</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">)):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span> <span class="o">=</span> <span class="n">mass_transport</span>

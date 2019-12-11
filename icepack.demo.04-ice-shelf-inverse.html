@@ -330,7 +330,7 @@ case, we’ll use the same value as in the second demo – a constant
 fluidity assuming a temperature of <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="mi">260</span>
 <span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="k">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 <span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">viscosity</span><span class="o">.</span><span class="n">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
@@ -363,7 +363,7 @@ fluidity assuming a temperature of <span class="math notranslate nohighlight">\(
 step is to write a pair of Python functions that will create the
 model-data misfit functional and the regularization functional. We’ll
 pass these functions to the inverse problem when we create it.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span>
 <span class="kn">import</span> <span class="nn">icepack.inverse</span>
 
 <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
@@ -465,10 +465,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.88961</span><span class="p">,</span> <span class="mf">0.28444</span>
-<span class="mf">1.02449</span><span class="p">,</span> <span class="mf">0.45325</span>
-<span class="mf">1.02607</span><span class="p">,</span> <span class="mf">0.424421</span>
-<span class="mf">1.01922</span><span class="p">,</span> <span class="mf">0.428243</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.8896</span><span class="p">,</span> <span class="mf">0.284442</span>
+<span class="mf">1.02287</span><span class="p">,</span> <span class="mf">0.454723</span>
+<span class="mf">1.02575</span><span class="p">,</span> <span class="mf">0.424752</span>
+<span class="mf">1.0191</span><span class="p">,</span> <span class="mf">0.428356</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -545,8 +545,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.480036012020176</span>
-<span class="mf">1.0192160296602175</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.4807661784469532</span>
+<span class="mf">1.0190998030450966</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

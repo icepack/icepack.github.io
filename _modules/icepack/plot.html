@@ -201,13 +201,13 @@
 <span class="kn">import</span> <span class="nn">matplotlib.colors</span>
 <span class="kn">import</span> <span class="nn">matplotlib.tri</span>
 <span class="kn">import</span> <span class="nn">matplotlib.streamplot</span>
-<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="k">import</span> <span class="n">ScalarFormatter</span>
-<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">LineCollection</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">ScalarFormatter</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">LineCollection</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
-<span class="kn">from</span> <span class="nn">firedrake.plot</span> <span class="k">import</span> <span class="n">_two_dimension_triangle_func_val</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">firedrake.plot</span> <span class="kn">import</span> <span class="n">_two_dimension_triangle_func_val</span>
 <span class="kn">import</span> <span class="nn">icepack</span>
 
 
@@ -217,7 +217,7 @@
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span>
     <span class="n">element</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">firedrake</span> <span class="k">import</span> <span class="n">VectorFunctionSpace</span><span class="p">,</span> <span class="n">interpolate</span>
+        <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">VectorFunctionSpace</span><span class="p">,</span> <span class="n">interpolate</span>
         <span class="n">V</span> <span class="o">=</span> <span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">family</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
 
@@ -455,7 +455,7 @@
 
 <div class="viewcode-block" id="StreamplotSet"><a class="viewcode-back" href="../../icepack.plot.html#icepack.plot.StreamplotSet">[docs]</a><span class="k">class</span> <span class="nc">StreamplotSet</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">streamplot</span><span class="o">.</span><span class="n">StreamplotSet</span><span class="p">,</span>
                     <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">matplotlib</span><span class="o">.</span><span class="n">streamplot</span><span class="o">.</span><span class="n">StreamplotSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">arrows</span><span class="p">)</span>
         <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span></div>

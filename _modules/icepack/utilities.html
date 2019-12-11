@@ -183,9 +183,13 @@
 <span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
 <span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
 
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Miscellaneous utilities for depth-averaging 3D fields, computing</span>
+<span class="sd">horizontal gradients of 3D fields, lifting 2D fields into 3D, etc.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">det</span>
 
 <div class="viewcode-block" id="facet_normal_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.facet_normal_2">[docs]</a><span class="k">def</span> <span class="nf">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal component of the unit outward normal vector</span>
@@ -202,6 +206,16 @@
 <div class="viewcode-block" id="div_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.div_2">[docs]</a><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal divergence of a 3D field&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="eigenvalues"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.eigenvalues">[docs]</a><span class="k">def</span> <span class="nf">eigenvalues</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a pair of symbolic expressions for the largest and smallest</span>
+<span class="sd">    eigenvalues of a 2D rank-2 tensor&quot;&quot;&quot;</span>
+    <span class="n">tr_a</span> <span class="o">=</span> <span class="n">tr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">det_a</span> <span class="o">=</span> <span class="n">det</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="c1"># TODO: Fret about numerical stability</span>
+    <span class="n">Δ</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">tr_a</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">det_a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">tr_a</span> <span class="o">+</span> <span class="n">Δ</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">tr_a</span> <span class="o">-</span> <span class="n">Δ</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="diameter"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.diameter">[docs]</a><span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>

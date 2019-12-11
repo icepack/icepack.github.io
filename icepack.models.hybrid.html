@@ -285,7 +285,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the bed friction part of the ice stream action functional</p>
 <p>The frictional part of the ice stream action functional is</p>
 <div class="math notranslate nohighlight">
-\[E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\hspace{2pt}dx,\]</div>
+\[E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\; dx,\]</div>
 <p>where everything is evaluated at the ice base (<span class="math notranslate nohighlight">\(\zeta = 0\)</span>) and
 <span class="math notranslate nohighlight">\(\tau(u, C)\)</span> is the basal shear stress</p>
 <div class="math notranslate nohighlight">
@@ -304,8 +304,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the hybrid model action functional is</p>
 <div class="math notranslate nohighlight">
-\[E(u) = -\int_\Omega\int_0^1\rho_Ig\nabla s\cdot u
-\hspace{2pt}hd\zeta \hspace{2pt}dx\]</div>
+\[E(u) = -\int_\Omega\int_0^1\rho_Ig\nabla s\cdot u\; h\, d\zeta\; dx\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -342,7 +341,7 @@ flow to the action functional.</p>
 walls of the domain is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = -\frac{m}{m + 1}\int_\Gamma\int_0^1 \tau(u, C_s)\cdot u
-\hspace{2pt}hd\zeta\hspace{2pt}ds\]</div>
+\; h\, d\zeta\;ds\]</div>
 <p>where <span class="math notranslate nohighlight">\(\tau(u, C_s)\)</span> is the side wall shear stress, <span class="math notranslate nohighlight">\(ds\)</span>
 is the element of surface area and <span class="math notranslate nohighlight">\(\Gamma\)</span> are the side walls.
 Side wall friction is relevant for glaciers that flow through a fjord
@@ -363,9 +362,9 @@ horizontal and shear strain rates and fluidity</p>
 <p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \int_\Gamma\int_0^1\left(\rho_Ig(1 - \zeta) -
-\rho_Wg(\zeta_{\text{sl}} - \zeta)_+\right)hd\zeta ds\]</div>
+\rho_Wg(\zeta_{\text{sl}} - \zeta)_+\right)u\cdot\nu\; h\, d\zeta\; ds\]</div>
 <p>where <span class="math notranslate nohighlight">\(\zeta_\text{sl}\)</span> is the relative depth to sea level and the
-<span class="math notranslate nohighlight">\((\zeta - \zeta_\text{sl})\)</span> denotes only the positive part.</p>
+<span class="math notranslate nohighlight">\((\zeta_\text{sl} - \zeta)_+\)</span> denotes only the positive part.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -393,8 +392,7 @@ following coordinates</p>
 <p>The viscous component of the action for the hybrid model is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \frac{n}{n + 1}\int_\Omega\int_0^1\left(
-M : \dot\varepsilon_x + \tau_z\cdot\varepsilon_z\right)
-hd\zeta\hspace{2pt}dx\]</div>
+M : \dot\varepsilon_x + \tau_z\cdot\varepsilon_z\right)h\, d\zeta\; dx\]</div>
 <p>where <span class="math notranslate nohighlight">\(M(\dot\varepsilon, A)\)</span> is the membrane stress tensor and
 <span class="math notranslate nohighlight">\(\tau_z\)</span> is the vertical shear stress vector.</p>
 <p>This form assumes that we’re using the fluidity parameter instead
