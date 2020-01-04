@@ -8,8 +8,8 @@
 Ice streams, once more
 ======================
 
-In this demo, we’ll revisit the ice stream demo but with a different
-model. The *hybrid* flow model that we’ll use here can resolve both
+In this demo, we'll revisit the ice stream demo but with a different
+model. The *hybrid* flow model that we'll use here can resolve both
 *plug flow* and *shear flow*. The velocity field is a plug flow if the
 velocity is roughly constanty with depth, whereas in shear flow the
 speed at the ice base is much smaller than at the ice surface. Deep in
@@ -18,13 +18,13 @@ the fast ice streams near the margins are roughly in plug flow. The
 shallow stream equations, and the ``IceStream`` class we used to solve
 them in the third demo, assume plug flow and thus are limited in the
 regions where they can be applied without substantial error. The
-``HybridModel`` class we’ll use here has no such limitation.
+``HybridModel`` class we'll use here has no such limitation.
 
 Geometry and input data
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We’ll use the same footprint geometry as the ice stream demo, but since
-we’re working with a 3D flow model, we need a 3D mesh to go along with
+We'll use the same footprint geometry as the ice stream demo, but since
+we're working with a 3D flow model, we need a 3D mesh to go along with
 it. The model we will use is posed entirely in *terrain-following
 coordinates*, where the :math:`z`-axis is remapped into the interval
 :math:`[0, 1]`. This new coordinate is defined as
@@ -38,7 +38,7 @@ steady even though the surface can be rising or falling.
 
 Firedrake includes built-in support generating *extruded meshes* out of
 a 2D footprint mesh. Rather than use a large number of vertical layers
-to achieve high resolution of functions defined on this mesh, we’ll use
+to achieve high resolution of functions defined on this mesh, we'll use
 only one layer but high-degree basis functions.
 
 .. code:: ipython3
@@ -52,7 +52,7 @@ To define a function space on an extruded mesh, the only change over 2D
 function spaces is the addition of the ``vfamily`` and ``vdegree``
 arguments. These describe respectively the finite element type and
 polynomial degree in the vertical direction. The surface and bed
-elevation only have to be defined on the footprint mesh, so we’ll use
+elevation only have to be defined on the footprint mesh, so we'll use
 vertical basis functions that are constant.
 
 .. code:: ipython3
@@ -60,10 +60,10 @@ vertical basis functions that are constant.
     Q = firedrake.FunctionSpace(mesh, family='CG', degree=2, vfamily='DG', vdegree=0)
 
 The function space for the velocities is more interesting. For starters,
-we have to explicitly specify the value dimension, since we’re workin
+we have to explicitly specify the value dimension, since we're workin
 with a 2D vector field defined on a 3D mesh. Rather than use the usual
 continuous or discontinuous Galerkin finite element bases in the
-vertical, we’ll use *Gauss-Legendre* elements. This finite element uses
+vertical, we'll use *Gauss-Legendre* elements. This finite element uses
 `Legendre
 polynomials <https://en.wikipedia.org/wiki/Legendre_polynomials>`__
 instead of the Lagrange interpolating polynomials. The Legendre
@@ -138,7 +138,7 @@ same way as for the ice stream model.
     opts = {'dirichlet_ids': [1], 'side_wall_ids': [3, 4], 'tol': 1e-6}
     u0 = model.diagnostic_solve(u0=u0, h=h0, s=s0, A=A, C=C, **opts)
 
-The ``tricontourf`` function in icepack will detect whether you’re
+The ``tricontourf`` function in icepack will detect whether you're
 trying to plot a 2D or a 3D field. Plotting 3D fields is expensive, so
 as a default, this function will depth-average the input field and make
 a contour plot of the resulting 2D field.
@@ -265,12 +265,12 @@ Resolving shear flow
 Unlike the ice stream model, however, the hybrid model can resolve
 vertical shear flow. To quantity the degree to which the glacier is in
 plug flow vs shear flow, we can calculate a weighted depth average of
-the velocity. In this case, we’ll use the function
+the velocity. In this case, we'll use the function
 
 .. math:: q(\zeta) = \sqrt 3 \cdot (2\zeta - 1)
 
 as our weight function. This weight is odd when reflected over the axis
-:math:`\zeta = 1/2`, so it’s orthogonal to all plug flow fields. The
+:math:`\zeta = 1/2`, so it's orthogonal to all plug flow fields. The
 extra factor of :math:`\sqrt 3` is there to normalize the weight
 function so that
 
@@ -281,7 +281,7 @@ normalized and shifted over to the interval :math:`[0, 1]`.
 
 The function ``depth_average`` will evaluate a weighted depth average of
 a 3D field defined on an extruded mesh. The weight can be any
-expression; in our case we’re using a polynomial in the symbol
+expression; in our case we're using a polynomial in the symbol
 :math:`\zeta`, but we could also have used another finite element
 function.
 
@@ -305,7 +305,7 @@ the 3D extruded mesh.
 
 
 
-To wrap things up, let’s plot the shear flow mode and do a bit of
+To wrap things up, let's plot the shear flow mode and do a bit of
 postprocessing.
 
 .. code:: ipython3
@@ -370,7 +370,7 @@ extruded mesh and that you need to specify the element family and degree
 in the vertical dimension. Using spectral methods in the vertical
 dimension makes it possible to capture much of the variation along this
 axis without resorting to a large number of layers, as might be
-necessary if we were using a more “traditional” discretization. There
+necessary if we were using a more "traditional" discretization. There
 are also a few extra steps when you want to analyze or plot 3D fields;
 depth averaging with a good choice of vertical weight function can get
 you pretty far. In principle, this hybrid model will work well on much
@@ -404,7 +404,7 @@ solution.
     
     u_4 = model.diagnostic_solve(u0=u_4, h=h, s=s, A=A, C=C, **opts)
 
-To see how much of a change we get with the extra vertical modes, we’ll
+To see how much of a change we get with the extra vertical modes, we'll
 calculate the relative error in the 2-norm.
 
 .. code:: ipython3
@@ -415,7 +415,7 @@ calculate the relative error in the 2-norm.
 
 .. parsed-literal::
 
-    0.030801303683573318
+    0.030801303683573648
 
 
 A mismatch of only 3% is not bad at all! However, if we used a synthetic

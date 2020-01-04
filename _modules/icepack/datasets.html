@@ -234,14 +234,28 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.tif&#39;</span><span class="p">]</span></div>
 
 
+<span class="n">bedmachine_antarctica</span> <span class="o">=</span> <span class="n">pooch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">=</span><span class="n">pooch</span><span class="o">.</span><span class="n">os_cache</span><span class="p">(</span><span class="s1">&#39;icepack&#39;</span><span class="p">),</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;https://n5eil01u.ecs.nsidc.org/MEASURES/NSIDC-0756.001/1970.01.01/&#39;</span><span class="p">,</span>
+    <span class="n">registry</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;BedMachineAntarctica_2019-11-05_v01.nc&#39;</span><span class="p">:</span>
+        <span class="s1">&#39;06a01511a51bbc27d5080e4727a6523126659fe62402b03654a5335e25b614c0&#39;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="fetch_bedmachine_antarctica"><a class="viewcode-back" href="../../icepack.datasets.html#icepack.datasets.fetch_bedmachine_antarctica">[docs]</a><span class="k">def</span> <span class="nf">fetch_bedmachine_antarctica</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">bedmachine_antarctica</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;BedMachineAntarctica_2019-11-05_v01.nc&#39;</span><span class="p">,</span>
+                                       <span class="n">downloader</span><span class="o">=</span><span class="n">_earthdata_downloader</span><span class="p">)</span></div>
+
+
 <span class="n">outlines_url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/icepack/glacier-meshes/&#39;</span>
-<span class="n">outlines_commit</span> <span class="o">=</span> <span class="s1">&#39;9306972327a127c4c4bdd3b5f61d2102307c2baa&#39;</span>
+<span class="n">outlines_commit</span> <span class="o">=</span> <span class="s1">&#39;a522188dadb9ba49d4848ba66cab8c90f9fda5d9&#39;</span>
 <span class="n">larsen_outline</span> <span class="o">=</span> <span class="n">pooch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
     <span class="n">path</span><span class="o">=</span><span class="n">pooch</span><span class="o">.</span><span class="n">os_cache</span><span class="p">(</span><span class="s1">&#39;icepack&#39;</span><span class="p">),</span>
     <span class="n">base_url</span><span class="o">=</span><span class="n">outlines_url</span> <span class="o">+</span> <span class="n">outlines_commit</span> <span class="o">+</span> <span class="s1">&#39;/glaciers/&#39;</span><span class="p">,</span>
     <span class="n">registry</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;larsen.geojson&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;74a632fcb7832df1c2f2d8c04302cfcdb3c1e86e027b8de5ba10e98d14d94856&#39;</span>
+        <span class="s1">&#39;da77c1920191d415961347b43e18d5bc2ffd72ddb803c01fc24c68c5db0f3033&#39;</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
