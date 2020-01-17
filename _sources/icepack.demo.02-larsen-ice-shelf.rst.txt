@@ -389,8 +389,7 @@ Modeling
 
 Having done all the leg work to make a mesh and get a good set of input
 data, the modeling itself should be fairly familiar from the last step.
-We'll assume that the ice temperature is a uniform
--13:math:`{}^\circ`\ C.
+We'll assume that the ice temperature is a uniform -13C.
 
 One thing is substantially different from previous examples. Before, we
 called the function ``firedrake.SpatialCoordinate`` to get some symbolic
@@ -465,7 +464,7 @@ unphysically large driving stress, which is shown in the plot below.
 
 .. code:: ipython3
 
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     contours = icepack.plot.tricontourf(τ_d, np.linspace(0., 100., 51),
                                         extend='max', axes=axes)
     fig.colorbar(contours, label='kPa')
@@ -475,7 +474,7 @@ unphysically large driving stress, which is shown in the plot below.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f805664f710>
+    <matplotlib.colorbar.Colorbar at 0x7fb6f4c5b5d0>
 
 
 
@@ -519,7 +518,7 @@ which is much more reasonable.
 .. code:: ipython3
 
     τ_d = firedrake.interpolate(-1e3 * ρ_I * g * (1 - ρ_I / ρ_W) * grad(h**2), V)
-    fig, axes = icepack.plot.subplots()
+    fig, axes = subplots()
     contours = icepack.plot.tricontourf(τ_d, np.linspace(0., 20., 41),
                                         extend='max', axes=axes)
     fig.colorbar(contours, label='kPa')
@@ -529,7 +528,7 @@ which is much more reasonable.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f80488f9f50>
+    <matplotlib.colorbar.Colorbar at 0x7fb6e6e64790>
 
 
 

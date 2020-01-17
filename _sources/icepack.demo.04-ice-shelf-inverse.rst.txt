@@ -40,20 +40,19 @@ constraints can require substantially more sophisticated numerical
 methods. To avoid this problem, we'll cheat our way out by
 reparameterizing :math:`A` in terms of a new variable :math:`\theta`:
 
-.. math:: A = A_0e^{-\theta/n},
+.. math:: A = A_0e^\theta.
 
-where :math:`n` is the Glen flow law exponent. No matter the value of
-:math:`\theta`, :math:`A` is always positive. To make this change, we'll
-give the ``IceShelf`` object our own custom-made function for
-calculating the viscous part of the action functional, just like we did
-for the friction in the last demo.
+No matter the value of :math:`\theta`, :math:`A` is always positive. To
+make this change, we'll give the ``IceShelf`` object our own custom-made
+function for calculating the viscous part of the action functional, just
+like we did for the friction in the last demo.
 
 In addition to minimizing the misfit, we also want to have a relatively
 smooth value of the parameter field :math:`\theta`. The regularization
-functional :math:`R` is included to penalize oscillations over a given
-length scale :math:`L`:
+functional :math:`R` is included to penalize oscillations of size
+:math:`\Theta` over a given length scale :math:`L`:
 
-.. math:: R(\theta) = \frac{L^2}{2}\int_\Omega|\nabla \theta|^2dx.
+.. math:: R(\theta) = \frac{L^2}{2\Theta^2}\int_\Omega|\nabla \theta|^2dx.
 
 Finally, let :math:`F(u, \theta)` be the weak form of the shallow shelf
 equations, again using the new parameter :math:`\theta` instead of the
@@ -147,7 +146,7 @@ thickness, which is necessary to get a reasonable driving stress.
     from firedrake import inner, grad, dx
     h = h0.copy(deepcopy=True)
     α = firedrake.Constant(2e3)
-    J = 0.5 * (h - h0)**2 * dx + 0.5 * α**2 * inner(grad(h), grad(h)) * dx
+    J = 0.5 * ((h - h0)**2 + α**2 * inner(grad(h), grad(h))) * dx
     F = firedrake.derivative(J, h)
     firedrake.solve(F == 0, h)
 
@@ -187,7 +186,7 @@ platform.
 
 We need to make an initial guess for the fluidity parameter. In this
 case, we'll use the same value as in the second demo -- a constant
-fluidity assuming a temperature of :math:`-13^\circ`\ C.
+fluidity assuming a temperature of -13C.
 
 .. code:: ipython3
 
@@ -195,7 +194,7 @@ fluidity assuming a temperature of :math:`-13^\circ`\ C.
     A0 = icepack.rate_factor(T0)
     from icepack.constants import glen_flow_law as n
     def viscosity(u, h, θ):
-        A = A0 * firedrake.exp(-θ / n)
+        A = A0 * firedrake.exp(θ)
         return icepack.models.viscosity.viscosity_depth_averaged(u, h, A)
     
     θ = firedrake.Function(Q)
@@ -239,9 +238,10 @@ pass these functions to the inverse problem when we create it.
         δu = u - u_obs
         return 0.5 * ((δu[0] / σx)**2 + (δu[1] / σy)**2) * dx
     
-    L = firedrake.Constant(6.5e3)
+    Θ = firedrake.Constant(1.)
+    L = firedrake.Constant(19.5e3)
     def regularization(θ):
-        return 0.5 * L**2 * inner(grad(θ), grad(θ)) * dx
+        return 0.5 * (L / Θ)**2 * inner(grad(θ), grad(θ)) * dx
 
 Now we create the ``InverseProblem`` object. We've already mentioned
 several objects that the inverse problem needs -- the model, the initial
@@ -359,12 +359,12 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.84456, 0.137435
-    1.54905, 0.245492
-    1.1807, 0.342667
-    1.09423, 0.375495
-    1.05321, 0.406143
-    1.04188, 0.409684
+    3.16784, 0.0508228
+    1.7019, 0.167765
+    1.20015, 0.313135
+    1.08149, 0.379225
+    1.03091, 0.418092
+    1.03266, 0.416064
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -389,9 +389,12 @@ First, let's plot the parameter value and the fluidity.
 
 .. code:: ipython3
 
+    θ = solver.parameter
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(solver.parameter, np.linspace(-8, 8, 17),
-                                        alpha=0.6, cmap='RdBu', extend='both', axes=axes)
+    levels = np.linspace(-3, 3, 61)
+    contours = icepack.plot.tricontourf(
+        θ, levels=levels, alpha=0.6, cmap='RdBu_r', extend='both', axes=axes
+    )
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -402,10 +405,12 @@ First, let's plot the parameter value and the fluidity.
 
 .. code:: ipython3
 
-    A = firedrake.interpolate(A0 * firedrake.exp(-solver.parameter / n), Q)
+    A = firedrake.interpolate(A0 * firedrake.exp(θ), Q)
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(A, levels=np.linspace(0, 50, 26),
-                                        alpha=0.6, extend='max', axes=axes)
+    levels = np.linspace(0, 32, 9)
+    contours = icepack.plot.tricontourf(
+        A, levels=levels, alpha=0.6, extend='max', axes=axes
+    )
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -436,8 +441,10 @@ difference between the computed and observed velocities.
 
     fig, axes = subplots()
     δu = firedrake.interpolate((solver.state - u_obs)**2/(2*σ**2), Q)
-    contours = icepack.plot.tricontourf(δu, levels=np.linspace(0, 6, 51),
-                                        alpha=0.6, cmap='Reds', extend='both', axes=axes)
+    levels = np.linspace(0, 6, 13)
+    contours = icepack.plot.tricontourf(
+        δu, levels=levels, alpha=0.6, cmap='Reds', extend='max', axes=axes
+    )
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -469,8 +476,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    2.510601262060378
-    1.0418782255297416
+    0.8604495069126659
+    1.0326625331527821
 
 
 The objective function has been reduced by a factor of 10 through the

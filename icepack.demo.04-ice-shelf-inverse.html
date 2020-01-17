@@ -216,18 +216,17 @@ constraints can require substantially more sophisticated numerical
 methods. To avoid this problem, we’ll cheat our way out by
 reparameterizing <span class="math notranslate nohighlight">\(A\)</span> in terms of a new variable <span class="math notranslate nohighlight">\(\theta\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[A = A_0e^{-\theta/n},\]</div>
-<p>where <span class="math notranslate nohighlight">\(n\)</span> is the Glen flow law exponent. No matter the value of
-<span class="math notranslate nohighlight">\(\theta\)</span>, <span class="math notranslate nohighlight">\(A\)</span> is always positive. To make this change, we’ll
-give the <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code> object our own custom-made function for
-calculating the viscous part of the action functional, just like we did
-for the friction in the last demo.</p>
+\[A = A_0e^\theta.\]</div>
+<p>No matter the value of <span class="math notranslate nohighlight">\(\theta\)</span>, <span class="math notranslate nohighlight">\(A\)</span> is always positive. To
+make this change, we’ll give the <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code> object our own custom-made
+function for calculating the viscous part of the action functional, just
+like we did for the friction in the last demo.</p>
 <p>In addition to minimizing the misfit, we also want to have a relatively
 smooth value of the parameter field <span class="math notranslate nohighlight">\(\theta\)</span>. The regularization
-functional <span class="math notranslate nohighlight">\(R\)</span> is included to penalize oscillations over a given
-length scale <span class="math notranslate nohighlight">\(L\)</span>:</p>
+functional <span class="math notranslate nohighlight">\(R\)</span> is included to penalize oscillations of size
+<span class="math notranslate nohighlight">\(\Theta\)</span> over a given length scale <span class="math notranslate nohighlight">\(L\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[R(\theta) = \frac{L^2}{2}\int_\Omega|\nabla \theta|^2dx.\]</div>
+\[R(\theta) = \frac{L^2}{2\Theta^2}\int_\Omega|\nabla \theta|^2dx.\]</div>
 <p>Finally, let <span class="math notranslate nohighlight">\(F(u, \theta)\)</span> be the weak form of the shallow shelf
 equations, again using the new parameter <span class="math notranslate nohighlight">\(\theta\)</span> instead of the
 fluidity <span class="math notranslate nohighlight">\(A\)</span>. The physics constraint for our problem is that
@@ -304,7 +303,7 @@ thickness, which is necessary to get a reasonable driving stress.</p>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">dx</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">α</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">2e3</span><span class="p">)</span>
-<span class="n">J</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">α</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="n">J</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">α</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="p">)))</span> <span class="o">*</span> <span class="n">dx</span>
 <span class="n">F</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
 <span class="n">firedrake</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">F</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
 </pre></div>
@@ -337,12 +336,12 @@ platform.</p>
 <img alt="_images/icepack.demo.04-ice-shelf-inverse_13_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_13_0.png" />
 <p>We need to make an initial guess for the fluidity parameter. In this
 case, we’ll use the same value as in the second demo – a constant
-fluidity assuming a temperature of <span class="math notranslate nohighlight">\(-13^\circ\)</span>C.</p>
+fluidity assuming a temperature of -13C.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="mi">260</span>
 <span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 <span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">θ</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">viscosity</span><span class="o">.</span><span class="n">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 
 <span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -379,9 +378,10 @@ pass these functions to the inverse problem when we create it.</p>
     <span class="n">δu</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">u_obs</span>
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">δu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">σx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">δu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">σy</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
 
-<span class="n">L</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">6.5e3</span><span class="p">)</span>
+<span class="n">Θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">19.5e3</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">regularization</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">L</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">L</span> <span class="o">/</span> <span class="n">Θ</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
 </pre></div>
 </div>
 <p>Now we create the <code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> object. We’ve already mentioned
@@ -475,12 +475,12 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.84456</span><span class="p">,</span> <span class="mf">0.137435</span>
-<span class="mf">1.54905</span><span class="p">,</span> <span class="mf">0.245492</span>
-<span class="mf">1.1807</span><span class="p">,</span> <span class="mf">0.342667</span>
-<span class="mf">1.09423</span><span class="p">,</span> <span class="mf">0.375495</span>
-<span class="mf">1.05321</span><span class="p">,</span> <span class="mf">0.406143</span>
-<span class="mf">1.04188</span><span class="p">,</span> <span class="mf">0.409684</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.16784</span><span class="p">,</span> <span class="mf">0.0508228</span>
+<span class="mf">1.7019</span><span class="p">,</span> <span class="mf">0.167765</span>
+<span class="mf">1.20015</span><span class="p">,</span> <span class="mf">0.313135</span>
+<span class="mf">1.08149</span><span class="p">,</span> <span class="mf">0.379225</span>
+<span class="mf">1.03091</span><span class="p">,</span> <span class="mf">0.418092</span>
+<span class="mf">1.03266</span><span class="p">,</span> <span class="mf">0.416064</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -500,18 +500,23 @@ fluidity, or we might be observing the thickness instead of the
 velocity. You can see all the publicly visible properties by typing
 <code class="docutils literal notranslate"><span class="pre">help(inverse_problem)</span></code>.</p>
 <p>First, let’s plot the parameter value and the fluidity.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
-                                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">θ</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">parameter</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">61</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
+    <span class="n">θ</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.04-ice-shelf-inverse_31_0.png" src="_images/icepack.demo.04-ice-shelf-inverse_31_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">solver</span><span class="o">.</span><span class="n">parameter</span> <span class="o">/</span> <span class="n">n</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span>
-                                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -534,8 +539,10 @@ direction.</p>
 difference between the computed and observed velocities.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
 <span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">state</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">σ</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">δu</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span>
-                                    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
+    <span class="n">δu</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -557,8 +564,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.510601262060378</span>
-<span class="mf">1.0418782255297416</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8604495069126659</span>
+<span class="mf">1.0326625331527821</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the
