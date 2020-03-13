@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -449,28 +449,7 @@ fields stored in a NetCDF file.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>ncinfo <span class="s2">&quot;</span><span class="nv">$thickness_filename</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
-root group (NETCDF4_CLASSIC data model, file format HDF5):
-    Conventions: CF-1.7
-    Title: BedMachine Antarctica
-    Author: Mathieu Morlighem
-    version: 05-Nov-2019 (v1.38)
-    nx: 13333.0
-    ny: 13333.0
-    Projection: Polar Stereographic South (71S,0E)
-    proj4: +init=epsg:3031
-    sea_water_density (kg m-3): 1027.0
-    ice_density (kg m-3): 917.0
-    xmin: -3333000
-    ymax: 3333000
-    spacing: 500
-    no_data: -9999.0
-    license: No restrictions on access or use
-    Data_citation: Morlighem M. et al., (2019), Deep glacial troughs and stabilizing ridges unveiled beneath the margins of the Antarctic ice sheet, Nature Geoscience (accepted)
-    Notes: Data processed at the Department of Earth System Science, University of California, Irvine
-    dimensions(sizes): x(13333), y(13333)
-    variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y,x), float32 firn(y,x), float32 surface(y,x), float32 thickness(y,x), float32 bed(y,x), int16 errbed(y,x), int8 source(y,x), int16 geoid(y,x)
-    groups:
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span> <span class="n">ncinfo</span><span class="p">:</span> <span class="ow">not</span> <span class="n">found</span>
 </pre></div>
 </div>
 <p>From this information we can see that the name of the field we want is
@@ -562,16 +541,26 @@ unphysically large driving stress, which is shown in the plot below.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7fb6f4c5b5d0</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7c9e386bd0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" />
 <p>In many regions the driving stress exceeds 100 kilopascals, which would
 be reasonable for a steep Greenland outlet glacier, not for a floating
-ice shelf. A quick hack around this would be to apply a smoothing filter
-to the ice thickness. The code below synthesizes a new thickness <code class="docutils literal notranslate"><span class="pre">h</span></code>
-that matches the observations <code class="docutils literal notranslate"><span class="pre">h0</span></code> as best as possible while also
-supressing oscillations on scales less than 2km.</p>
+ice shelf.</p>
+<p>A quick hack around this would be to synthesize a new, smoother
+thickness field makes that matches the direct observations as well as
+possible. In other words, we want a field <span class="math notranslate nohighlight">\(h\)</span> that minimizes the
+following functional:</p>
+<div class="math notranslate nohighlight">
+\[J(h) = \frac{1}{2}\int_\Omega\left((h - h^o)^2 + \alpha^2|\nabla h|^2\right)dx.\]</div>
+<p>The first term quantifies the degree to which our modeled thickness
+<span class="math notranslate nohighlight">\(h\)</span> matches the observations <span class="math notranslate nohighlight">\(h^o\)</span>, while the second term
+quantifies how oscillatory <span class="math notranslate nohighlight">\(h\)</span> is. The factor <span class="math notranslate nohighlight">\(\alpha\)</span> is a
+length that dictates the distance over which we want to penalize sharp
+oscillations. I came up with a smoothing length of 2km by trial and
+error. The following code will find a minimizer of <span class="math notranslate nohighlight">\(J\)</span> by looking
+for a thickness at which the derivative of <span class="math notranslate nohighlight">\(J\)</span> is zero.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">dx</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">h0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">α</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">2e3</span><span class="p">)</span>
@@ -581,16 +570,16 @@ supressing oscillations on scales less than 2km.</p>
 </pre></div>
 </div>
 <p>The relative difference between the raw and smoothed thickness is around
-3.5%. The errors from the correction for air or water in the firn column
-are around this magnitude or higher.</p>
+3.5%. That’s not a huge relative error; the corrections for air or water
+in the firn column are comparable.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">dx</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.033738415684965654</span>
 </pre></div>
 </div>
-<p>The driving stress of the filtered ice thickness tops out around 20 kPa,
-which is much more reasonable.</p>
+<p>Finally, the driving stress of the filtered ice thickness tops out
+around 20 kPa, which is much more reasonable.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">τ_d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="o">-</span><span class="mf">1e3</span> <span class="o">*</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">τ_d</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mi">41</span><span class="p">),</span>
@@ -598,7 +587,7 @@ which is much more reasonable.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7fb6e6e64790</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7c9c85a3d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" />

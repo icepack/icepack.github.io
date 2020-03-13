@@ -332,28 +332,7 @@ fields stored in a NetCDF file.
 
 .. parsed-literal::
 
-    <class 'netCDF4._netCDF4.Dataset'>
-    root group (NETCDF4_CLASSIC data model, file format HDF5):
-        Conventions: CF-1.7
-        Title: BedMachine Antarctica
-        Author: Mathieu Morlighem
-        version: 05-Nov-2019 (v1.38)
-        nx: 13333.0
-        ny: 13333.0
-        Projection: Polar Stereographic South (71S,0E)
-        proj4: +init=epsg:3031
-        sea_water_density (kg m-3): 1027.0
-        ice_density (kg m-3): 917.0
-        xmin: -3333000
-        ymax: 3333000
-        spacing: 500
-        no_data: -9999.0
-        license: No restrictions on access or use
-        Data_citation: Morlighem M. et al., (2019), Deep glacial troughs and stabilizing ridges unveiled beneath the margins of the Antarctic ice sheet, Nature Geoscience (accepted)
-        Notes: Data processed at the Department of Earth System Science, University of California, Irvine
-        dimensions(sizes): x(13333), y(13333)
-        variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y,x), float32 firn(y,x), float32 surface(y,x), float32 thickness(y,x), float32 bed(y,x), int16 errbed(y,x), int8 source(y,x), int16 geoid(y,x)
-        groups: 
+    /bin/sh: 1: ncinfo: not found
 
 
 From this information we can see that the name of the field we want is
@@ -474,7 +453,7 @@ unphysically large driving stress, which is shown in the plot below.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fb6f4c5b5d0>
+    <matplotlib.colorbar.Colorbar at 0x7f7c9e386bd0>
 
 
 
@@ -484,10 +463,22 @@ unphysically large driving stress, which is shown in the plot below.
 
 In many regions the driving stress exceeds 100 kilopascals, which would
 be reasonable for a steep Greenland outlet glacier, not for a floating
-ice shelf. A quick hack around this would be to apply a smoothing filter
-to the ice thickness. The code below synthesizes a new thickness ``h``
-that matches the observations ``h0`` as best as possible while also
-supressing oscillations on scales less than 2km.
+ice shelf.
+
+A quick hack around this would be to synthesize a new, smoother
+thickness field makes that matches the direct observations as well as
+possible. In other words, we want a field :math:`h` that minimizes the
+following functional:
+
+.. math:: J(h) = \frac{1}{2}\int_\Omega\left((h - h^o)^2 + \alpha^2|\nabla h|^2\right)dx.
+
+The first term quantifies the degree to which our modeled thickness
+:math:`h` matches the observations :math:`h^o`, while the second term
+quantifies how oscillatory :math:`h` is. The factor :math:`\alpha` is a
+length that dictates the distance over which we want to penalize sharp
+oscillations. I came up with a smoothing length of 2km by trial and
+error. The following code will find a minimizer of :math:`J` by looking
+for a thickness at which the derivative of :math:`J` is zero.
 
 .. code:: ipython3
 
@@ -499,8 +490,8 @@ supressing oscillations on scales less than 2km.
     firedrake.solve(F == 0, h)
 
 The relative difference between the raw and smoothed thickness is around
-3.5%. The errors from the correction for air or water in the firn column
-are around this magnitude or higher.
+3.5%. That's not a huge relative error; the corrections for air or water
+in the firn column are comparable.
 
 .. code:: ipython3
 
@@ -512,8 +503,8 @@ are around this magnitude or higher.
     0.033738415684965654
 
 
-The driving stress of the filtered ice thickness tops out around 20 kPa,
-which is much more reasonable.
+Finally, the driving stress of the filtered ice thickness tops out
+around 20 kPa, which is much more reasonable.
 
 .. code:: ipython3
 
@@ -528,7 +519,7 @@ which is much more reasonable.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fb6e6e64790>
+    <matplotlib.colorbar.Colorbar at 0x7f7c9c85a3d0>
 
 
 
