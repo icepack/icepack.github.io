@@ -192,7 +192,7 @@
             
   <div class="section" id="module-icepack.models.hybrid">
 <span id="icepack-models-hybrid-module"></span><h1>icepack.models.hybrid module<a class="headerlink" href="#module-icepack.models.hybrid" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.hybrid.HybridModel">
 <em class="property">class </em><code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">HybridModel</code><span class="sig-paren">(</span><em class="sig-param">viscosity=&lt;function viscosity&gt;</em>, <em class="sig-param">friction=&lt;function bed_friction&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">terminus=&lt;function terminus&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -203,16 +203,16 @@ regime (fast-sliding or no sliding). This model assumes that the domain
 is extruded from a 2D footprint mesh. Moreover, the mesh is assumed to
 have a uniform thickness of 1, i.e. it has not been stretch to the bed
 and surface topography.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.action">
-<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.action" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the action functional that gives the hybrid model as its
 Euler-Lagrange equations</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.compute_surface">
-<code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param">h</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.compute_surface" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.compute_surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ice surface elevation consistent with a given
 thickness and bathymetry</p>
 <p>If the bathymetry beneath a tidewater glacier is too low, the ice
@@ -222,9 +222,9 @@ will go afloat. The surface elevation of a floating ice shelf is</p>
 <p>provided everything is in hydrostatic balance.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.diagnostic_solve">
-<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param">u0</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">dirichlet_ids</em>, <em class="sig-param">tol=1e-06</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u0</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">dirichlet_ids</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">1e-06</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness and surface
 elevation</p>
 <dl class="field-list simple">
@@ -253,14 +253,14 @@ that were set when this model object was initialized</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.prognostic_solve">
-<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">h0</em>, <em class="sig-param">a</em>, <em class="sig-param">u</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.prognostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">h0</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.prognostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.quadrature_degree">
-<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.quadrature_degree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.quadrature_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadrature degree necessary to integrate the action
 functional accurately</p>
 <p>Firedrake uses a very conservative algorithm for estimating the
@@ -269,9 +269,9 @@ expression. By exploiting known structure of the problem, we can
 reduce the number of quadrature points while preserving accuracy.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.scale">
-<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the positive, convex part of the action functional</p>
 <p>The positive part of the action functional is used as a dimensional
 scale to determine when to terminate an optimization algorithm.</p>
@@ -279,28 +279,9 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="icepack.models.hybrid.bed_friction">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">bed_friction</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.bed_friction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the bed friction part of the ice stream action functional</p>
-<p>The frictional part of the ice stream action functional is</p>
-<div class="math notranslate nohighlight">
-\[E(u) = -\frac{m}{m + 1}\int_\Omega\tau(u, C)\cdot u\; dx,\]</div>
-<p>where everything is evaluated at the ice base (<span class="math notranslate nohighlight">\(\zeta = 0\)</span>) and
-<span class="math notranslate nohighlight">\(\tau(u, C)\)</span> is the basal shear stress</p>
-<div class="math notranslate nohighlight">
-\[\tau(u, C) = -C|u|^{1/m - 1}u\]</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.models.hybrid.friction_stress">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">friction_stress</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#friction_stress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.friction_stress" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the shear stress for a given sliding velocity</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.gravity">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.gravity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the hybrid model action functional is</p>
 <div class="math notranslate nohighlight">
@@ -316,48 +297,23 @@ scale to determine when to terminate an optimization algorithm.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.horizontal_strain">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">horizontal_strain</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">s</em>, <em class="sig-param">h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#horizontal_strain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.horizontal_strain" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">horizontal_strain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#horizontal_strain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.horizontal_strain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the horizontal strain rate with corrections for terrain-
 following coordinates</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="icepack.models.hybrid.normal_flow_penalty">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">normal_flow_penalty</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">scale=1.0</em>, <em class="sig-param">exponent=None</em>, <em class="sig-param">side_wall_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#normal_flow_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.normal_flow_penalty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the penalty for flow normal to the domain boundary</p>
-<p>For problems where a glacier flows along some boundary, e.g. a fjord
-wall, the velocity has to be parallel to this boundary. Rather than
-enforce this boundary condition directly, we add a penalty for normal
-flow to the action functional.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.models.hybrid.side_friction">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">side_friction</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">Cs=Constant(FiniteElement('Real'</em>, <em class="sig-param">None</em>, <em class="sig-param">0)</em>, <em class="sig-param">2)</em>, <em class="sig-param">side_wall_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#side_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.side_friction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the side wall friction part of the action functional</p>
-<p>The component of the action functional due to friction along the side
-walls of the domain is</p>
-<div class="math notranslate nohighlight">
-\[E(u) = -\frac{m}{m + 1}\int_\Gamma\int_0^1 \tau(u, C_s)\cdot u
-\; h\, d\zeta\;ds\]</div>
-<p>where <span class="math notranslate nohighlight">\(\tau(u, C_s)\)</span> is the side wall shear stress, <span class="math notranslate nohighlight">\(ds\)</span>
-is the element of surface area and <span class="math notranslate nohighlight">\(\Gamma\)</span> are the side walls.
-Side wall friction is relevant for glaciers that flow through a fjord
-with rock walls on either side.</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.stresses">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">stresses</code><span class="sig-paren">(</span><em class="sig-param">ε_x</em>, <em class="sig-param">ε_z</em>, <em class="sig-param">A</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#stresses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.stresses" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">stresses</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ε_x</span></em>, <em class="sig-param"><span class="n">ε_z</span></em>, <em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#stresses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.stresses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the membrane and vertical shear stresses for the given
 horizontal and shear strain rates and fluidity</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.terminus">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.terminus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminal stress part of the hybrid model action functional</p>
 <p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
 <div class="math notranslate nohighlight">
@@ -378,16 +334,16 @@ calving front</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.vertical_strain">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">vertical_strain</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#vertical_strain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.vertical_strain" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">vertical_strain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#vertical_strain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.vertical_strain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the vertical strain rate with corrections for terrain-
 following coordinates</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.hybrid.viscosity">
-<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">viscosity</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">s</em>, <em class="sig-param">h</em>, <em class="sig-param">A</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#viscosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.viscosity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">viscosity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#viscosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.viscosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the viscous part of the hybrid model action functional</p>
 <p>The viscous component of the action for the hybrid model is</p>
 <div class="math notranslate nohighlight">

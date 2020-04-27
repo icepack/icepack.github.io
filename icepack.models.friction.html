@@ -192,9 +192,9 @@
             
   <div class="section" id="module-icepack.models.friction">
 <span id="icepack-models-friction-module"></span><h1>icepack.models.friction module<a class="headerlink" href="#module-icepack.models.friction" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.friction.bed_friction">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">bed_friction</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.bed_friction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">bed_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">C</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.bed_friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bed friction part of the ice stream action functional</p>
 <p>The frictional part of the ice stream action functional is</p>
 <div class="math notranslate nohighlight">
@@ -204,9 +204,15 @@
 \[\tau(u, C) = -C|u|^{1/m - 1}u\]</div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
+<dt id="icepack.models.friction.friction_stress">
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">friction_stress</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">C</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#friction_stress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.friction_stress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the shear stress for a given sliding velocity</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="icepack.models.friction.normal_flow_penalty">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">normal_flow_penalty</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">scale=1.0</em>, <em class="sig-param">exponent=None</em>, <em class="sig-param">side_wall_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#normal_flow_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.normal_flow_penalty" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">normal_flow_penalty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">exponent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#normal_flow_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.normal_flow_penalty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the penalty for flow normal to the domain boundary</p>
 <p>For problems where a glacier flows along some boundary, e.g. a fjord
 wall, the velocity has to be parallel to this boundary. Rather than
@@ -214,9 +220,9 @@ enforce this boundary condition directly, we add a penalty for normal
 flow to the action functional.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.friction.side_friction">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">side_friction</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">Cs=Constant(FiniteElement('Real'</em>, <em class="sig-param">None</em>, <em class="sig-param">0)</em>, <em class="sig-param">1)</em>, <em class="sig-param">side_wall_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#side_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.side_friction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">side_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">Cs</span><span class="o">=</span><span class="default_value">Constant(FiniteElement('Real', None, 0), 1)</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#side_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.side_friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the side wall friction part of the action functional</p>
 <p>The component of the action functional due to friction along the side
 walls of the domain is</p>
@@ -226,12 +232,6 @@ walls of the domain is</p>
 is the element of surface area and <span class="math notranslate nohighlight">\(\Gamma\)</span> are the side walls.
 Side wall friction is relevant for glaciers that flow through a fjord
 with rock walls on either side.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="icepack.models.friction.tau">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">tau</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.tau" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the shear stress for a given sliding velocity</p>
 </dd></dl>
 
 </div>

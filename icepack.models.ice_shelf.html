@@ -192,7 +192,7 @@
             
   <div class="section" id="module-icepack.models.ice_shelf">
 <span id="icepack-models-ice-shelf-module"></span><h1>icepack.models.ice_shelf module<a class="headerlink" href="#module-icepack.models.ice_shelf" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.ice_shelf.IceShelf">
 <em class="property">class </em><code class="sig-prename descclassname">icepack.models.ice_shelf.</code><code class="sig-name descname">IceShelf</code><span class="sig-paren">(</span><em class="sig-param">viscosity=&lt;function viscosity_depth_averaged&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">terminus=&lt;function terminus&gt;</em>, <em class="sig-param">side_friction=&lt;function side_friction&gt;</em>, <em class="sig-param">penalty=&lt;function normal_flow_penalty&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -207,9 +207,9 @@ in ch. 6 of Greve and Blatter.</p>
 </dd>
 </dl>
 </div>
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.ice_shelf.IceShelf.action">
-<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.action" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the action functional that gives the ice shelf diagnostic
 model as the Euler-Lagrange equations</p>
 <p>The action functional for the ice shelf diagnostic model is</p>
@@ -240,9 +240,9 @@ example, is passed as a keyword argument.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.ice_shelf.IceShelf.diagnostic_solve">
-<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param">u0</em>, <em class="sig-param">h</em>, <em class="sig-param">dirichlet_ids</em>, <em class="sig-param">tol=1e-06</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u0</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">dirichlet_ids</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">1e-06</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solve for the ice velocity from the thickness</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -269,16 +269,16 @@ model object was initialized</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.ice_shelf.IceShelf.prognostic_solve">
-<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">h0</em>, <em class="sig-param">a</em>, <em class="sig-param">u</em>, <em class="sig-param">h_inflow=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.prognostic_solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">h0</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h_inflow</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.prognostic_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the ice thickness forward one timestep</p>
 <p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">icepack.models.mass_transport.MassTransport.solve()</span></code></p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.ice_shelf.IceShelf.quadrature_degree">
-<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.quadrature_degree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.quadrature_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadrature degree necessary to integrate the action
 functional accurately</p>
 <p>Firedrake uses a very conservative algorithm for estimating the
@@ -287,9 +287,9 @@ expression. By exploiting known structure of the problem, we can
 reduce the number of quadrature points while preserving accuracy.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.ice_shelf.IceShelf.scale">
-<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#IceShelf.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.IceShelf.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the positive, convex part of the action functional</p>
 <p>The positive part of the action functional is used as a dimensional
 scale to determine when to terminate an optimization algorithm.</p>
@@ -297,9 +297,9 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.ice_shelf.gravity">
-<code class="sig-prename descclassname">icepack.models.ice_shelf.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.gravity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_shelf.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice shelf action functional</p>
 <p>The gravitational part of the ice shelf action functional is</p>
 <div class="math notranslate nohighlight">
@@ -320,9 +320,9 @@ scale to determine when to terminate an optimization algorithm.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.models.ice_shelf.terminus">
-<code class="sig-prename descclassname">icepack.models.ice_shelf.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">h</em>, <em class="sig-param">ice_front_ids=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.terminus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_shelf.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_shelf.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_shelf.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminus stress part of the ice shelf action functional</p>
 <p>The power exerted due to stress at the calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span> is</p>
 <div class="math notranslate nohighlight">

@@ -192,7 +192,7 @@
             
   <div class="section" id="module-icepack.models.heat_transport">
 <span id="icepack-models-heat-transport-module"></span><h1>icepack.models.heat_transport module<a class="headerlink" href="#module-icepack.models.heat_transport" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.heat_transport.HeatTransport3D">
 <em class="property">class </em><code class="sig-prename descclassname">icepack.models.heat_transport.</code><code class="sig-name descname">HeatTransport3D</code><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -202,28 +202,28 @@ density. The energy density factors in both the temperature and the latent
 heat included in meltwater. We use the energy density rather than the
 enthalpy because it comes out to a nice round number (about 500 MPa/m^3)
 in the unit system we use.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.energy_density">
-<code class="sig-name descname">energy_density</code><span class="sig-paren">(</span><em class="sig-param">T</em>, <em class="sig-param">f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.energy_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.energy_density" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">energy_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.energy_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.energy_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the energy density for ice at the given temperature and melt
 fraction</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.meltwater_fraction">
-<code class="sig-name descname">meltwater_fraction</code><span class="sig-paren">(</span><em class="sig-param">E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.meltwater_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.meltwater_fraction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">meltwater_fraction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.meltwater_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.meltwater_fraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the melt fraction of ice at the given energy density</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.solve">
-<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">E0</em>, <em class="sig-param">u</em>, <em class="sig-param">w</em>, <em class="sig-param">h</em>, <em class="sig-param">s</em>, <em class="sig-param">q</em>, <em class="sig-param">q_bed</em>, <em class="sig-param">E_inflow</em>, <em class="sig-param">E_surface</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">E0</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">q_bed</span></em>, <em class="sig-param"><span class="n">E_inflow</span></em>, <em class="sig-param"><span class="n">E_surface</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the energy density forward by one timestep</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.temperature">
-<code class="sig-name descname">temperature</code><span class="sig-paren">(</span><em class="sig-param">E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.temperature" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">temperature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.temperature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the temperature of ice at the given energy density</p>
 </dd></dl>
 

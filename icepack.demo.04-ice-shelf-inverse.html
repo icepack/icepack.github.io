@@ -287,7 +287,12 @@ Shelf.</p>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bnd_linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;interior_kw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mi">25</span><span class="p">},</span>
+    <span class="s1">&#39;boundary_kw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -440,7 +445,7 @@ represented by the <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">24.227</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">20.2803</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>Before setting the solver loose, let’s look at the initial search
@@ -475,12 +480,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.16784</span><span class="p">,</span> <span class="mf">0.0508228</span>
-<span class="mf">1.7019</span><span class="p">,</span> <span class="mf">0.167765</span>
-<span class="mf">1.20015</span><span class="p">,</span> <span class="mf">0.313135</span>
-<span class="mf">1.08149</span><span class="p">,</span> <span class="mf">0.379225</span>
-<span class="mf">1.03091</span><span class="p">,</span> <span class="mf">0.418092</span>
-<span class="mf">1.03266</span><span class="p">,</span> <span class="mf">0.416064</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.124</span><span class="p">,</span> <span class="mf">0.201318</span>
+<span class="mf">1.08424</span><span class="p">,</span> <span class="mf">0.400006</span>
+<span class="mf">1.0537</span><span class="p">,</span> <span class="mf">0.379332</span>
+<span class="mf">1.03116</span><span class="p">,</span> <span class="mf">0.394948</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -564,8 +567,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8604495069126659</span>
-<span class="mf">1.0326625331527821</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8507937838682694</span>
+<span class="mf">1.0311593390620766</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

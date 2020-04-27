@@ -11,18 +11,18 @@
 Synthetic ice shelf
 ===================
 
-In this demo, we'll show how to simulate the evolution of a floating ice
-shelf. The example that we'll show is an example of a model *spin-up*.
+In this demo, we’ll show how to simulate the evolution of a floating ice
+shelf. The example that we’ll show is an example of a model *spin-up*.
 In a spin-up experiment, the objective is to obtain a physically
 plausible state of some system from an initial guess by simulating its
-evolution for a long time. For example, it's common to spin up climate
+evolution for a long time. For example, it’s common to spin up climate
 models from a very rough initial guess for several thousand years to
 obtain a representative state of the atmosphere and oceans for the epoch
-you're interested in.
+you’re interested in.
 
-In our case, we'll use an idealized ice shelf geometry and a rough guess
-for the initial ice thickness. First we'll solve the *diagnostic
-equation* for the velocity througout the ice shelf. We'll then solve the
+In our case, we’ll use an idealized ice shelf geometry and a rough guess
+for the initial ice thickness. First we’ll solve the *diagnostic
+equation* for the velocity througout the ice shelf. We’ll then solve the
 *prognostic equation* to obtain the ice thickness at a slightly later
 time. By assuming a given rate of ice accumulation and melting, we can
 successively solve the prognostic and diagnostic equations until the
@@ -40,29 +40,29 @@ The whole simulation can be divided into three parts:
    iteratively update the ice thickness and velocity at each time step.
 
 This is a pretty common workflow for a predictive model. In later demos
-we'll see some variations on this procedure -- incorporating real data,
-comparing different physics, and so forth -- but the essential idea is
+we’ll see some variations on this procedure – incorporating real data,
+comparing different physics, and so forth – but the essential idea is
 the same throughout.
 
 Geometry
 ~~~~~~~~
 
-First we need to define the geometry of the ice shelf. Although we'll be
-solving a synthetic problem, we'll try to use a more-or-less realistic
+First we need to define the geometry of the ice shelf. Although we’ll be
+solving a synthetic problem, we’ll try to use a more-or-less realistic
 shape. The inflow boundary will be a circular arc centered at the origin
 with a radius of 200 km. The outflow boundary will be another circular
 arc with a much higher radius.
 
-In the first demo, we used one of firedrake's built-in functions to
-create the geometry. For more complicated shapes you'll need to use a
+In the first demo, we used one of firedrake’s built-in functions to
+create the geometry. For more complicated shapes you’ll need to use a
 mesh generator, a program that turns a description of the boundary of a
 spatial domain into a triangulation of the interior. Two of the more
 popular 2D mesh generators are `gmsh <http://gmsh.info/>`__ and
 `Triangle <https://www.cs.cmu.edu/~quake/triangle.html>`__. In this case
-we'll use gmsh because we can create the input file entirely in Python
+we’ll use gmsh because we can create the input file entirely in Python
 through the package `pygmsh <https://github.com/nschloe/pygmsh>`__.
 
-We'll first define the mesh radius and the spacing for the mesh cells.
+We’ll first define the mesh radius and the spacing for the mesh cells.
 
 .. code:: ipython3
 
@@ -71,11 +71,11 @@ We'll first define the mesh radius and the spacing for the mesh cells.
     R = 200e3
     δx = 5e3
 
-Next, we'll create an empty geometry and add some points to it. The
+Next, we’ll create an empty geometry and add some points to it. The
 points ``x1``, ``x2`` will represent the left and right endpoints of the
 mesh. The points ``center1``, ``center2`` will not actually be contained
 in the mesh, but rather define the centers of the two circular arcs.
-Finally, we'll add the circular arcs.
+Finally, we’ll add the circular arcs.
 
 .. code:: ipython3
 
@@ -90,9 +90,9 @@ Finally, we'll add the circular arcs.
     arcs = [geometry.add_circle_arc(x1, center1, x2),
             geometry.add_circle_arc(x2, center2, x1)]
 
-Now that we've added the geometric elements of our domain, we also need
-to tell gmsh about the topology, i.e. how all the arcs are connected to
-each other and how they're oriented. The physical lines and surfaces are
+Now that we’ve added the geometric elements of our domain, we also need
+to tell gmsh about the topology, i.e. how all the arcs are connected to
+each other and how they’re oriented. The physical lines and surfaces are
 added so that gmsh will tag each geometric entity with a number that we
 can use to set different boundary conditions.
 
@@ -106,7 +106,7 @@ can use to set different boundary conditions.
 
 This completes the definition of the input geometry. The method
 ``get_code`` of the geometry object returns the string describing it in
-the syntax that gmsh expects. We'll write this string out to a file with
+the syntax that gmsh expects. We’ll write this string out to a file with
 the extension ``.geo``.
 
 .. code:: ipython3
@@ -114,7 +114,7 @@ the extension ``.geo``.
     with open('ice-shelf.geo', 'w') as geo_file:
         geo_file.write(geometry.get_code())
 
-Next, we'll call gmsh from the command line on the input file we just
+Next, we’ll call gmsh from the command line on the input file we just
 created. The mesh generator will read the description of the domain
 boundary, triangulate the interior of the domain, and output a file with
 the extension ``.msh``. Other mesh generators have different input and
@@ -122,7 +122,7 @@ output formats, but the procedure is roughly the same.
 
 In a jupyter notebook, you can use an exclamation mark followed by a
 command to execute this command at the shell rather than in Python.
-We'll call ``gmsh`` from the command line with the following arguments:
+We’ll call ``gmsh`` from the command line with the following arguments:
 
 -  ``-2``: generate a 2D mesh as opposed to 3D
 -  ``-format msh2``: specify the storage format of the output file
@@ -140,26 +140,26 @@ notebook.
 
 .. parsed-literal::
 
-    Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.4.1, 1 node, max. 1 thread]
-    Info    : Started on Thu Mar 12 11:36:17 2020
+    Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.5.6, 1 node, max. 1 thread]
+    Info    : Started on Mon Apr 27 08:16:19 2020
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
-    Info    : Meshing curve 1 (Circle)
-    Info    : Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.001454 s)
+    Info    : [  0 %] Meshing curve 1 (Circle)
+    Info    : [ 50 %] Meshing curve 2 (Circle)
+    Info    : Done meshing 1D (0.002499 s)
     Info    : Meshing 2D...
-    Info    : Meshing surface 4 (Plane, Delaunay)
-    Info    : Done meshing 2D (0.132313 s)
-    Info    : 3793 vertices 7584 elements
+    Info    : Meshing surface 4 (Plane, Frontal-Delaunay)
+    Info    : Done meshing 2D (0.15669 s)
+    Info    : 3373 nodes 6744 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Thu Mar 12 11:36:17 2020
+    Info    : Stopped on Mon Apr 27 08:16:20 2020
 
 
 The terminal output from gmsh gives us some diagnostics like how many
 vertices and triangles it contains. This is also where gmsh will report
-if something went wrong -- a syntax error in the .geo file, a degenerate
+if something went wrong – a syntax error in the .geo file, a degenerate
 input geometry, and so forth.
 
 To load the mesh we pass the filename to the function
@@ -180,7 +180,8 @@ and Neumann (terminus) boundary conditions where they apply.
 .. code:: ipython3
 
     fig, axes = icepack.plot.subplots()
-    icepack.plot.triplot(mesh)
+    icepack.plot.triplot(mesh, axes=axes)
+    axes.legend()
     plt.show(fig)
 
 
@@ -192,7 +193,7 @@ In the demos for real glaciers that follow, we use all of the same
 tools. The main difference is that the boundary arcs are drawn by hand
 in a geographic information system, rather than defined programatically
 in Python. In the repository
-`glacier-meshes <https://github.com/icepack/glacier-meshes>`__ I've
+`glacier-meshes <https://github.com/icepack/glacier-meshes>`__ I’ve
 included shapefiles of the outlines of several glaciers and a program to
 automate the translation of a shapefile into a .geo file using pygmsh.
 This will be used in the demo for the Larsen Ice Shelf.
@@ -200,16 +201,16 @@ This will be used in the demo for the Larsen Ice Shelf.
 Input data
 ~~~~~~~~~~
 
-To mimic the state of a real ice shelf, we'll pick a few angles along
+To mimic the state of a real ice shelf, we’ll pick a few angles along
 the inflow boundary that represent the centerlines of the ice streams
-that feed the shelf. We'll then define velocity and thickness profiles
-along this inflow boundary. We don't have a great idea from the outset
-of what the steady state of the ice shelf is; it doesn't have a simple
-analytical expression in terms of the coordinates. Instead, we'll pick a
+that feed the shelf. We’ll then define velocity and thickness profiles
+along this inflow boundary. We don’t have a great idea from the outset
+of what the steady state of the ice shelf is; it doesn’t have a simple
+analytical expression in terms of the coordinates. Instead, we’ll pick a
 somewhat arbitrary initial profile and evolve it towards steady state.
 
 Many ice shelves (Larsen, Ross, etc.) have several streams feeding them.
-Our synthetic glacier will be fed by four streams. We'll define the
+Our synthetic glacier will be fed by four streams. We’ll define the
 inlets by picking the angles around the inflow boundary where each inlet
 comes in from and the width in radians. You can re-run this notebook and
 change the values or the number of streams to whatever you like.
@@ -219,11 +220,11 @@ change the values or the number of streams to whatever you like.
     inlet_angles = π * np.array([-3/4, -1/2, -1/3, -1/6])
     inlet_widths = π * np.array([1/8, 1/12, 1/24, 1/12])
 
-Next, we'll come up with some rather arbitrary and un-physical input
+Next, we’ll come up with some rather arbitrary and un-physical input
 data. The basic idea is to make the thickness slope down as you go
 towards the calving terminus and away from the centerline of an inlet.
 Likewise the ice speed goes up as you go towards the calving terminus.
-In order to make this big nasty algebraic expression, we'll create a
+In order to make this big nasty algebraic expression, we’ll create a
 list of the perturbation thickness and velocity for each inlet, and
 combine them all together at the end.
 
@@ -248,7 +249,7 @@ combine them all together at the end.
         us.append(firedrake.exp(-4 * (W/R)**2) * (u_in + du * L / R) * v)
 
 To combine the expressions for the thickness and velocity of each inlet
-into expressions for the whole ice shelf, we'll take the maximum
+into expressions for the whole ice shelf, we’ll take the maximum
 thickness at any point, and the sum of the velocities.
 
 .. code:: ipython3
@@ -286,7 +287,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f78c786f2d0>
+    <matplotlib.colorbar.Colorbar at 0x7fc4e99de690>
 
 
 
@@ -306,7 +307,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f78c6e00ed0>
+    <matplotlib.colorbar.Colorbar at 0x7fc4e9986ad0>
 
 
 
@@ -320,8 +321,8 @@ with higher thickness, will spread and grow.
 Modeling
 ~~~~~~~~
 
-To actually start solving things, we'll make an ``IceShelf`` object that
-represents the physical model we're using. Each model type has two
+To actually start solving things, we’ll make an ``IceShelf`` object that
+represents the physical model we’re using. Each model type has two
 methods, ``diagnostic_solve`` and ``prognostic_solve``, that solve the
 PDEs for the ice velocity and thickness.
 
@@ -365,9 +366,9 @@ PDEs for the ice velocity and thickness.
     
 
 
-For now we'll use a fluidity that assumes a spatially constant
+For now we’ll use a fluidity that assumes a spatially constant
 temperature of -18C. The code itself assumes that all temperatures are
-in Kelvin. In later demos, we'll use a spatially variable fluidity
+in Kelvin. In later demos, we’ll use a spatially variable fluidity
 coefficient and show how to infer it from observations.
 
 .. code:: ipython3
@@ -378,7 +379,7 @@ coefficient and show how to infer it from observations.
 Finally, we need to prescribe the boundary conditions for the velocity
 and the convergence tolerance for the nonlinear solver. Since the
 boundary conditions and convergence tolerance are usually the same
-throughout a simulation, we'll pack them into a dictionary call ``opts``
+throughout a simulation, we’ll pack them into a dictionary call ``opts``
 and reuse it throughout.
 
 To compute the velocity field, we call the diagnostic solve method of
@@ -398,8 +399,8 @@ by keyword is slightly more verbose than passing them by position, but
 it saves you the trouble of remembering what order everything goes in.
 On top of that, many fields are *only* passed in as keyword arguments.
 For example, the fluidity parameter is not a positional argument of the
-diagnostic solve routine. The reason for this choice, as we'll see
-later, is that it's much easier to swap out components of the model
+diagnostic solve routine. The reason for this choice, as we’ll see
+later, is that it’s much easier to swap out components of the model
 physics for your own customized versions.
 
 The following plot shows streamlines of the velocity field. These kind
@@ -418,7 +419,7 @@ the flow field.
 .. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_37_0.png
 
 
-To project the state of the ice shelf forward in time, we'll use the
+To project the state of the ice shelf forward in time, we’ll use the
 prognostic solve method. The prognostic solver updates the ice thickness
 forward by a given timestep given the accumulation rate and velocity. We
 then update the velocity using the diagnostic solver at each timestep.
@@ -444,21 +445,21 @@ ice shelf is roughly in steady state.
     .....................
 
 The main loop to run the simulation consists of alternating calls to the
-prognostic and diagnostic solve methods of the model object. We'll see
+prognostic and diagnostic solve methods of the model object. We’ll see
 this pattern repeated in all of the demos that follow. In some cases
-we'll add in extra physics, like updating the temperature or damage
+we’ll add in extra physics, like updating the temperature or damage
 field, but the core idea is the same.
 
-We've added a bit of feedback to the loop by printing out a period every
+We’ve added a bit of feedback to the loop by printing out a period every
 10 iterations. These kinds of diagnostics are helpful to know that the
-simulation is actually running and that it hasn't frozen. But you can
+simulation is actually running and that it hasn’t frozen. But you can
 also put in whatever extra code you want here. For example, you might
 want to make plots of the thickness and velocity, print out some
 physical quantity like the total flux of ice out of the calving front,
 or accumulate the fields into a list so that you can analyze the entire
 time series later.
 
-To wrap things up, we'll make a plot of the final ice thickness and
+To wrap things up, we’ll make a plot of the final ice thickness and
 velocity. The initial thickness profile of each ice stream, which
 flattened out in the middle of the shelf, has extended all the way to
 the terminus.
@@ -503,7 +504,7 @@ the calving terminus.
 The extra argument to ``ds`` indicates that we want to integrate over
 just the calving terminus rather than over the entire domain boundary.
 The variable ``flux`` is a symbolic representation of this quantity in
-terms of the input fields; it isn't a number but rather a description of
+terms of the input fields; it isn’t a number but rather a description of
 how to compute a number. The function ``firedrake.assemble`` does the
 actual work of evaluating the integral.
 
@@ -514,12 +515,12 @@ actual work of evaluating the integral.
 
 .. parsed-literal::
 
-    Flux: 38.11537788325296 km^3 / year
+    Flux: 38.11244102070711 km^3 / year
 
 
 To check the degree to which the system really is in steady state, we
 can compute the flux along the inflow boundary rather than along the
-terminus. This should be equal to the flux out of the domain since we've
+terminus. This should be equal to the flux out of the domain since we’ve
 set the accumulation rate to be zero.
 
 .. code:: ipython3
@@ -530,7 +531,7 @@ set the accumulation rate to be zero.
 
 .. parsed-literal::
 
-    Influx: 38.14307784051783 km^3 / year
+    Influx: 38.14274214232329 km^3 / year
 
 
 The influx and outflux are reasonably close, with the influx slightly
@@ -542,7 +543,7 @@ Conclusion
 
 In the last demo, we saw how to create a mesh, define a finite element
 space, interpolate functions to that finite element space, and analyze
-the results. Here we've shown how to use these functions as an input to
+the results. Here we’ve shown how to use these functions as an input to
 an ice shelf flow model. If you want to experiment with this example a
 bit more, you can run this notebook yourself and:
 
@@ -551,9 +552,9 @@ bit more, you can run this notebook yourself and:
 -  add a sinusoidal variation in the accumulation rate to approximate
    seasonal cycles
 
-In the next demo, we'll show how to use these functions for simulating a
+In the next demo, we’ll show how to use these functions for simulating a
 real ice shelf in the Antarctic Peninsula using observational data from
-satellites. As a bonus epilogue to this demo, we'll show how to also
+satellites. As a bonus epilogue to this demo, we’ll show how to also
 include the physics of damage and crevassing.
 
 Damage
@@ -563,7 +564,7 @@ The simulation we just ran uses the prognostic and diagnostic model
 physics of ice shelf flow. These models successively update the ice
 thickness and velocity. We assumed that the ice rheology was constant in
 space in order to simplify things, but this is never true for real ice
-shelves. Here we'll show how to add a model for how crevasses and rifts
+shelves. Here we’ll show how to add a model for how crevasses and rifts
 affect glacier flow.
 
 As ice becomes more damaged, the same driving stress must be transferred
@@ -581,7 +582,7 @@ where :math:`n = 3` is the Glen flow law exponent and :math:`A(T)` is
 the rate factor for undamaged ice at temperature :math:`T`. As the
 damage field approaches is maximum value of 1, the fluidity goes to
 infinity. A large-scale calving event would occur before this limit is
-reached for a real glacier, but we won't include this effect here.
+reached for a real glacier, but we won’t include this effect here.
 
 The ice shelf model includes several functions for calculating the net
 power dissipation of the ice shelf. The velocity that solves the
@@ -610,11 +611,11 @@ default.
 The procedure is exactly the same to modify any other part of the
 physics of any model. For example, you could also change how the
 back-pressure at the calving terminus is computed in order to account
-for the presence of ice melange. In later tutorials, we'll look at
-alternative models for basal friction, and we'll swap out the model
+for the presence of ice melange. In later tutorials, we’ll look at
+alternative models for basal friction, and we’ll swap out the model
 physics in exactly the same way.
 
-We've decided how to include damage in the model, but we also need some
+We’ve decided how to include damage in the model, but we also need some
 rule for how damage will evolve. One approach would be to use fracture
 mechanics to explicitly model individual crevasses, but this approach
 would be very computationally expensive. Instead, the *continuum damage
@@ -628,13 +629,13 @@ crevasse closing or healing term. Crevasses open when the stress is
 sufficiently high, and crevasses close when the strain rate is low or
 compressional. The real physics comes in deciding the exact details of
 how these terms depend on the stress, strain rate, and other variables.
-In the following, we'll use the model from `Albrecht and
+In the following, we’ll use the model from `Albrecht and
 Levermann <https://doi.org/10.3189/2012JoG11J191>`__, but there are many
 others.
 
 The class ``icepack.models.DamageTransport`` includes a solver for this
-damage transport law. We'll initialize the damage field to be zero
-everywhere and we'll advect in zero damage from upstream. When we run
+damage transport law. We’ll initialize the damage field to be zero
+everywhere and we’ll advect in zero damage from upstream. When we run
 the simulation forward in time, the
 
 .. code:: ipython3
@@ -645,7 +646,7 @@ the simulation forward in time, the
     D = firedrake.Function(Δ)
     D_inflow = firedrake.Constant(0.)
 
-Next, we'll run a new simulation that includes interleaved updates for
+Next, we’ll run a new simulation that includes interleaved updates for
 ice thickness and velocity, just like before, but also an update for the
 damage field according to the transport law we wrote down above. The
 simulation will go for long enough to propagate the damage field through
@@ -665,9 +666,9 @@ an entire residence time of the ice shelf.
 
     .....................
 
-Finally we'll plot the result. An interesting feature you can see in the
+Finally we’ll plot the result. An interesting feature you can see in the
 final result is that the damage field is highest *in between* the ice
-streams. These aren't the areas where the velocity is highest, but
+streams. These aren’t the areas where the velocity is highest, but
 rather where the shear strain rate is highest.
 
 .. code:: ipython3
@@ -681,7 +682,7 @@ rather where the shear strain rate is highest.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f78b930aad0>
+    <matplotlib.colorbar.Colorbar at 0x7fc4e25581d0>
 
 
 
@@ -702,7 +703,7 @@ If you want to experiment with this problem further, you can try:
 
 Damage mechanics is one of many things you might want to simulate in
 order to accurately capture the physics of glacier flow. In later demos,
-we'll show how to incorporate heat transfer. We could also include
+we’ll show how to incorporate heat transfer. We could also include
 models describing things like the buoyant meltwater plume underneath the
 ice shelf or the densification of firn on the shelf surface. The details
 are different in each case, but the essential procedure is the same:

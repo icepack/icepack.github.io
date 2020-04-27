@@ -207,27 +207,21 @@ and a vector field on an unstructured mesh.</p>
 <p>The return types should be the same as for the corresponding matplotlib
 function. Usually the return type is something that inherits from the
 class <cite>ScalarMappable</cite> so that you can make a colorbar out of it.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.plot.StreamplotSet">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">StreamplotSet</code><span class="sig-paren">(</span><em class="sig-param">lines=None</em>, <em class="sig-param">arrows=None</em>, <em class="sig-param">norm=None</em>, <em class="sig-param">cmap=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#StreamplotSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.StreamplotSet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">StreamplotSet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lines</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">arrows</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#StreamplotSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.StreamplotSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.streamplot.StreamplotSet</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.cm.ScalarMappable</span></code></p>
 </dd></dl>
 
-<dl class="function">
-<dt id="icepack.plot.contourf">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">contourf</code><span class="sig-paren">(</span><em class="sig-param">dataset</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#contourf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.contourf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a gridded data set from rasterio</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.quiver">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">quiver</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#quiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.quiver" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">quiver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#quiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.quiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a quiver plot of a vector field</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.streamline">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">streamline</code><span class="sig-paren">(</span><em class="sig-param">velocity</em>, <em class="sig-param">initial_point</em>, <em class="sig-param">resolution</em>, <em class="sig-param">max_num_points=inf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">streamline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">velocity</span></em>, <em class="sig-param"><span class="n">initial_point</span></em>, <em class="sig-param"><span class="n">resolution</span></em>, <em class="sig-param"><span class="n">max_num_points</span><span class="o">=</span><span class="default_value">inf</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a streamline of a 2D velocity field</p>
 <p>A streamline <span class="math notranslate nohighlight">\(\gamma\)</span> of a velocity field <span class="math notranslate nohighlight">\(v\)</span> is a curve
 that solves the ordinary differential equation</p>
@@ -255,38 +249,38 @@ if the trajectory can spiral around a center node</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.streamplot">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">streamplot</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">streamplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#streamplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.streamplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw streamlines of a vector field</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.subplots">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">subplots</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.subplots" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">subplots</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#subplots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.subplots" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.tricontour">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tricontour</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tricontour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tricontour" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tricontour</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tricontour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tricontour" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a contour plot of a finite element field</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.tricontourf">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tricontourf</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tricontourf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tricontourf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tricontourf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tricontourf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tricontourf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a filled contour plot of a finite element field</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.tripcolor">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tripcolor</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tripcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tripcolor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">tripcolor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#tripcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.tripcolor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a pseudo-color plot of a finite element field</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="icepack.plot.triplot">
-<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">triplot</code><span class="sig-paren">(</span><em class="sig-param">mesh</em>, <em class="sig-param">bnd_colors=None</em>, <em class="sig-param">axes=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#triplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.triplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.plot.</code><code class="sig-name descname">triplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mesh</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/plot.html#triplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.plot.triplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a mesh with a different color for each boundary segment</p>
 </dd></dl>
 

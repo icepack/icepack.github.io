@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="icepack.models.viscosity module" href="icepack.models.viscosity.html" />
+    <link rel="next" title="icepack.models.shallow_ice module" href="icepack.models.shallow_ice.html" />
     <link rel="prev" title="icepack.models.ice_stream module" href="icepack.models.ice_stream.html" /> 
 </head>
 
@@ -198,13 +198,13 @@ describes the evolution of ice thickness. While the basic mass transport
 solver will suffice for, say, ice shelf flow, other models that describe
 grounded glaciers will also need to update the ice surface elevation in a
 manner consistent with the bed elevation and where the ice may go afloat.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.mass_transport.ImplicitEuler">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">ImplicitEuler</code><span class="sig-paren">(</span><em class="sig-param">dimension=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#ImplicitEuler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.ImplicitEuler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">ImplicitEuler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimension</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#ImplicitEuler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.ImplicitEuler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#icepack.models.mass_transport.MassTransport" title="icepack.models.mass_transport.MassTransport"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.models.mass_transport.MassTransport</span></code></a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.mass_transport.ImplicitEuler.solve">
-<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">h0</em>, <em class="sig-param">a</em>, <em class="sig-param">u</em>, <em class="sig-param">h_inflow=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#ImplicitEuler.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.ImplicitEuler.solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">h0</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h_inflow</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#ImplicitEuler.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.ImplicitEuler.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the thickness forward by one timestep</p>
 <p>This function uses the implicit Euler timestepping scheme to avoid
 the stability issues associated to using continuous finite elements
@@ -233,13 +233,13 @@ timestep within the CFL bound is a good idea for accuracy.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.mass_transport.LaxWendroff">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">LaxWendroff</code><span class="sig-paren">(</span><em class="sig-param">dimension=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#LaxWendroff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.LaxWendroff" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">LaxWendroff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimension</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#LaxWendroff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.LaxWendroff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#icepack.models.mass_transport.MassTransport" title="icepack.models.mass_transport.MassTransport"><code class="xref py py-class docutils literal notranslate"><span class="pre">icepack.models.mass_transport.MassTransport</span></code></a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="icepack.models.mass_transport.LaxWendroff.solve">
-<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">h0</em>, <em class="sig-param">a</em>, <em class="sig-param">u</em>, <em class="sig-param">h_inflow=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#LaxWendroff.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.LaxWendroff.solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">h0</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h_inflow</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#LaxWendroff.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.LaxWendroff.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the thickness forward by one timestep</p>
 <p>This function uses an implicit second-order Taylor-Galerkin (also
 known as Lax-Wendroff) scheme to solve the conservative advection
@@ -265,9 +265,9 @@ equation for ice thickness.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="icepack.models.mass_transport.MassTransport">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">MassTransport</code><span class="sig-paren">(</span><em class="sig-param">dimension</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#MassTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.MassTransport" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.mass_transport.</code><code class="sig-name descname">MassTransport</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimension</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/mass_transport.html#MassTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.mass_transport.MassTransport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -281,7 +281,7 @@ equation for ice thickness.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="icepack.models.viscosity.html" class="btn btn-neutral float-right" title="icepack.models.viscosity module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="icepack.models.shallow_ice.html" class="btn btn-neutral float-right" title="icepack.models.shallow_ice module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="icepack.models.ice_stream.html" class="btn btn-neutral float-left" title="icepack.models.ice_stream module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

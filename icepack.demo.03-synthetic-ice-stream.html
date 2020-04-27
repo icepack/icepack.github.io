@@ -494,7 +494,7 @@ itself, the following functional gives the right asymptotic behavior:</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \int \tau_0\left(\left(u_0^{\frac{1}{m} + 1} + |u|^{\frac{1}{m} + 1}\right)^{\frac{m}{m + 1}} - u_0\right) dx\]</div>
 <p>The extra factor of <span class="math notranslate nohighlight">\(-u_0\)</span> is there to make it so that
-<span class="math notranslate nohighlight">\(E(0) = 0\)</span>, i.e. there is no dissipation when there is no flow.
+<span class="math notranslate nohighlight">\(E(0) = 0\)</span>, i.e. there is no dissipation when there is no flow.
 The right value of <span class="math notranslate nohighlight">\(u_0\)</span> isn’t very well constrained. For this
 demonstration, we’ll use a value of 50 m/year, since this falls roughly
 in the middle of the grounded region for the final velocity. We’ll then
@@ -513,12 +513,15 @@ simulation we’ve just run using Weertman sliding.</p>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.03-synthetic-ice-stream_38_0.png" src="_images/icepack.demo.03-synthetic-ice-stream_38_0.png" />
-<p>The following function returns the action functional associated to this
-sliding law, given the ice velocity, elevation, and the yield stress.</p>
+<p>The following function returns the kernel of the action functional
+associated to this sliding law, given the ice velocity, elevation, and
+the yield stress. Note that we only need to provide the inside of the
+integral – the model object applies the measures (<code class="docutils literal notranslate"><span class="pre">dx</span></code>, <code class="docutils literal notranslate"><span class="pre">ds</span></code>, etc.)
+for you.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">schoof_friction</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">):</span>
     <span class="n">ϕ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_W</span><span class="o">/</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span>
     <span class="n">U</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">τ</span> <span class="o">*</span> <span class="n">ϕ</span> <span class="o">*</span> <span class="p">(</span><span class="n">u_threshold</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">m</span><span class="o">/</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+    <span class="k">return</span> <span class="n">τ</span> <span class="o">*</span> <span class="n">ϕ</span> <span class="o">*</span> <span class="p">(</span><span class="n">u_threshold</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">m</span><span class="o">/</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>We can then create a new <code class="docutils literal notranslate"><span class="pre">IceStream</span></code> object that will use this
@@ -546,7 +549,7 @@ law.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u_schoof</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.4848862268251896e-10</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.340092813477819e-10</span>
 </pre></div>
 </div>
 <p>Just as we expect – the resulting velocities are practically the same.

@@ -9,13 +9,13 @@
 Synthetic ice stream
 ====================
 
-In this demo, we'll simulate the evolution of an ice stream with both
+In this demo, we’ll simulate the evolution of an ice stream with both
 grounded and floating parts. Ice streams are substantially more
 complicated than a floating ice shelf. First, there are more fields. For
 floating ice shelves, we only had to consider the velocity, thickness,
-and fluidity, but for ice streams there's also the surface elevation and
-bed friction. Second, the position of the grounded line -- the contour
-across which the glacier is thin enough to go afloat -- can migrate in
+and fluidity, but for ice streams there’s also the surface elevation and
+bed friction. Second, the position of the grounded line – the contour
+across which the glacier is thin enough to go afloat – can migrate in
 time.
 
 The diagnostic equation for an ice stream is similar to that of a
@@ -26,7 +26,7 @@ floating ice shelf, but for the addition of a term for basal friction:
 where :math:`m` is the *sliding exponent* and :math:`C` is the *sliding
 coefficient*.
 
-The glacier state we'll start out with is grounded throughout the entire
+The glacier state we’ll start out with is grounded throughout the entire
 domain, and during the simulation it will thin out and go afloat part
 way through. Accurately predicting grounding line migration is a major
 problem in glacier flow modeling.
@@ -34,7 +34,7 @@ problem in glacier flow modeling.
 Geometry and input data
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We'll use an elongated fjord-like geometry, 12 km wide and 50 km from
+We’ll use an elongated fjord-like geometry, 12 km wide and 50 km from
 the inflow boundary to the ice front. The bedrock slopes down from 200 m
 above sea level at the inflow boundary to -400 m at the terminus; the
 glacier becomes marine one third of the way into the domain.
@@ -60,11 +60,11 @@ glacier becomes marine one third of the way into the domain.
     
     h0 = firedrake.interpolate(s0 - b, Q)
 
-As a sanity check, we'll evaluate the driving stress
+As a sanity check, we’ll evaluate the driving stress
 
 .. math:: \tau_D = -\rho_Igh\nabla s
 
-at the inflow boundary of the ice stream to make sure the value isn't
+at the inflow boundary of the ice stream to make sure the value isn’t
 absurd.
 
 .. code:: ipython3
@@ -86,10 +86,10 @@ absurd.
 This stress is on the moderate side for Greenland, high for Antarctica.
 
 Next we have to come up with some rough guess for the initial velocity
-of the glacier. Unlike for ice shelves, we can't write down an exact
+of the glacier. Unlike for ice shelves, we can’t write down an exact
 solution for the velocity. Our best hope is to come up with something
 vaguely reasonable and tune it by trial and error until we get something
-that isn't ridiculous.
+that isn’t ridiculous.
 
 .. code:: ipython3
 
@@ -103,15 +103,15 @@ that isn't ridiculous.
     A0 = icepack.rate_factor(temp)
     A = firedrake.interpolate(firedrake.Constant(A0), Q)
 
-Now to pick a friction coefficient. We'll use a value of the friction
+Now to pick a friction coefficient. We’ll use a value of the friction
 that almost exactly balances the driving stress at the inflow boundary.
-Where the glacier goes marine, we'll scale the friction down acoording
+Where the glacier goes marine, we’ll scale the friction down acoording
 to the height above flotation. This is a very rough approximation. The
 point is to scale the friction down continuously as the glacier
-approaches flotation. If we didn't take care to ramp the friction down
-and instead just set it to 0 where the ice is floating, we'd get a shock
-to the system as the bed friction "turns off" across the grounding line.
-For a realistic problem, you'd want to take greater account of how the
+approaches flotation. If we didn’t take care to ramp the friction down
+and instead just set it to 0 where the ice is floating, we’d get a shock
+to the system as the bed friction “turns off” across the grounding line.
+For a realistic problem, you’d want to take greater account of how the
 pressure of meltwater at the bed affects friction.
 
 .. code:: ipython3
@@ -123,13 +123,13 @@ pressure of meltwater at the bed affects friction.
     p_I = ρ_I * g * h0
     ϕ = 1 - p_W / p_I
 
-In the previous examples, we've initialized a model object and then used
+In the previous examples, we’ve initialized a model object and then used
 it directly to compute velocities and thicknesses. These model objects
 have sensible defaults for how the physics are parameterized. For
 example, we pass in the ice fluidity coefficient :math:`A`, which has
 units of strain rate :math:`\times` stress\ :math:`{}^{-3}`. We could
 just as easily have used, say, the rheology coefficient
-:math:`B = A^{-1/n}`, where :math:`n = 3` is the exponent in Glen's flow
+:math:`B = A^{-1/n}`, where :math:`n = 3` is the exponent in Glen’s flow
 law. You can customize the physics parameterizations by passing in your
 own Python functions for computing the action functional. The default in
 the ``IceStream`` class is to take in a friction coefficient :math:`C`,
@@ -148,9 +148,9 @@ coefficient by the ramping factor.
         return icepack.models.friction.bed_friction(u, C * ϕ)
 
 Now we can create a model object that uses our new parameterization by
-passing it to the constructor for the ``IceStream`` class. We're calling
+passing it to the constructor for the ``IceStream`` class. We’re calling
 the model object ``ice_stream_weertman`` because, at the end of this
-demo, we'll compare with something quite different -- the Schoof model
+demo, we’ll compare with something quite different – the Schoof model
 for basal sliding.
 
 .. code:: ipython3
@@ -188,7 +188,7 @@ because of how we reduced the friction.
 .. image:: icepack.demo.03-synthetic-ice-stream_files/icepack.demo.03-synthetic-ice-stream_20_0.png
 
 
-There's a huge mass balance anomaly near the ice front, an artifact of
+There’s a huge mass balance anomaly near the ice front, an artifact of
 our choice of initial conditions. As the simulation progresses, this
 initial transient should be propagated out of the domain.
 
@@ -208,11 +208,11 @@ initial transient should be propagated out of the domain.
 Modeling
 ~~~~~~~~
 
-Now the good part -- taking our initial glacier state and projecting it
-forward until it reaches a steady state. We'll use a timestep of 6
+Now the good part – taking our initial glacier state and projecting it
+forward until it reaches a steady state. We’ll use a timestep of 6
 months and the simulation will run for 250 model years. This is about
 enough time to propagate out the initial transients and arrive at a
-state of approximate mass and momentum balance. I've tuned the
+state of approximate mass and momentum balance. I’ve tuned the
 accumulation rate so that it roughly balances out the ice flux at the
 inflow boundary and is within the range of values one might see in
 southeast Greenland.
@@ -333,16 +333,16 @@ rate, and the ice flux at inflow. To a certain extent, we can pick the
 friction coefficient, but this can change in ways that are difficult to
 predict as parts of the glacier begin to float. Our initial state was
 far out of mass balance and we let it evolve towards equilibrium, but we
-don't know ahead of time what surface slope or stretching rate the
+don’t know ahead of time what surface slope or stretching rate the
 glacier will settle on in the end.
 
 The eventual steady state could be physically implausible for reasons
-that weren't obvious from the start. For example, if the ice strain rate
+that weren’t obvious from the start. For example, if the ice strain rate
 increases beyond what we expect after a few years of model time, the
 mass flux at the inflow boundary could be much larger than what the
 influx and accumulation rate can supply, leading to an unphysically
 sharp drop in the surface. Preparing this demonstration required lots of
-trial and error to get the parameters just right, and that's to be
+trial and error to get the parameters just right, and that’s to be
 expected.
 
 The bed elevation we used sloped down towards the ocean; had we instead
@@ -358,7 +358,7 @@ In the first part of this demo, we used the usual Weertman sliding law,
 where the basal shear stress is proportional to some power of the ice
 sliding speed. Weertman sliding assumes that the glacier slides by
 regelation. Where the glacier flows over deformable sediments, the
-sliding relation could instead approach plasticity -- the stress depends
+sliding relation could instead approach plasticity – the stress depends
 only on the direction and not the magnitude of the velocity. Other
 sliding laws have been proposed that exhibit this feature, for example
 the law proposed in Schoof (2005), The effect of cavitation on glacier
@@ -379,7 +379,7 @@ the energy dissipation is
 In the first part of the demo, we showed how to slightly modify the
 physics by adding a thickness- and elevation-dependent factor to reduce
 the friction when the glacier bed is below sea level. In the following,
-we'll show how to use a completely different model of glacier sliding.
+we’ll show how to use a completely different model of glacier sliding.
 
 The Schoof sliding law
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -387,20 +387,20 @@ The Schoof sliding law
 To modify the Weertman sliding law for high ice speeds, we need for the
 energy dissipation density to be asymptotically like :math:`|u|^1` for
 large :math:`u`, but like :math:`|u|^{1/m + 1}` for small :math:`u`.
-"Small" and "large" will be defined relative to some reference speed
-:math:`u_0`. While it doesn't exactly reproduce the Schoof sliding law
+“Small” and “large” will be defined relative to some reference speed
+:math:`u_0`. While it doesn’t exactly reproduce the Schoof sliding law
 itself, the following functional gives the right asymptotic behavior:
 
 .. math:: E(u) = \int \tau_0\left(\left(u_0^{\frac{1}{m} + 1} + |u|^{\frac{1}{m} + 1}\right)^{\frac{m}{m + 1}} - u_0\right) dx
 
 The extra factor of :math:`-u_0` is there to make it so that
-:math:`E(0) = 0`, i.e. there is no dissipation when there is no flow.
-The right value of :math:`u_0` isn't very well constrained. For this
-demonstration, we'll use a value of 50 m/year, since this falls roughly
-in the middle of the grounded region for the final velocity. We'll then
+:math:`E(0) = 0`, i.e. there is no dissipation when there is no flow.
+The right value of :math:`u_0` isn’t very well constrained. For this
+demonstration, we’ll use a value of 50 m/year, since this falls roughly
+in the middle of the grounded region for the final velocity. We’ll then
 choose the value of the factor :math:`\tau_0`, which has units of
 stress, so that the stress is the same as the value at the end of the
-simulation we've just run using Weertman sliding.
+simulation we’ve just run using Weertman sliding.
 
 .. code:: ipython3
 
@@ -420,15 +420,18 @@ simulation we've just run using Weertman sliding.
 .. image:: icepack.demo.03-synthetic-ice-stream_files/icepack.demo.03-synthetic-ice-stream_38_0.png
 
 
-The following function returns the action functional associated to this
-sliding law, given the ice velocity, elevation, and the yield stress.
+The following function returns the kernel of the action functional
+associated to this sliding law, given the ice velocity, elevation, and
+the yield stress. Note that we only need to provide the inside of the
+integral – the model object applies the measures (``dx``, ``ds``, etc.)
+for you.
 
 .. code:: ipython3
 
     def schoof_friction(u, h, s, τ):
         ϕ = 1 - ρ_W/ρ_I * firedrake.max_value(0, h - s) / h
         U = sqrt(inner(u, u))
-        return τ * ϕ * (u_threshold**(1/m + 1) + U**(1/m + 1))**(m/(m + 1)) * dx
+        return τ * ϕ * (u_threshold**(1/m + 1) + U**(1/m + 1))**(m/(m + 1))
 
 We can then create a new ``IceStream`` object that will use this
 function to calculate the action rather than the usual Weertman sliding
@@ -441,7 +444,7 @@ law:
 The Schoof friction functional that we defined above takes in more
 parameters than the usual Weertman law, but thanks to keyword arguments
 in Python, everything gets passed to the right place despite this
-change. Let's do a diagnostic solve with this new model and see how
+change. Let’s do a diagnostic solve with this new model and see how
 different it is from the velocity obtained with the Weertman sliding
 law.
 
@@ -470,11 +473,11 @@ law.
 
 .. parsed-literal::
 
-    2.4848862268251896e-10
+    2.340092813477819e-10
 
 
 
-Just as we expect -- the resulting velocities are practically the same.
+Just as we expect – the resulting velocities are practically the same.
 We picked the parameters in the Schoof sliding law to give the same
 basal shear stress as with the Weertman law, so we should get the same
 velocity.
@@ -482,11 +485,11 @@ velocity.
 Response to perturbations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The steady state we've found is roughly an equilibrium for both the
-Weertman and Schoof sliding laws. To conclude this demo, we'll increase
+The steady state we’ve found is roughly an equilibrium for both the
+Weertman and Schoof sliding laws. To conclude this demo, we’ll increase
 the melt rate under the floating ice tongue and see how the system
 responds. To perturb the system out of its current equilibrium state,
-we'll add an extra 1 m/year of melting in the right-hand side of the
+we’ll add an extra 1 m/year of melting in the right-hand side of the
 domain. If we wanted to be more physically realistic about things, we
 might set the melt rate to be a function of depth below sea level, or
 even use a plume model.
@@ -495,7 +498,7 @@ even use a plume model.
 
     a = 1.7 - 2.7 * x / Lx - firedrake.conditional(x/Lx > 0.5, 1.0, 0.0)
 
-We'll wrap up the same loop as we had before in a function that takes in
+We’ll wrap up the same loop as we had before in a function that takes in
 the model (Weertman or Schoof) as an argument. This saves a bit of
 repetition and makes it easier to parallelize later.
 
@@ -536,7 +539,7 @@ repetition and makes it easier to parallelize later.
     ...........
 
 
-Finally, we'll plot a transect of the difference in thickness between
+Finally, we’ll plot a transect of the difference in thickness between
 the Weertman and Schoof laws. The glacier loses more mass over the
 grounded region and less under the ice shelf with the Schoof law than
 with the Weertman law. When the sliding relation becomes more plastic,
@@ -569,7 +572,7 @@ to write a function that calculates the energy dissipation from
 Schoof-type sliding. We then have to pass this function to the
 constructor of the ``IceStream`` model object we use to calculate the
 ice velocity. By passing in all the input fields to the
-``diagnostic_solve`` method as keyword arguments, we don't have to
+``diagnostic_solve`` method as keyword arguments, we don’t have to
 rewrite or override any methods of ``IceStream``, despite the fact that
 there are more input fields to the Schoof sliding law than there are for
 the Weertman law.

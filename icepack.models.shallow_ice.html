@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>icepack.models.shallow_ice module &mdash; icepack 0.0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="icepack.models.viscosity module" href="icepack.models.viscosity.html" />
+    <link rel="prev" title="icepack.models.mass_transport module" href="icepack.models.mass_transport.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> icepack
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">icepack</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">icepack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">icepack</a> &raquo;</li>
+        
+          <li><a href="icepack.html">icepack package</a> &raquo;</li>
+        
+          <li><a href="icepack.models.html">icepack.models package</a> &raquo;</li>
+        
+      <li>icepack.models.shallow_ice module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/icepack.models.shallow_ice.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-icepack.models.shallow_ice">
+<span id="icepack-models-shallow-ice-module"></span><h1>icepack.models.shallow_ice module<a class="headerlink" href="#module-icepack.models.shallow_ice" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="icepack.models.shallow_ice.ShallowIce">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">ShallowIce</code><span class="sig-paren">(</span><em class="sig-param">mass=&lt;function mass&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">penalty=&lt;function penalty&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for modelling the flow of grounded ice
+This class provides functions that solve for the velocity, thickness,
+and surface elevation of a grounded area of slow flowing ice.</p>
+<dl class="py method">
+<dt id="icepack.models.shallow_ice.ShallowIce.action">
+<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action functional that gives the shallow ice
+diagnostic model as the Euler-Lagrange equations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – Ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – Ice surface elevation</p></li>
+<li><p><strong>A</strong> (<em>firedrake.Function</em><em> or </em><em>firedrake.Constant</em>) – Rate factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>E</strong> – the shallow ice action functional</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
+‘mass’, ‘gravity’ and ‘penalty’ functionals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.shallow_ice.ShallowIce.diagnostic_solve">
+<code class="sig-name descname">diagnostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u0</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.diagnostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.diagnostic_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve for the ice velocity from the thickness and surface
+elevation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u0</strong> (<em>firedrake.Function</em>) – Ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – Ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – Ice surface elevation</p></li>
+<li><p><strong>A</strong> (<em>firedrake.Function</em><em> or </em><em>firedrake.Constant</em>) – Rate factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u</strong> – Ice velocity</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>**kwargs</strong> – All other keyword arguments will be passed on to the
+‘mass’, ‘gravity’ and ‘penalty’ functions
+that was set when this model object was initialized</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.shallow_ice.ShallowIce.prognostic_solve">
+<code class="sig-name descname">prognostic_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">h0</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h_inflow</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.prognostic_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.prognostic_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagate the ice thickness forward one timestep</p>
+<p>See <a class="reference internal" href="icepack.models.mass_transport.html#icepack.models.mass_transport.ImplicitEuler.solve" title="icepack.models.mass_transport.ImplicitEuler.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">icepack.models.mass_transport.ImplicitEuler.solve()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.shallow_ice.ShallowIce.scale">
+<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the positive, convex part of the action functional</p>
+<p>The positive part of the action functional is used as a dimensional
+scale to determine when to terminate an optimization algorithm.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.models.shallow_ice.gravity">
+<code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.gravity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return gravity function for the shallow ice action functional</p>
+<p>The gravity function for the shallow ice action functional is</p>
+<div class="math notranslate nohighlight">
+\[E(u) = \int_\Omega\frac{2A(\varrho_I g)**n}{n+2} (\nabla h^2\cdot u) h^{n+1} \nabla s^{n-1}\; dx\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
+<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
+<li><p><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</p></li>
+<li><p><strong>A</strong> (<em>firedrake.Function</em><em> or </em><em>firedrake.Constant</em>) – rate factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.models.shallow_ice.mass">
+<code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return mass function for the shallow ice action functional</p>
+<p>Mass fuction for the shallow ice action functional is</p>
+<div class="math notranslate nohighlight">
+\[E(u) = \frac{1}{2}\int_\Omega u\cdot u\; dx\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.models.shallow_ice.penalty">
+<code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">penalty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the penalty of the shallow ice action functional</p>
+<p>The penalty of the shallow ice action functional is</p>
+<div class="math notranslate nohighlight">
+\[E(u) = \frac{1}{2}\int_\Omega l^2\nabla u\cdot \nabla u\; dx\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Form</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="icepack.models.viscosity.html" class="btn btn-neutral float-right" title="icepack.models.viscosity module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="icepack.models.mass_transport.html" class="btn btn-neutral float-left" title="icepack.models.mass_transport module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Shapero
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

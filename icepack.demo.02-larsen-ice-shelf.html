@@ -419,10 +419,17 @@ previous demo.</p>
 boundary IDs. Boundary segments 1 and 3 correspond to the calving
 terminus and these are where Neumann boundary conditions should be
 applied. Segment 2 borders the Gipps Ice Rise, and the remaining
-segments are where ice is flowing in from.</p>
+segments are where ice is flowing in from. To make things a little
+clearer visually we’re also specifying a muuch smaller line weight for
+the interior edges compared to the boundary edges.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
-<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bnd_linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;interior_kw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mi">25</span><span class="p">},</span>
+    <span class="s1">&#39;boundary_kw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -449,7 +456,7 @@ fields stored in a NetCDF file.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>ncinfo <span class="s2">&quot;</span><span class="nv">$thickness_filename</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span> <span class="n">ncinfo</span><span class="p">:</span> <span class="ow">not</span> <span class="n">found</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="n">ncinfo</span><span class="p">:</span> <span class="n">command</span> <span class="ow">not</span> <span class="n">found</span>
 </pre></div>
 </div>
 <p>From this information we can see that the name of the field we want is
@@ -465,6 +472,9 @@ to the string we pass to <code class="docutils literal notranslate"><span class=
 NSIDC. The file is ~6GiB, so if you run this demo yourself, this step
 could take a while.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|█████████████████████████████████████| 6.97G/6.97G [00:00&lt;00:00, 1.71TB/s]
 </pre></div>
 </div>
 <p>The fields we want are <code class="docutils literal notranslate"><span class="pre">VX</span></code> and <code class="docutils literal notranslate"><span class="pre">VY</span></code>. The velocity dataset is also
@@ -541,7 +551,7 @@ unphysically large driving stress, which is shown in the plot below.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7c9e386bd0</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f951c080790</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" />
@@ -575,7 +585,7 @@ in the firn column are comparable.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">dx</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.033738415684965654</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.03386012075948286</span>
 </pre></div>
 </div>
 <p>Finally, the driving stress of the filtered ice thickness tops out
@@ -587,7 +597,7 @@ around 20 kPa, which is much more reasonable.</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7c9c85a3d0</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f950ec98290</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" />
@@ -614,7 +624,7 @@ even with a spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1794542089773584</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.1799444814347266</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -667,7 +677,7 @@ area of the shelf.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.909549414780246</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.898412855477131</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly

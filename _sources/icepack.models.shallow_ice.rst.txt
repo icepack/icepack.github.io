@@ -1,0 +1,7 @@
+icepack.models.shallow\_ice module
+==================================
+
+.. automodule:: icepack.models.shallow_ice
+   :members:
+   :undoc-members:
+   :show-inheritance:
