@@ -6,7 +6,7 @@
     import rasterio
     import geojson
     import firedrake
-    import icepack, icepack.plot, icepack.models
+    import icepack, icepack.plot, icepack.models, icepack.solvers
 
 Larsen Ice Shelf
 ================
@@ -339,7 +339,28 @@ fields stored in a NetCDF file.
 
 .. parsed-literal::
 
-    /usr/bin/sh: ncinfo: command not found
+    <class 'netCDF4._netCDF4.Dataset'>
+    root group (NETCDF4_CLASSIC data model, file format HDF5):
+        Conventions: CF-1.7
+        Title: BedMachine Antarctica
+        Author: Mathieu Morlighem
+        version: 05-Nov-2019 (v1.38)
+        nx: 13333.0
+        ny: 13333.0
+        Projection: Polar Stereographic South (71S,0E)
+        proj4: +init=epsg:3031
+        sea_water_density (kg m-3): 1027.0
+        ice_density (kg m-3): 917.0
+        xmin: -3333000
+        ymax: 3333000
+        spacing: 500
+        no_data: -9999.0
+        license: No restrictions on access or use
+        Data_citation: Morlighem M. et al., (2019), Deep glacial troughs and stabilizing ridges unveiled beneath the margins of the Antarctic ice sheet, Nature Geoscience (accepted)
+        Notes: Data processed at the Department of Earth System Science, University of California, Irvine
+        dimensions(sizes): x(13333), y(13333)
+        variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y,x), float32 firn(y,x), float32 surface(y,x), float32 thickness(y,x), float32 bed(y,x), int16 errbed(y,x), int8 source(y,x), int16 geoid(y,x)
+        groups: 
 
 
 From this information we can see that the name of the field we want is
@@ -360,12 +381,6 @@ could take a while.
 .. code:: ipython3
 
     velocity_filename = icepack.datasets.fetch_measures_antarctica()
-
-
-.. parsed-literal::
-
-    100%|█████████████████████████████████████| 6.97G/6.97G [00:00<00:00, 1.71TB/s]
-
 
 The fields we want are ``VX`` and ``VY``. The velocity dataset is also
 stored as a NetCDF file; the names of the fields we want are ``VX`` and
@@ -419,10 +434,11 @@ Dirichlet conditions.
 
 .. code:: ipython3
 
-    T = 260
-    A = firedrake.Constant(icepack.rate_factor(T))
-    ice_shelf = icepack.models.IceShelf()
-    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tol': 1e-6}
+    T = firedrake.Constant(260)
+    A = icepack.rate_factor(T)
+    model = icepack.models.IceShelf()
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tolerance': 1e-6}
+    solver = icepack.solvers.FlowSolver(model, **opts)
 
 Next, we’ll try to solve the shallow shelf equations to obtain the
 initial ice velocity.
@@ -430,7 +446,7 @@ initial ice velocity.
 .. code:: ipython3
 
     try:
-        u = ice_shelf.diagnostic_solve(u0=u0, h=h0, A=A, **opts)
+        u = solver.diagnostic_solve(u=u0, h=h0, A=A)
     except:
         print('Oh no, nonlinear solver did not converge!')
 
@@ -466,7 +482,7 @@ unphysically large driving stress, which is shown in the plot below.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f951c080790>
+    <matplotlib.colorbar.Colorbar at 0x7f7eee3bb690>
 
 
 
@@ -513,7 +529,7 @@ in the firn column are comparable.
 
 .. parsed-literal::
 
-    0.03386012075948286
+    0.03386012075948283
 
 
 Finally, the driving stress of the filtered ice thickness tops out
@@ -532,7 +548,7 @@ around 20 kPa, which is much more reasonable.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7f950ec98290>
+    <matplotlib.colorbar.Colorbar at 0x7f7eee3a97d0>
 
 
 
@@ -548,7 +564,7 @@ create such large driving stresses as to no longer be reasonable.
 
 .. code:: ipython3
 
-    u = ice_shelf.diagnostic_solve(u0=u0, h=h, A=A, **opts)
+    u = solver.diagnostic_solve(u=u0, h=h, A=A)
 
 The computed velocity is shown below; the result looks pretty reasonable
 if we’re going by the speeds.
@@ -576,7 +592,7 @@ even with a spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.1799444814347266
+    0.17994448143477162
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -593,8 +609,8 @@ for this loop should be familiar from the previous example.
     num_steps = 40
     dt = final_time / num_steps
     for step in range(num_steps + 1):
-        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h_init)
-        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
+        h = solver.prognostic_solve(dt, h=h, a=a, u=u, h_inflow=h_init)
+        u = solver.diagnostic_solve(u=u, h=h, A=A)
 
 In the plot below we’re using the ``alpha`` keyword argument to the
 contouring function. This makes the thickness contours about half-way
@@ -648,7 +664,7 @@ area of the shelf.
 
 .. parsed-literal::
 
-    -3.898412855477131
+    -3.9019400147892576
 
 
 Seeing as the simulation ran for 10 years, this isn’t a wildly

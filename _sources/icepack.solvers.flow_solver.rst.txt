@@ -1,0 +1,7 @@
+icepack.solvers.flow\_solver module
+===================================
+
+.. automodule:: icepack.solvers.flow_solver
+   :members:
+   :undoc-members:
+   :show-inheritance:

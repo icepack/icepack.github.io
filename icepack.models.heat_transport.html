@@ -113,6 +113,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.solvers.html">icepack.solvers package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
@@ -194,7 +195,7 @@
 <span id="icepack-models-heat-transport-module"></span><h1>icepack.models.heat_transport module<a class="headerlink" href="#module-icepack.models.heat_transport" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="icepack.models.heat_transport.HeatTransport3D">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.heat_transport.</code><code class="sig-name descname">HeatTransport3D</code><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.heat_transport.</code><code class="sig-name descname">HeatTransport3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">surface_exchange_coefficient</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modeling 3D heat transport</p>
 <p>This class solves the 3D advection-diffusion equation for the energy
@@ -202,6 +203,16 @@ density. The energy density factors in both the temperature and the latent
 heat included in meltwater. We use the energy density rather than the
 enthalpy because it comes out to a nice round number (about 500 MPa/m^3)
 in the unit system we use.</p>
+<dl class="py method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.advective_flux">
+<code class="sig-name descname">advective_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.advective_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.advective_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.diffusive_flux">
+<code class="sig-name descname">diffusive_flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.diffusive_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.diffusive_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.energy_density">
 <code class="sig-name descname">energy_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.energy_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.energy_density" title="Permalink to this definition">¶</a></dt>
@@ -220,6 +231,11 @@ fraction</p>
 <code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">E0</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">q_bed</span></em>, <em class="sig-param"><span class="n">E_inflow</span></em>, <em class="sig-param"><span class="n">E_surface</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Propagate the energy density forward by one timestep</p>
 </dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.heat_transport.HeatTransport3D.sources">
+<code class="sig-name descname">sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/heat_transport.html#HeatTransport3D.sources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.heat_transport.HeatTransport3D.sources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="icepack.models.heat_transport.HeatTransport3D.temperature">

@@ -113,6 +113,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.solvers.html">icepack.solvers package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
@@ -194,7 +195,7 @@
 <span id="icepack-models-shallow-ice-module"></span><h1>icepack.models.shallow_ice module<a class="headerlink" href="#module-icepack.models.shallow_ice" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="icepack.models.shallow_ice.ShallowIce">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">ShallowIce</code><span class="sig-paren">(</span><em class="sig-param">mass=&lt;function mass&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">penalty=&lt;function penalty&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">ShallowIce</code><span class="sig-paren">(</span><em class="sig-param">mass=&lt;function mass&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">penalty=&lt;function penalty&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em>, <em class="sig-param">continuity=&lt;icepack.models.mass_transport.Continuity object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modelling the flow of grounded ice
 This class provides functions that solve for the velocity, thickness,
@@ -262,6 +263,13 @@ that was set when this model object was initialized</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="icepack.models.shallow_ice.ShallowIce.quadrature_degree">
+<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.quadrature_degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the quadrature degree necessary to integrate the action
+functional accurately</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="icepack.models.shallow_ice.ShallowIce.scale">
 <code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#ShallowIce.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.ShallowIce.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the positive, convex part of the action functional</p>
@@ -274,7 +282,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dl class="py function">
 <dt id="icepack.models.shallow_ice.gravity">
 <code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.gravity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return gravity function for the shallow ice action functional</p>
+<dd><p>Return the gravity term for the shallow ice action functional</p>
 <p>The gravity function for the shallow ice action functional is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \int_\Omega\frac{2A(\varrho_I g)**n}{n+2} (\nabla h^2\cdot u) h^{n+1} \nabla s^{n-1}\; dx\]</div>
@@ -299,7 +307,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dl class="py function">
 <dt id="icepack.models.shallow_ice.mass">
 <code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.mass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return mass function for the shallow ice action functional</p>
+<dd><p>Return the mass term for the shallow ice action functional</p>
 <p>Mass fuction for the shallow ice action functional is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \frac{1}{2}\int_\Omega u\cdot u\; dx\]</div>
@@ -320,7 +328,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 <dt id="icepack.models.shallow_ice.penalty">
 <code class="sig-prename descclassname">icepack.models.shallow_ice.</code><code class="sig-name descname">penalty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/shallow_ice.html#penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.shallow_ice.penalty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the penalty of the shallow ice action functional</p>
-<p>The penalty of the shallow ice action functional is</p>
+<p>The penalty for the shallow ice action functional is</p>
 <div class="math notranslate nohighlight">
 \[E(u) = \frac{1}{2}\int_\Omega l^2\nabla u\cdot \nabla u\; dx\]</div>
 <dl class="field-list simple">

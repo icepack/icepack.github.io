@@ -1,0 +1,7 @@
+icepack.solvers.heat\_transport module
+======================================
+
+.. automodule:: icepack.solvers.heat_transport
+   :members:
+   :undoc-members:
+   :show-inheritance:

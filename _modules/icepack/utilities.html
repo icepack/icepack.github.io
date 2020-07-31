@@ -171,7 +171,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for icepack.utilities</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (C) 2017-2019 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
+<span></span><span class="c1"># Copyright (C) 2017-2020 by Daniel Shapero &lt;shapero@uw.edu&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># This file is part of icepack.</span>
 <span class="c1">#</span>
@@ -190,6 +190,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">det</span>
+<span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span>
 
 <div class="viewcode-block" id="facet_normal_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.facet_normal_2">[docs]</a><span class="k">def</span> <span class="nf">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal component of the unit outward normal vector</span>
@@ -224,6 +225,23 @@
     <span class="n">xmin</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">allreduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">op</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span>
     <span class="n">xmax</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">allreduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">op</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compute_surface"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.compute_surface">[docs]</a><span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the ice surface elevation consistent with a given</span>
+<span class="sd">    thickness and bathymetry</span>
+
+<span class="sd">    If the bathymetry beneath a tidewater glacier is too low, the ice</span>
+<span class="sd">    will go afloat. The surface elevation of a floating ice shelf is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       s = (1 - \rho_I / \rho_W)h,</span>
+
+<span class="sd">    provided everything is in hydrostatic balance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_function_space</span><span class="p">()</span>
+    <span class="n">s_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s_expr</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="depth_average"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.depth_average">[docs]</a><span class="k">def</span> <span class="nf">depth_average</span><span class="p">(</span><span class="n">q3d</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>

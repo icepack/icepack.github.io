@@ -192,9 +192,44 @@
 <span class="sd">manner consistent with the bed elevation and where the ice may go afloat.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">dx</span><span class="p">,</span> <span class="n">inner</span>
 <span class="kn">from</span> <span class="nn">icepack</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+
+<div class="viewcode-block" id="Continuity"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.Continuity">[docs]</a><span class="k">class</span> <span class="nc">Continuity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Describes the form of the mass continuity equation&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facet_normal</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">grad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">div</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">div</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">ds</span>
+        <span class="k">elif</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facet_normal</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">facet_normal_2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grad</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">grad_2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">div</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">div_2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">ds_v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimension must be 2 or 3!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h_inflow&#39;</span><span class="p">]</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+        <span class="n">grad</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">facet_normal</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">())</span>
+        <span class="n">u_n</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">flux_cells</span> <span class="o">=</span> <span class="o">-</span><span class="n">inner</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">u</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">q</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">flux_out</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">u_n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">flux_in</span> <span class="o">=</span> <span class="n">h_inflow</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="n">u_n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">accumulation</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="k">return</span> <span class="n">accumulation</span> <span class="o">-</span> <span class="p">(</span><span class="n">flux_in</span> <span class="o">+</span> <span class="n">flux_out</span> <span class="o">+</span> <span class="n">flux_cells</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MassTransport"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">[docs]</a><span class="k">class</span> <span class="nc">MassTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -245,6 +280,10 @@
 <span class="sd">        h : firedrake.Function</span>
 <span class="sd">            Ice thickness at `t + dt`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the FlowSolver class, &#39;</span>
+                      <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="n">grad</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span>
 
         <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">h_inflow</span> <span class="k">if</span> <span class="n">h_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">h0</span>
@@ -300,6 +339,10 @@
 <span class="sd">        h : firedrake.Function</span>
 <span class="sd">            Ice thickness at `t + dt`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the FlowSolver class, &#39;</span>
+                      <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">div</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span>
 
         <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">h_inflow</span> <span class="k">if</span> <span class="n">h_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">h0</span>

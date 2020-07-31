@@ -1,0 +1,7 @@
+icepack.solvers.utilities module
+================================
+
+.. automodule:: icepack.solvers.utilities
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Physics solvers" href="solvers.html" />
+    <link rel="next" title="Engineering" href="engineering.html" />
     <link rel="prev" title="Testing" href="testing.html" /> 
 </head>
 
@@ -106,6 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engineering.html">Engineering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solvers.html">Physics solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inverse.html">Inverse solvers</a></li>
 </ul>
@@ -181,10 +182,17 @@
   <div class="section" id="design">
 <h1>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h1>
 <p>The following pages give detailed descriptions about the internals of icepack.
-These explain implementation details for some of the algorithms we use.
+These explain implementation details of both the math and code for the algorithms we use.
 You should read this if you are interested in modifying the core of icepack.</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="engineering.html">Engineering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engineering.html#feedback">Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engineering.html#closeness">Closeness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engineering.html#consistency">Consistency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engineering.html#modularity">Modularity</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="solvers.html">Physics solvers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inverse.html">Inverse solvers</a></li>
 </ul>
@@ -199,7 +207,7 @@ You should read this if you are interested in modifying the core of icepack.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="solvers.html" class="btn btn-neutral float-right" title="Physics solvers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="engineering.html" class="btn btn-neutral float-right" title="Engineering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="testing.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -219,6 +219,12 @@
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.adjoint_state">adjoint_state() (icepack.inverse.InverseSolver property)</a>
 </li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.adjoint_tangent_linear_solution">adjoint_tangent_linear_solution() (icepack.inverse.GaussNewtonCG property)</a>
+</li>
+      <li><a href="icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.advective_flux">advective_flux() (icepack.models.heat_transport.HeatTransport3D method)</a>
+</li>
+      <li><a href="icepack.optimization.html#icepack.optimization.MinimizationProblem.assemble">assemble() (icepack.optimization.MinimizationProblem method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -239,20 +245,28 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.meshing.html#icepack.meshing.collection_to_geo">collection_to_geo() (in module icepack.meshing)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel.compute_surface">compute_surface() (icepack.models.hybrid.HybridModel method)</a>
 
       <ul>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.compute_surface">(icepack.models.ice_stream.IceStream method)</a>
 </li>
+        <li><a href="icepack.utilities.html#icepack.utilities.compute_surface">(in module icepack.utilities)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.mass_transport.html#icepack.models.mass_transport.Continuity">Continuity (class in icepack.models.mass_transport)</a>
+</li>
+      <li><a href="icepack.solvers.utilities.html#icepack.solvers.utilities.copy">copy() (in module icepack.solvers.utilities)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.solvers.damage_solver.html#icepack.solvers.damage_solver.DamageSolver">DamageSolver (class in icepack.solvers.damage_solver)</a>
+</li>
       <li><a href="icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport">DamageTransport (class in icepack.models.damage_transport)</a>
 </li>
       <li><a href="icepack.utilities.html#icepack.utilities.depth_average">depth_average() (in module icepack.utilities)</a>
@@ -266,10 +280,14 @@
 </li>
         <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.diagnostic_solve">(icepack.models.shallow_ice.ShallowIce method)</a>
 </li>
+        <li><a href="icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.diagnostic_solve">(icepack.solvers.flow_solver.FlowSolver method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.utilities.html#icepack.utilities.diameter">diameter() (in module icepack.utilities)</a>
+</li>
+      <li><a href="icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.diffusive_flux">diffusive_flux() (icepack.models.heat_transport.HeatTransport3D method)</a>
 </li>
       <li><a href="icepack.utilities.html#icepack.utilities.div_2">div_2() (in module icepack.utilities)</a>
 </li>
@@ -299,13 +317,25 @@
 </li>
       <li><a href="icepack.datasets.html#icepack.datasets.fetch_larsen_outline">fetch_larsen_outline() (in module icepack.datasets)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.datasets.html#icepack.datasets.fetch_measures_antarctica">fetch_measures_antarctica() (in module icepack.datasets)</a>
 </li>
       <li><a href="icepack.datasets.html#icepack.datasets.fetch_measures_greenland">fetch_measures_greenland() (in module icepack.datasets)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.datasets.html#icepack.datasets.fetch_mosaic_of_antarctica">fetch_mosaic_of_antarctica() (in module icepack.datasets)</a>
+</li>
+      <li><a href="icepack.solvers.damage_solver.html#icepack.solvers.damage_solver.DamageSolver.fields">fields() (icepack.solvers.damage_solver.DamageSolver property)</a>
+
+      <ul>
+        <li><a href="icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.fields">(icepack.solvers.flow_solver.FlowSolver property)</a>
+</li>
+        <li><a href="icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver.fields">(icepack.solvers.heat_transport.HeatTransportSolver property)</a>
+</li>
+      </ul></li>
+      <li><a href="icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver">FlowSolver (class in icepack.solvers.flow_solver)</a>
+</li>
+      <li><a href="icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.flux">flux() (icepack.models.damage_transport.DamageTransport method)</a>
 </li>
       <li><a href="icepack.models.friction.html#icepack.models.friction.friction_stress">friction_stress() (in module icepack.models.friction)</a>
 </li>
@@ -315,9 +345,7 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonSolver.gauss_newton_energy_norm">gauss_newton_energy_norm() (icepack.inverse.GaussNewtonSolver method)</a>
-</li>
-      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonSolver.gauss_newton_mult">gauss_newton_mult() (icepack.inverse.GaussNewtonSolver method)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG">GaussNewtonCG (class in icepack.inverse)</a>
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonSolver">GaussNewtonSolver (class in icepack.inverse)</a>
 </li>
@@ -355,6 +383,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver">HeatTransportSolver (class in icepack.solvers.heat_transport)</a>
+</li>
       <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.horizontal_strain">horizontal_strain() (in module icepack.models.hybrid)</a>
 </li>
       <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.HybridModel">HybridModel (class in icepack.models.hybrid)</a>
@@ -451,8 +481,6 @@
         <li><a href="icepack.models.ice_shelf.html#module-icepack.models.ice_shelf">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     icepack.models.ice_stream
 
@@ -467,6 +495,8 @@
         <li><a href="icepack.models.mass_transport.html#module-icepack.models.mass_transport">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     icepack.models.shallow_ice
 
@@ -503,6 +533,41 @@
 </li>
       </ul></li>
       <li>
+    icepack.solvers
+
+      <ul>
+        <li><a href="icepack.solvers.html#module-icepack.solvers">module</a>
+</li>
+      </ul></li>
+      <li>
+    icepack.solvers.damage_solver
+
+      <ul>
+        <li><a href="icepack.solvers.damage_solver.html#module-icepack.solvers.damage_solver">module</a>
+</li>
+      </ul></li>
+      <li>
+    icepack.solvers.flow_solver
+
+      <ul>
+        <li><a href="icepack.solvers.flow_solver.html#module-icepack.solvers.flow_solver">module</a>
+</li>
+      </ul></li>
+      <li>
+    icepack.solvers.heat_transport
+
+      <ul>
+        <li><a href="icepack.solvers.heat_transport.html#module-icepack.solvers.heat_transport">module</a>
+</li>
+      </ul></li>
+      <li>
+    icepack.solvers.utilities
+
+      <ul>
+        <li><a href="icepack.solvers.utilities.html#module-icepack.solvers.utilities">module</a>
+</li>
+      </ul></li>
+      <li>
     icepack.utilities
 
       <ul>
@@ -522,6 +587,8 @@
       <li><a href="icepack.inverse.html#icepack.inverse.InverseProblem">InverseProblem (class in icepack.inverse)</a>
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver">InverseSolver (class in icepack.inverse)</a>
+</li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.iteration">iteration() (icepack.inverse.GaussNewtonCG property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -557,6 +624,16 @@
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.BFGSSolver.memory">memory() (icepack.inverse.BFGSSolver property)</a>
 </li>
+      <li><a href="icepack.optimization.html#icepack.optimization.MinimizationProblem">MinimizationProblem (class in icepack.optimization)</a>
+</li>
+      <li><a href="icepack.solvers.damage_solver.html#icepack.solvers.damage_solver.DamageSolver.model">model() (icepack.solvers.damage_solver.DamageSolver property)</a>
+
+      <ul>
+        <li><a href="icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.model">(icepack.solvers.flow_solver.FlowSolver property)</a>
+</li>
+        <li><a href="icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver.model">(icepack.solvers.heat_transport.HeatTransportSolver property)</a>
+</li>
+      </ul></li>
       <li>
     module
 
@@ -599,6 +676,16 @@
 </li>
         <li><a href="icepack.plot.html#module-icepack.plot">icepack.plot</a>
 </li>
+        <li><a href="icepack.solvers.html#module-icepack.solvers">icepack.solvers</a>
+</li>
+        <li><a href="icepack.solvers.damage_solver.html#module-icepack.solvers.damage_solver">icepack.solvers.damage_solver</a>
+</li>
+        <li><a href="icepack.solvers.flow_solver.html#module-icepack.solvers.flow_solver">icepack.solvers.flow_solver</a>
+</li>
+        <li><a href="icepack.solvers.heat_transport.html#module-icepack.solvers.heat_transport">icepack.solvers.heat_transport</a>
+</li>
+        <li><a href="icepack.solvers.utilities.html#module-icepack.solvers.utilities">icepack.solvers.utilities</a>
+</li>
         <li><a href="icepack.utilities.html#module-icepack.utilities">icepack.utilities</a>
 </li>
       </ul></li>
@@ -608,7 +695,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.optimization.html#icepack.optimization.newton_search">newton_search() (in module icepack.optimization)</a>
+      <li><a href="icepack.optimization.html#icepack.optimization.NewtonSolver">NewtonSolver (class in icepack.optimization)</a>
 </li>
       <li><a href="icepack.norms.html#icepack.norms.norm">norm() (in module icepack.norms)</a>
 </li>
@@ -627,6 +714,10 @@
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.objective">objective() (icepack.inverse.InverseSolver property)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.operator_product">operator_product() (icepack.inverse.GaussNewtonCG property)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
@@ -635,6 +726,8 @@
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.parameter">parameter() (icepack.inverse.InverseSolver property)</a>
 </li>
       <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.penalty">penalty() (in module icepack.models.shallow_ice)</a>
+</li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.preconditioner">preconditioner() (icepack.inverse.GaussNewtonCG property)</a>
 </li>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.problem">problem() (icepack.inverse.InverseSolver property)</a>
 </li>
@@ -648,6 +741,8 @@
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.prognostic_solve">(icepack.models.ice_stream.IceStream method)</a>
 </li>
         <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.prognostic_solve">(icepack.models.shallow_ice.ShallowIce method)</a>
+</li>
+        <li><a href="icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.prognostic_solve">(icepack.solvers.flow_solver.FlowSolver method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -663,6 +758,8 @@
 </li>
         <li><a href="icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.quadrature_degree">(icepack.models.ice_stream.IceStream method)</a>
 </li>
+        <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.quadrature_degree">(icepack.models.shallow_ice.ShallowIce method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -676,9 +773,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="icepack.models.viscosity.html#icepack.models.viscosity.rate_factor">rate_factor() (in module icepack.models.viscosity)</a>
 </li>
+      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.regularization">regularization() (icepack.inverse.InverseSolver property)</a>
+</li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.reinit">reinit() (icepack.inverse.GaussNewtonCG method)</a>
+
+      <ul>
+        <li><a href="icepack.optimization.html#icepack.optimization.NewtonSolver.reinit">(icepack.optimization.NewtonSolver method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.regularization">regularization() (icepack.inverse.InverseSolver property)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.residual">residual() (icepack.inverse.GaussNewtonCG property)</a>
+</li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.residual_energy">residual_energy() (icepack.inverse.GaussNewtonCG property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -696,15 +803,25 @@
         <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.scale">(icepack.models.shallow_ice.ShallowIce method)</a>
 </li>
       </ul></li>
-      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.search_direction">search_direction() (icepack.inverse.InverseSolver property)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.search_direction">search_direction() (icepack.inverse.GaussNewtonCG property)</a>
+
+      <ul>
+        <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.search_direction">(icepack.inverse.InverseSolver property)</a>
+</li>
+      </ul></li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.search_direction_energy">search_direction_energy() (icepack.inverse.GaussNewtonCG property)</a>
 </li>
       <li><a href="icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce">ShallowIce (class in icepack.models.shallow_ice)</a>
 </li>
       <li><a href="icepack.models.friction.html#icepack.models.friction.side_friction">side_friction() (in module icepack.models.friction)</a>
 </li>
-      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.solve">solve() (icepack.inverse.InverseSolver method)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.solution">solution() (icepack.inverse.GaussNewtonCG property)</a>
+</li>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.solve">solve() (icepack.inverse.GaussNewtonCG method)</a>
 
       <ul>
+        <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.solve">(icepack.inverse.InverseSolver method)</a>
+</li>
         <li><a href="icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.solve">(icepack.models.damage_transport.DamageTransport method)</a>
 </li>
         <li><a href="icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.solve">(icepack.models.heat_transport.HeatTransport3D method)</a>
@@ -713,13 +830,31 @@
 </li>
         <li><a href="icepack.models.mass_transport.html#icepack.models.mass_transport.LaxWendroff.solve">(icepack.models.mass_transport.LaxWendroff method)</a>
 </li>
+        <li><a href="icepack.optimization.html#icepack.optimization.NewtonSolver.solve">(icepack.optimization.NewtonSolver method)</a>
+</li>
+        <li><a href="icepack.solvers.damage_solver.html#icepack.solvers.damage_solver.DamageSolver.solve">(icepack.solvers.damage_solver.DamageSolver method)</a>
+</li>
+        <li><a href="icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver.solve">(icepack.solvers.heat_transport.HeatTransportSolver method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.sources">sources() (icepack.models.damage_transport.DamageTransport method)</a>
+
+      <ul>
+        <li><a href="icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.sources">(icepack.models.heat_transport.HeatTransport3D method)</a>
+</li>
+      </ul></li>
       <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.state">state() (icepack.inverse.InverseSolver property)</a>
 </li>
-      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.step">step() (icepack.inverse.InverseSolver method)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.step">step() (icepack.inverse.GaussNewtonCG method)</a>
+
+      <ul>
+        <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.step">(icepack.inverse.InverseSolver method)</a>
 </li>
+        <li><a href="icepack.optimization.html#icepack.optimization.NewtonSolver.step">(icepack.optimization.NewtonSolver method)</a>
+</li>
+      </ul></li>
       <li><a href="icepack.plot.html#icepack.plot.streamline">streamline() (in module icepack.plot)</a>
 </li>
       <li><a href="icepack.plot.html#icepack.plot.streamplot">streamplot() (in module icepack.plot)</a>
@@ -736,6 +871,8 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.tangent_linear_solution">tangent_linear_solution() (icepack.inverse.GaussNewtonCG property)</a>
+</li>
       <li><a href="icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.temperature">temperature() (icepack.models.heat_transport.HeatTransport3D method)</a>
 </li>
       <li><a href="icepack.models.hybrid.html#icepack.models.hybrid.terminus">terminus() (in module icepack.models.hybrid)</a>
@@ -776,8 +913,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.update_state">update_state() (icepack.inverse.InverseSolver method)</a>
+      <li><a href="icepack.inverse.html#icepack.inverse.GaussNewtonCG.update_state">update_state() (icepack.inverse.GaussNewtonCG method)</a>
+
+      <ul>
+        <li><a href="icepack.inverse.html#icepack.inverse.InverseSolver.update_state">(icepack.inverse.InverseSolver method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

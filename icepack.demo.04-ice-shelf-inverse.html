@@ -186,7 +186,7 @@
 <span class="kn">import</span> <span class="nn">rasterio</span>
 <span class="kn">import</span> <span class="nn">geojson</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span><span class="o">,</span> <span class="nn">icepack.solvers</span>
 </pre></div>
 </div>
 <div class="section" id="inverse-problems">
@@ -342,7 +342,7 @@ platform.</p>
 <p>We need to make an initial guess for the fluidity parameter. In this
 case, we’ll use the same value as in the second demo – a constant
 fluidity assuming a temperature of -13C.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="mi">260</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">260</span><span class="p">)</span>
 <span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
 <span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
@@ -351,9 +351,10 @@ fluidity assuming a temperature of -13C.</p>
 
 <span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
-<span class="n">ice_shelf</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
-<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">ice_shelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u0</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s1">&#39;tolerance&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">FlowSolver</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
@@ -395,23 +396,24 @@ guess, some functionals, etc. Additionally, it needs to know the name of
 the observed field and the parameter (the <code class="docutils literal notranslate"><span class="pre">state_name</span></code> and
 <code class="docutils literal notranslate"><span class="pre">parameter_name</span></code>) arguments, since these values are passed to the
 forward solver as keyword arguments.</p>
-<p>All the additional arguments to the forward model are passed as a
-dictionary <code class="docutils literal notranslate"><span class="pre">model_args</span></code>. In our case, these consist of the thickness
-field, the initial guess for the velocity, and the forward solver
-tolerance. Finally, to specify the inverse problem, we need to know
-where Dirichlet boundary conditions are to be applied, as this affects
-how one solves for the Lagrange multiplier field <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p>The inverse solver will take this information and create a flow solver
+under the hood for us, but to do so it might need more information than
+we’ve already supplied. First, the keyword argument <code class="docutils literal notranslate"><span class="pre">solver_kwargs</span></code>
+takes a dictionary of additional keyword arguments to pass when
+initializing the flow solver, such as Dirichlet IDs or tolerances.
+Second, any additional arguments to the diagnostic solve procedure are
+passed in the dictionary <code class="docutils literal notranslate"><span class="pre">diagnostic_solver_args</span></code>. In our case, that
+consists of just the thickness field.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">InverseProblem</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="n">ice_shelf</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
     <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span>
     <span class="n">regularization</span><span class="o">=</span><span class="n">regularization</span><span class="p">,</span>
     <span class="n">state_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span>
     <span class="n">state</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
     <span class="n">parameter_name</span><span class="o">=</span><span class="s1">&#39;θ&#39;</span><span class="p">,</span>
     <span class="n">parameter</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span>
-    <span class="n">model_args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s1">&#39;u0&#39;</span><span class="p">:</span> <span class="n">u</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">},</span>
-    <span class="n">dirichlet_ids</span><span class="o">=</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">]</span>
+    <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">opts</span><span class="p">,</span>
+    <span class="n">diagnostic_solve_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -427,27 +429,30 @@ flexibility and transparency.</p>
 call at the end of every iteration. For this demonstration, we’ll have
 it print out the values of the misfit and regularization functionals.
 You could also, say, make a plot of the state and parameter guess at
-every iteration to make a movie of how the algorithm progresses.</p>
+every iteration to make a movie of how the algorithm progresses. In
+programming parlance, a function like this is referred to as a
+<em>callback</em>.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">print_error_and_regularization</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
     <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">area</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">area</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>To create the solver object, we only need to give it a problem and
-optionally the function it will call on each iteration. (In programming
-parlance this is called a <em>callback function</em>.)</p>
-<p>As a general principle, it’s a good idea to separate out the
-<em>specification</em> of a problem, in this case represented by the
-<code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> class, from the method used to solve the problem,
-represented by the <code class="docutils literal notranslate"><span class="pre">GaussNewtonSolver</span></code> class.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">print_error_and_regularization</span><span class="p">)</span>
+optionally the callback function.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">20.2803</span><span class="p">,</span> <span class="mi">0</span>
 </pre></div>
 </div>
+<p>As a general principle, it’s a good idea to separate out the
+<em>specification</em> of a problem, in this case represented by the
+<code class="docutils literal notranslate"><span class="pre">InverseProblem</span></code> class, from the method used to solve the problem,
+represented by the <code class="docutils literal notranslate"><span class="pre">GaussNewtonSolver</span></code> class. We’ve already seen this
+pattern before in how flow models (like <code class="docutils literal notranslate"><span class="pre">IceShelf</span></code>) are distinct from
+the objects that actually calculate the solutions (<code class="docutils literal notranslate"><span class="pre">FlowSolver</span></code>).</p>
 <p>Before setting the solver loose, let’s look at the initial search
 direction.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
@@ -480,10 +485,10 @@ fresh pot of coffee.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.124</span><span class="p">,</span> <span class="mf">0.201318</span>
-<span class="mf">1.08424</span><span class="p">,</span> <span class="mf">0.400006</span>
-<span class="mf">1.0537</span><span class="p">,</span> <span class="mf">0.379332</span>
-<span class="mf">1.03116</span><span class="p">,</span> <span class="mf">0.394948</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.08165</span><span class="p">,</span> <span class="mf">0.219766</span>
+<span class="mf">1.08992</span><span class="p">,</span> <span class="mf">0.393777</span>
+<span class="mf">1.05208</span><span class="p">,</span> <span class="mf">0.381392</span>
+<span class="mf">1.03218</span><span class="p">,</span> <span class="mf">0.394129</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
@@ -567,8 +572,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8507937838682694</span>
-<span class="mf">1.0311593390620766</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8529458286338006</span>
+<span class="mf">1.0321831795695298</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the

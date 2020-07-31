@@ -6,7 +6,7 @@
     from numpy import pi as π
     import firedrake
     from firedrake import as_vector, inner, ds
-    import icepack, icepack.plot, icepack.models
+    import icepack, icepack.plot, icepack.models, icepack.solvers
 
 Synthetic ice shelf
 ===================
@@ -141,20 +141,20 @@ notebook.
 .. parsed-literal::
 
     Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.5.6, 1 node, max. 1 thread]
-    Info    : Started on Mon Apr 27 08:16:19 2020
+    Info    : Started on Thu Jul 30 16:47:45 2020
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
     Info    : [  0 %] Meshing curve 1 (Circle)
     Info    : [ 50 %] Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.002499 s)
+    Info    : Done meshing 1D (0.003126 s)
     Info    : Meshing 2D...
     Info    : Meshing surface 4 (Plane, Frontal-Delaunay)
-    Info    : Done meshing 2D (0.15669 s)
+    Info    : Done meshing 2D (0.11982 s)
     Info    : 3373 nodes 6744 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Mon Apr 27 08:16:20 2020
+    Info    : Stopped on Thu Jul 30 16:47:45 2020
 
 
 The terminal output from gmsh gives us some diagnostics like how many
@@ -287,7 +287,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fc4e99de690>
+    <matplotlib.colorbar.Colorbar at 0x7fd6a819a850>
 
 
 
@@ -307,7 +307,7 @@ should be more illuminating.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fc4e9986ad0>
+    <matplotlib.colorbar.Colorbar at 0x7fd6a804eb50>
 
 
 
@@ -321,87 +321,53 @@ with higher thickness, will spread and grow.
 Modeling
 ~~~~~~~~
 
-To actually start solving things, we’ll make an ``IceShelf`` object that
-represents the physical model we’re using. Each model type has two
-methods, ``diagnostic_solve`` and ``prognostic_solve``, that solve the
-PDEs for the ice velocity and thickness.
+To actually start solving things, we need to make two objects. First,
+the class ``IceShelf`` represents what physics problem we’re interested
+in. In later tutorials we’ll show how to alter the components of a
+particular physics model and how to use other models entirely.
 
 .. code:: ipython3
 
-    ice_shelf = icepack.models.IceShelf()
-    help(ice_shelf.diagnostic_solve)
+    model = icepack.models.IceShelf()
 
+Second, the class ``FlowSolver`` decides how we’re going to solve that
+problem. When we initialize the flow solver we pass it any arguments
+that never change throughout a simulation. For example, the parts of the
+domain boundary where we apply Dirichlet boundary conditions have to
+stay the same throughout the whole simulation, and the list of those
+boundary IDs is passed in the keyword argument ``dirichlet_ids``.
 
-.. parsed-literal::
+.. code:: ipython3
 
-    Help on method diagnostic_solve in module icepack.models.ice_shelf:
-    
-    diagnostic_solve(u0, h, dirichlet_ids, tol=1e-06, **kwargs) method of icepack.models.ice_shelf.IceShelf instance
-        Solve for the ice velocity from the thickness
-        
-        Parameters
-        ----------
-        u0 : firedrake.Function
-            Initial guess for the ice velocity; the Dirichlet boundaries
-            are taken from `u0`
-        h : firedrake.Function
-            Ice thickness
-        dirichlet_ids : list of int
-            list of integer IDs denoting the parts of the boundary where
-            Dirichlet conditions should be applied
-        tol : float
-            dimensionless tolerance for when to terminate Newton's method
-        
-        Returns
-        -------
-        u : firedrake.Function
-            Ice velocity
-        
-        Other parameters
-        ----------------
-        **kwargs
-            All other keyword arguments will be passed on to the
-            `viscosity` and `gravity` functions that were set when this
-            model object was initialized
-    
+    solver = icepack.solvers.FlowSolver(model, dirichlet_ids=[1])
 
+The main job of the flow solver object is to solve the PDEs for ice
+velocity and thickness, for which it has two methods,
+``diagnostic_solve`` and ``prognostic_solve``. These two methods are all
+that you need to describe the evolution of an ice shelf.
 
-For now we’ll use a fluidity that assumes a spatially constant
-temperature of -18C. The code itself assumes that all temperatures are
-in Kelvin. In later demos, we’ll use a spatially variable fluidity
-coefficient and show how to infer it from observations.
+We need one more input variable, the fluidity factor :math:`A` in Glen’s
+flow law :math:`\dot\varepsilon = A\tau^3`. The fluidity depends on
+several variables, especially the temperature of the ice; warmer ice is
+easier to deform. For now we’ll use a fluidity that comes from a
+spatially constant temperature of -18C. The code itself assumes that all
+temperatures are in Kelvin. At the end of this demo, we’ll show how to
+incorporate the effect of ice damage on the fluidity.
 
 .. code:: ipython3
 
     T = firedrake.Constant(255.15)
-    A = firedrake.interpolate(icepack.rate_factor(T), Q)
-
-Finally, we need to prescribe the boundary conditions for the velocity
-and the convergence tolerance for the nonlinear solver. Since the
-boundary conditions and convergence tolerance are usually the same
-throughout a simulation, we’ll pack them into a dictionary call ``opts``
-and reuse it throughout.
+    A = icepack.rate_factor(T)
 
 To compute the velocity field, we call the diagnostic solve method of
-the ice shelf object. This function takes in the initial guess ``u0``
-for the velocity, the thickness, the fluidity, and all the extra options
-we packed into ``opts``.
+the ice shelf object. This function takes in the initial guess ``u`` for
+the velocity, the thickness ``h``, and the fluidity ``A`` as keyword
+arguments.
 
 .. code:: ipython3
 
-    opts = {'dirichlet_ids': [1], 'tol': 1e-12}
     h = h0.copy(deepcopy=True)
-    u = ice_shelf.diagnostic_solve(u0=u0, h=h, A=A, **opts)
-
-Here we passed all the arguments to ``diagnostic_solve`` as keywords.
-This convention will be used throughout all the demos. Passing arguments
-by keyword is slightly more verbose than passing them by position, but
-it saves you the trouble of remembering what order everything goes in.
-On top of that, many fields are *only* passed in as keyword arguments.
-For example, the fluidity parameter is not a positional argument of the
-diagnostic solve routine. The reason for this choice, as we’ll see
-later, is that it’s much easier to swap out components of the model
-physics for your own customized versions.
+    u = solver.diagnostic_solve(u=u0, h=h, A=A)
 
 The following plot shows streamlines of the velocity field. These kind
 of plots are useful for showing areas of convergence and divergence of
@@ -416,7 +382,7 @@ the flow field.
 
 
 
-.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_37_0.png
+.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_40_0.png
 
 
 To project the state of the ice shelf forward in time, we’ll use the
@@ -434,8 +400,8 @@ ice shelf is roughly in steady state.
     a = firedrake.Constant(0.0)
     
     for step in range(num_timesteps + 1):
-        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h0)
-        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, **opts)
+        h = solver.prognostic_solve(dt, h=h, a=a, u=u, h_inflow=h0)
+        u = solver.diagnostic_solve(u=u, h=h, A=A)
         
         print('.' if step % 10 == 0 else '', end='', flush=True)
 
@@ -449,6 +415,18 @@ prognostic and diagnostic solve methods of the model object. We’ll see
 this pattern repeated in all of the demos that follow. In some cases
 we’ll add in extra physics, like updating the temperature or damage
 field, but the core idea is the same.
+
+All of the fields involved in this simulation – the ice thickness,
+velocity, and so forth – were passed by keyword. Only the timestep
+``dt`` was passed by position. This is true more broadly of every
+solving routine in icepack. Passing arguments by keyword is admittedly
+more verbose than passing them by position, but we’ve made this choice
+for an important reason. As we’ll show later on in this demo, passing
+arguments by keyword makes it possible to swap out components of the
+model physics for your own customized versions. This flexibility would
+be impossible if we passed these fields by position. Finally, keyword
+arguments save you the trouble of remembering what order everything goes
+in; you only have to remember their names.
 
 We’ve added a bit of feedback to the loop by printing out a period every
 10 iterations. These kinds of diagnostics are helpful to know that the
@@ -473,7 +451,7 @@ the terminus.
 
 
 
-.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_41_0.png
+.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_44_0.png
 
 
 A stream plot of the ice velocity shows that the areas of greatest flow
@@ -488,7 +466,7 @@ divergence have moved around relative to the initial velocity.
 
 
 
-.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_43_0.png
+.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_46_0.png
 
 
 A useful quantity to know is how much ice is moving through the system.
@@ -515,7 +493,7 @@ actual work of evaluating the integral.
 
 .. parsed-literal::
 
-    Flux: 38.11244102070711 km^3 / year
+    Flux: 38.13220615604119 km^3 / year
 
 
 To check the degree to which the system really is in steady state, we
@@ -531,7 +509,7 @@ set the accumulation rate to be zero.
 
 .. parsed-literal::
 
-    Influx: 38.14274214232329 km^3 / year
+    Influx: 38.154422052942856 km^3 / year
 
 
 The influx and outflux are reasonably close, with the influx slightly
@@ -557,8 +535,8 @@ real ice shelf in the Antarctic Peninsula using observational data from
 satellites. As a bonus epilogue to this demo, we’ll show how to also
 include the physics of damage and crevassing.
 
-Damage
-~~~~~~
+Epilogue: Damage
+~~~~~~~~~~~~~~~~
 
 The simulation we just ran uses the prognostic and diagnostic model
 physics of ice shelf flow. These models successively update the ice
@@ -600,13 +578,14 @@ fluidity :math:`(1 - D)^{-n}\cdot A` instead of just :math:`A` itself.
     def viscosity_damaged(u, h, A, D):
         return viscosity_depth_averaged(u, h, (1 - D)**(-n) * A)
 
-We can then create a new ice shelf model object that will use
+We can then create a new ice shelf model object and solver that will use
 ``viscosity_damaged`` to calculate the power dissipation instead of the
 default.
 
 .. code:: ipython3
 
-    ice_shelf = icepack.models.IceShelf(viscosity=viscosity_damaged)
+    flow_model = icepack.models.IceShelf(viscosity=viscosity_damaged)
+    flow_solver = icepack.solvers.FlowSolver(flow_model, dirichlet_ids=[1])
 
 The procedure is exactly the same to modify any other part of the
 physics of any model. For example, you could also change how the
@@ -615,12 +594,13 @@ for the presence of ice melange. In later tutorials, we’ll look at
 alternative models for basal friction, and we’ll swap out the model
 physics in exactly the same way.
 
-We’ve decided how to include damage in the model, but we also need some
-rule for how damage will evolve. One approach would be to use fracture
-mechanics to explicitly model individual crevasses, but this approach
-would be very computationally expensive. Instead, the *continuum damage
-mechanics* approximation posits that there is some bulk transport law
-for damage that looks something like this PDE:
+So far, we’ve decided how to incorporate damage into the diagnostic
+model for the ice velocity. We also need some rule for how damage will
+evolve. One approach would be to use fracture mechanics to explicitly
+model individual crevasses, but this approach would be very
+computationally expensive. Instead, the *continuum damage mechanics*
+approximation posits that there is some bulk transport law for damage
+that looks something like this:
 
 .. math:: \frac{\partial D}{\partial t} + u\cdot\nabla D = f_o - f_c
 
@@ -633,14 +613,15 @@ In the following, we’ll use the model from `Albrecht and
 Levermann <https://doi.org/10.3189/2012JoG11J191>`__, but there are many
 others.
 
-The class ``icepack.models.DamageTransport`` includes a solver for this
-damage transport law. We’ll initialize the damage field to be zero
-everywhere and we’ll advect in zero damage from upstream. When we run
-the simulation forward in time, the
+The class ``icepack.models.DamageTransport`` describes the damage
+transport law, while ``icepack.solvers.DamageSolver`` contains routines
+for actually solving it. We’ll initialize the damage field to be zero
+everywhere and we’ll advect in zero damage from upstream.
 
 .. code:: ipython3
 
-    damage_transport = icepack.models.DamageTransport()
+    damage_model = icepack.models.DamageTransport()
+    damage_solver = icepack.solvers.DamageSolver(damage_model)
     
     Δ = firedrake.FunctionSpace(mesh, family='DG', degree=1)
     D = firedrake.Function(Δ)
@@ -650,14 +631,16 @@ Next, we’ll run a new simulation that includes interleaved updates for
 ice thickness and velocity, just like before, but also an update for the
 damage field according to the transport law we wrote down above. The
 simulation will go for long enough to propagate the damage field through
-an entire residence time of the ice shelf.
+an entire residence time of the ice shelf. Note how the diagnostic solve
+procedure now takes the damage field as a keyword argument in addition
+to the other fields we’ve already seen.
 
 .. code:: ipython3
 
     for step in range(num_timesteps + 1):
-        h = ice_shelf.prognostic_solve(dt, h0=h, a=a, u=u, h_inflow=h0)
-        D = damage_transport.solve(dt, D0=D, u=u, A=A, D_inflow=D_inflow)
-        u = ice_shelf.diagnostic_solve(u0=u, h=h, A=A, D=D, **opts)
+        h = flow_solver.prognostic_solve(dt, h=h, a=a, u=u, h_inflow=h0)
+        D = damage_solver.solve(dt, D=D, u=u, A=A, D_inflow=D_inflow)
+        u = flow_solver.diagnostic_solve(u=u, h=h, A=A, D=D)
         
         print('.' if step % 10 == 0 else '', end='', flush=True)
 
@@ -682,12 +665,12 @@ rather where the shear strain rate is highest.
 
 .. parsed-literal::
 
-    <matplotlib.colorbar.Colorbar at 0x7fc4e25581d0>
+    <matplotlib.colorbar.Colorbar at 0x7fd69fd1bad0>
 
 
 
 
-.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_61_1.png
+.. image:: icepack.demo.01-synthetic-ice-shelf_files/icepack.demo.01-synthetic-ice-shelf_64_1.png
 
 
 If you want to experiment with this problem further, you can try:
@@ -704,10 +687,10 @@ If you want to experiment with this problem further, you can try:
 Damage mechanics is one of many things you might want to simulate in
 order to accurately capture the physics of glacier flow. In later demos,
 we’ll show how to incorporate heat transfer. We could also include
-models describing things like the buoyant meltwater plume underneath the
-ice shelf or the densification of firn on the shelf surface. The details
-are different in each case, but the essential procedure is the same:
-first decide how the addition of a new field will affect the flow, and
-then decide how this field will evolve in time. We used the continuum
-damage formulation of Albrecht and Levermann, but there are many other
-models we could have chosen.
+models describing things like the buoyant plume of meltwater in the top
+layer of ocean underneath the ice shelf, or the densification of firn on
+the ice surface. The details are different in each case, but the
+essential procedure is the same: first decide how the addition of a new
+field will affect the flow, and then decide how this field will evolve
+in time. We used the continuum damage formulation of Albrecht and
+Levermann, but there are many other models we could have chosen.

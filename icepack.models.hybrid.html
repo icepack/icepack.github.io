@@ -113,6 +113,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.solvers.html">icepack.solvers package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
@@ -194,7 +195,7 @@
 <span id="icepack-models-hybrid-module"></span><h1>icepack.models.hybrid module<a class="headerlink" href="#module-icepack.models.hybrid" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="icepack.models.hybrid.HybridModel">
-<em class="property">class </em><code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">HybridModel</code><span class="sig-paren">(</span><em class="sig-param">viscosity=&lt;function viscosity&gt;</em>, <em class="sig-param">friction=&lt;function bed_friction&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">terminus=&lt;function terminus&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">icepack.models.hybrid.</code><code class="sig-name descname">HybridModel</code><span class="sig-paren">(</span><em class="sig-param">viscosity=&lt;function viscosity&gt;</em>, <em class="sig-param">friction=&lt;function bed_friction&gt;</em>, <em class="sig-param">gravity=&lt;function gravity&gt;</em>, <em class="sig-param">terminus=&lt;function terminus&gt;</em>, <em class="sig-param">mass_transport=&lt;icepack.models.mass_transport.LaxWendroff object&gt;</em>, <em class="sig-param">continuity=&lt;icepack.models.mass_transport.Continuity object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for modeling 3D glacier flow velocity</p>
 <p>This class provides functions that solve for the thickness, surface
@@ -213,14 +214,7 @@ Euler-Lagrange equations</p>
 <dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.compute_surface">
 <code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/hybrid.html#HybridModel.compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.hybrid.HybridModel.compute_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the ice surface elevation consistent with a given
-thickness and bathymetry</p>
-<p>If the bathymetry beneath a tidewater glacier is too low, the ice
-will go afloat. The surface elevation of a floating ice shelf is</p>
-<div class="math notranslate nohighlight">
-\[s = (1 - \rho_I / \rho_W)h,\]</div>
-<p>provided everything is in hydrostatic balance.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="icepack.models.hybrid.HybridModel.diagnostic_solve">

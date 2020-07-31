@@ -6,7 +6,7 @@
     import rasterio
     import geojson
     import firedrake
-    import icepack, icepack.plot, icepack.models
+    import icepack, icepack.plot, icepack.models, icepack.solvers
 
 Inverse problems
 ================
@@ -195,7 +195,7 @@ fluidity assuming a temperature of -13C.
 
 .. code:: ipython3
 
-    T0 = 260
+    T0 = firedrake.Constant(260)
     A0 = icepack.rate_factor(T0)
     from icepack.constants import glen_flow_law as n
     def viscosity(u, h, θ):
@@ -204,9 +204,10 @@ fluidity assuming a temperature of -13C.
     
     θ = firedrake.Function(Q)
     
-    ice_shelf = icepack.models.IceShelf(viscosity=viscosity)
-    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tol': 1e-6}
-    u = ice_shelf.diagnostic_solve(u0=u_obs, h=h, θ=θ, **opts)
+    model = icepack.models.IceShelf(viscosity=viscosity)
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tolerance': 1e-6}
+    solver = icepack.solvers.FlowSolver(model, **opts)
+    u = solver.diagnostic_solve(u=u_obs, h=h, θ=θ)
 
 .. code:: ipython3
 
@@ -255,26 +256,27 @@ the observed field and the parameter (the ``state_name`` and
 ``parameter_name``) arguments, since these values are passed to the
 forward solver as keyword arguments.
 
-All the additional arguments to the forward model are passed as a
-dictionary ``model_args``. In our case, these consist of the thickness
-field, the initial guess for the velocity, and the forward solver
-tolerance. Finally, to specify the inverse problem, we need to know
-where Dirichlet boundary conditions are to be applied, as this affects
-how one solves for the Lagrange multiplier field :math:`\lambda`.
+The inverse solver will take this information and create a flow solver
+under the hood for us, but to do so it might need more information than
+we’ve already supplied. First, the keyword argument ``solver_kwargs``
+takes a dictionary of additional keyword arguments to pass when
+initializing the flow solver, such as Dirichlet IDs or tolerances.
+Second, any additional arguments to the diagnostic solve procedure are
+passed in the dictionary ``diagnostic_solver_args``. In our case, that
+consists of just the thickness field.
 
 .. code:: ipython3
 
     problem = icepack.inverse.InverseProblem(
-        model=ice_shelf,
-        method=icepack.models.IceShelf.diagnostic_solve,
+        model=model,
         objective=objective,
         regularization=regularization,
         state_name='u',
         state=u,
         parameter_name='θ',
         parameter=θ,
-        model_args={'h': h, 'u0': u, 'tol': 1e-6},
-        dirichlet_ids=opts['dirichlet_ids']
+        solver_kwargs=opts,
+        diagnostic_solve_kwargs={'h': h}
     )
 
 Once we’ve created the problem, we then create a solver object that will
@@ -290,34 +292,37 @@ As a convenience, the inverse solver can take in a function that it will
 call at the end of every iteration. For this demonstration, we’ll have
 it print out the values of the misfit and regularization functionals.
 You could also, say, make a plot of the state and parameter guess at
-every iteration to make a movie of how the algorithm progresses.
+every iteration to make a movie of how the algorithm progresses. In
+programming parlance, a function like this is referred to as a
+*callback*.
 
 .. code:: ipython3
 
     area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
-    def print_error_and_regularization(solver):
+    def callback(solver):
         E = firedrake.assemble(solver.objective)
         R = firedrake.assemble(solver.regularization)
         print('{:g}, {:g}'.format(E/area, R/area))
 
 To create the solver object, we only need to give it a problem and
-optionally the function it will call on each iteration. (In programming
-parlance this is called a *callback function*.)
-
-As a general principle, it’s a good idea to separate out the
-*specification* of a problem, in this case represented by the
-``InverseProblem`` class, from the method used to solve the problem,
-represented by the ``GaussNewtonSolver`` class.
+optionally the callback function.
 
 .. code:: ipython3
 
-    solver = icepack.inverse.GaussNewtonSolver(problem, print_error_and_regularization)
+    solver = icepack.inverse.GaussNewtonSolver(problem, callback)
 
 
 .. parsed-literal::
 
     20.2803, 0
 
+
+As a general principle, it’s a good idea to separate out the
+*specification* of a problem, in this case represented by the
+``InverseProblem`` class, from the method used to solve the problem,
+represented by the ``GaussNewtonSolver`` class. We’ve already seen this
+pattern before in how flow models (like ``IceShelf``) are distinct from
+the objects that actually calculate the solutions (``FlowSolver``).
 
 Before setting the solver loose, let’s look at the initial search
 direction.
@@ -364,10 +369,10 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.124, 0.201318
-    1.08424, 0.400006
-    1.0537, 0.379332
-    1.03116, 0.394948
+    2.08165, 0.219766
+    1.08992, 0.393777
+    1.05208, 0.381392
+    1.03218, 0.394129
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -479,8 +484,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    0.8507937838682694
-    1.0311593390620766
+    0.8529458286338006
+    1.0321831795695298
 
 
 The objective function has been reduced by a factor of 10 through the

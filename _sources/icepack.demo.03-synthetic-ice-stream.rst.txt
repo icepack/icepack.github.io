@@ -4,7 +4,7 @@
     import matplotlib.pyplot as plt
     import firedrake
     from firedrake import inner, div, dx, ds, sqrt
-    import icepack, icepack.models, icepack.plot
+    import icepack, icepack.models, icepack.solvers, icepack.plot
 
 Synthetic ice stream
 ====================
@@ -69,8 +69,11 @@ absurd.
 
 .. code:: ipython3
 
-    from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
-                                   gravity as g)
+    from icepack.constants import (
+        ice_density as ρ_I,
+        water_density as ρ_W,
+        gravity as g
+    )
     
     h_in = s_in - b_in
     δs_δx = (s_out - s_in) / Lx
@@ -149,15 +152,18 @@ coefficient by the ramping factor.
 
 Now we can create a model object that uses our new parameterization by
 passing it to the constructor for the ``IceStream`` class. We’re calling
-the model object ``ice_stream_weertman`` because, at the end of this
-demo, we’ll compare with something quite different – the Schoof model
-for basal sliding.
+the model object ``model_weertman`` because, at the end of this demo,
+we’ll compare with something quite different – the Schoof model for
+basal sliding. The solver object is created in the same way as before.
+Customizing the physics changes what problem we’re solving, but the
+algorithms that we use to approximate the solution are identical.
 
 .. code:: ipython3
 
-    ice_stream_weertman = icepack.models.IceStream(friction=weertman_friction_with_ramp)
-    opts = {'dirichlet_ids': [1], 'side_wall_ids': [3, 4], 'tol': 1e-6}
-    u0 = ice_stream_weertman.diagnostic_solve(u0=u0, h=h0, s=s0, A=A, C=C, **opts)
+    model_weertman = icepack.models.IceStream(friction=weertman_friction_with_ramp)
+    opts = {'dirichlet_ids': [1], 'side_wall_ids': [3, 4], 'tolerance': 1e-6}
+    solver_weertman = icepack.solvers.FlowSolver(model_weertman, **opts)
+    u0 = solver_weertman.diagnostic_solve(u=u0, h=h0, s=s0, A=A, C=C)
 
 .. code:: ipython3
 
@@ -225,14 +231,16 @@ southeast Greenland.
     δt = 1.0/timesteps_per_year
     num_timesteps = num_years * timesteps_per_year
     
-    a = 1.7 - 2.7 * x / Lx
+    a_in = firedrake.Constant(1.7)
+    δa = firedrake.Constant(-2.7)
+    a = a_in + δa * x / Lx
     h = h0.copy(deepcopy=True)
     u = u0.copy(deepcopy=True)
     
     for k in range(num_timesteps + 1):
-        h = ice_stream_weertman.prognostic_solve(δt, h0=h, a=a, u=u, h_inflow=h0)
-        s = ice_stream_weertman.compute_surface(h=h, b=b)
-        u = ice_stream_weertman.diagnostic_solve(u0=u, h=h, s=s, A=A, C=C, **opts)
+        h = solver_weertman.prognostic_solve(δt, h=h, a=a, u=u, h_inflow=h0)
+        s = icepack.compute_surface(h=h, b=b)
+        u = solver_weertman.diagnostic_solve(u=u, h=h, s=s, A=A, C=C)
         print('.' if k * δt % 10 == 0 else '', end='')
 
 
@@ -240,7 +248,17 @@ southeast Greenland.
 
     ..........................
 
-Now some plots of the results:
+Notice that we have one extra step in the middle of the simulation loop.
+For ice shelves, all we had to do was (1) update the thickness according
+to the prognostic equation and then (2) compute the new ice velocity
+corresponding to this thickness. Since ice shelves are floating, we can
+calculate the surface elevation as a function of the ice thickness
+knowing the densities of ice and ocean water, and this is baked into the
+formulation of the problem. Ice streams, on the other hand, can be
+grounded or floating. After we update the ice thickness, we need to
+explicitly calculate a new surface elevation in a way that accounts for
+whether the ice is floating or grounded, and that’s what the function
+``icepack.compute_surface`` does. Let’s see what the results look like.
 
 .. code:: ipython3
 
@@ -296,9 +314,11 @@ surface, bed, and ice base elevation look like in the
     bs = np.array(b.at(xs, tolerance=1e-10))
     
     fig, axes = plt.subplots()
-    axes.plot(xs[:, 0], bs, color='black')
-    axes.plot(xs[:, 0], ss - hs, color='blue')
-    axes.plot(xs[:, 0], ss, color='blue')
+    axes.plot(xs[:, 0] / 1e3, bs, color='black')
+    axes.plot(xs[:, 0] / 1e3, ss - hs, color='blue')
+    axes.plot(xs[:, 0] / 1e3, ss, color='blue')
+    axes.set_xlabel('distance along centerline (km)')
+    axes.set_ylabel('elevation (m)')
     plt.show(fig)
 
 
@@ -312,7 +332,9 @@ crosses the grounding line.
 .. code:: ipython3
 
     fig, axes = plt.subplots()
-    axes.plot(xs[:, 0], hs)
+    axes.plot(xs[:, 0] / 1e3, hs)
+    axes.set_xlabel('distance along centerline (km)')
+    axes.set_ylabel('thickess (m)')
     plt.show(fig)
 
 
@@ -387,15 +409,16 @@ The Schoof sliding law
 To modify the Weertman sliding law for high ice speeds, we need for the
 energy dissipation density to be asymptotically like :math:`|u|^1` for
 large :math:`u`, but like :math:`|u|^{1/m + 1}` for small :math:`u`.
-“Small” and “large” will be defined relative to some reference speed
-:math:`u_0`. While it doesn’t exactly reproduce the Schoof sliding law
-itself, the following functional gives the right asymptotic behavior:
+“Small” and “large” will be defined relative to some reference or
+threshold speed :math:`U_0`. While it doesn’t exactly reproduce the
+Schoof sliding law itself, the following functional gives the right
+asymptotic behavior:
 
-.. math:: E(u) = \int \tau_0\left(\left(u_0^{\frac{1}{m} + 1} + |u|^{\frac{1}{m} + 1}\right)^{\frac{m}{m + 1}} - u_0\right) dx
+.. math:: E(u) = \int \tau_0\left(\left(U_0^{\frac{1}{m} + 1} + |u|^{\frac{1}{m} + 1}\right)^{\frac{m}{m + 1}} - U_0\right) dx
 
-The extra factor of :math:`-u_0` is there to make it so that
+The extra factor of :math:`-U_0` is there to make it so that
 :math:`E(0) = 0`, i.e. there is no dissipation when there is no flow.
-The right value of :math:`u_0` isn’t very well constrained. For this
+The right value of :math:`U_0` isn’t very well constrained. For this
 demonstration, we’ll use a value of 50 m/year, since this falls roughly
 in the middle of the grounded region for the final velocity. We’ll then
 choose the value of the factor :math:`\tau_0`, which has units of
@@ -404,9 +427,11 @@ simulation we’ve just run using Weertman sliding.
 
 .. code:: ipython3
 
-    u_threshold = 50
+    U_0 = firedrake.Constant(50)
     U = sqrt(inner(u, u))
-    τ_0 = firedrake.interpolate(C * (u_threshold**(1/m + 1) + U**(1/m + 1))**(1/(m + 1)), Q)
+    τ_0 = firedrake.interpolate(
+        C * (U_0**(1/m + 1) + U**(1/m + 1))**(1/(m + 1)), Q
+    )
 
 .. code:: ipython3
 
@@ -431,7 +456,9 @@ for you.
     def schoof_friction(u, h, s, τ):
         ϕ = 1 - ρ_W/ρ_I * firedrake.max_value(0, h - s) / h
         U = sqrt(inner(u, u))
-        return τ * ϕ * (u_threshold**(1/m + 1) + U**(1/m + 1))**(m/(m + 1))
+        return τ * ϕ * (
+            (U_0**(1/m + 1) + U**(1/m + 1))**(m/(m + 1)) - U_0
+        )
 
 We can then create a new ``IceStream`` object that will use this
 function to calculate the action rather than the usual Weertman sliding
@@ -439,7 +466,7 @@ law:
 
 .. code:: ipython3
 
-    ice_stream_schoof = icepack.models.IceStream(friction=schoof_friction)
+    model_schoof = icepack.models.IceStream(friction=schoof_friction)
 
 The Schoof friction functional that we defined above takes in more
 parameters than the usual Weertman law, but thanks to keyword arguments
@@ -450,7 +477,8 @@ law.
 
 .. code:: ipython3
 
-    u_schoof = ice_stream_schoof.diagnostic_solve(u0=u, h=h, s=s, A=A, τ=τ_0, **opts)
+    solver_schoof = icepack.solvers.FlowSolver(model_schoof, **opts)
+    u_schoof = solver_schoof.diagnostic_solve(u=u, h=h, s=s, A=A, τ=τ_0)
 
 .. code:: ipython3
 
@@ -473,7 +501,7 @@ law.
 
 .. parsed-literal::
 
-    2.340092813477819e-10
+    2.2972262149153842e-10
 
 
 
@@ -496,7 +524,8 @@ even use a plume model.
 
 .. code:: ipython3
 
-    a = 1.7 - 2.7 * x / Lx - firedrake.conditional(x/Lx > 0.5, 1.0, 0.0)
+    from firedrake import conditional
+    a = a_in + δa * x / Lx - conditional(x/Lx > 0.5, 1.0, 0.0)
 
 We’ll wrap up the same loop as we had before in a function that takes in
 the model (Weertman or Schoof) as an argument. This saves a bit of
@@ -510,26 +539,24 @@ repetition and makes it easier to parallelize later.
     δt = 1.0/timesteps_per_year
     num_timesteps = num_years * timesteps_per_year
     
-    def run_simulation(model, h, s, u, **kwargs):
+    def run_simulation(solver, h, s, u, **kwargs):
         for k in range(num_timesteps + 1):
-            h = model.prognostic_solve(δt, h0=h, a=a, u=u, h_inflow=h0)
-            s = model.compute_surface(h=h, b=b)
-            u = model.diagnostic_solve(u0=u, h=h, s=s, **kwargs)
+            h = solver.prognostic_solve(δt, h=h, a=a, u=u, h_inflow=h0)
+            s = icepack.compute_surface(h=h, b=b)
+            u = solver.diagnostic_solve(u=u, h=h, s=s, **kwargs)
             print('.' if k * δt % 10 == 0 else '', end='')
             
         print('')
         return h, s, u
     
     h_weertman, s_weertman, u_weertman = run_simulation(
-        model=ice_stream_weertman,
-        h=h, s=s, u=u, A=A, C=C,
-        **opts
+        solver=solver_weertman,
+        h=h, s=s, u=u, A=A, C=C
     )
     
     h_schoof, s_schoof, u_schoof = run_simulation(
-        model=ice_stream_schoof,
-        h=h, s=s, u=u_schoof, A=A, τ=τ_0,
-        **opts
+        solver=solver_schoof,
+        h=h, s=s, u=u_schoof, A=A, τ=τ_0
     )
 
 
@@ -553,7 +580,9 @@ further upstream.
     hs_schoof = np.array(h_schoof.at(xs, tolerance=1e-10))
     
     fig, axes = plt.subplots()
-    axes.plot(xs[:, 0], hs_weertman - hs_schoof, color='black')
+    axes.plot(xs[:, 0] / 1e3, hs_weertman - hs_schoof, color='black')
+    axes.set_xlabel('distance along centerline (km)')
+    axes.set_ylabel('thickness difference (m)')
     plt.show(fig)
 
 

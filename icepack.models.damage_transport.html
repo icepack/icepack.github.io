@@ -113,6 +113,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="icepack.html">icepack package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="icepack.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="icepack.models.html">icepack.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="icepack.solvers.html">icepack.solvers package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="icepack.html#submodules">Submodules</a></li>
@@ -192,13 +193,18 @@
             
   <div class="section" id="module-icepack.models.damage_transport">
 <span id="icepack-models-damage-transport-module"></span><h1>icepack.models.damage_transport module<a class="headerlink" href="#module-icepack.models.damage_transport" title="Permalink to this headline">¶</a></h1>
-<p>Solver for the damage advection equation</p>
+<p>Description of the continuum damage mechanics model</p>
 <p>This module contains a solver for the conservative advection equation that
 describes the evolution of ice damage (Albrecht and Levermann 2014).</p>
 <dl class="py class">
 <dt id="icepack.models.damage_transport.DamageTransport">
 <em class="property">class </em><code class="sig-prename descclassname">icepack.models.damage_transport.</code><code class="sig-name descname">DamageTransport</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">damage_stress</span><span class="o">=</span><span class="default_value">0.07</span></em>, <em class="sig-param"><span class="n">damage_rate</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">healing_strain_rate</span><span class="o">=</span><span class="default_value">0.00631152</span></em>, <em class="sig-param"><span class="n">healing_rate</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="icepack.models.damage_transport.DamageTransport.flux">
+<code class="sig-name descname">flux</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport.flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport.flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="icepack.models.damage_transport.DamageTransport.solve">
 <code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="n">D0</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="n">D_inflow</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport.solve" title="Permalink to this definition">¶</a></dt>
@@ -224,6 +230,11 @@ damage assocaited with crevasse opening/crevasse healing</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt id="icepack.models.damage_transport.DamageTransport.sources">
+<code class="sig-name descname">sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/damage_transport.html#DamageTransport.sources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.damage_transport.DamageTransport.sources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

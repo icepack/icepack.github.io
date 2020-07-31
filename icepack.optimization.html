@@ -198,33 +198,39 @@
             
   <div class="section" id="module-icepack.optimization">
 <span id="icepack-optimization-module"></span><h1>icepack.optimization module<a class="headerlink" href="#module-icepack.optimization" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="icepack.optimization.newton_search">
-<code class="sig-prename descclassname">icepack.optimization.</code><code class="sig-name descname">newton_search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">bc</span></em>, <em class="sig-param"><span class="n">tolerance</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="o">=</span><span class="default_value">50</span></em>, <em class="sig-param"><span class="n">armijo</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">contraction_factor</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">form_compiler_parameters</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">solver_parameters</span><span class="o">=</span><span class="default_value">{'ksp_type': 'preonly', 'pc_type': 'lu'}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#newton_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.newton_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the minimizer of a convex functional</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>firedrake.Form</em>) – The functional to be minimized</p></li>
-<li><p><strong>u0</strong> (<em>firedrake.Function</em>) – Initial guess for the minimizer</p></li>
-<li><p><strong>tolerance</strong> (<em>float</em>) – Stopping criterion for the optimization procedure</p></li>
-<li><p><strong>scale</strong> (<em>firedrake.Form</em>) – A positive scale functional by which to measure the objective</p></li>
-<li><p><strong>max_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Optimization procedure will stop at this many iterations regardless
-of convergence</p></li>
-<li><p><strong>armijo</strong> (<em>float</em><em>, </em><em>optional</em>) – The constant in the Armijo condition (see Nocedal and Wright)</p></li>
-<li><p><strong>contraction_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The amount by which to backtrack in the line search if the Armijo
-condition is not satisfied</p></li>
-<li><p><strong>form_compiler_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the firedrake form compiler</p></li>
-<li><p><strong>solver_parameters</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra options to pass to the linear solver</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The approximate minimizer of <cite>E</cite> to within tolerance</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>firedrake.Function</p>
-</dd>
-</dl>
+<dl class="py class">
+<dt id="icepack.optimization.MinimizationProblem">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.optimization.</code><code class="sig-name descname">MinimizationProblem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em>, <em class="sig-param"><span class="n">S</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">bcs</span></em>, <em class="sig-param"><span class="n">form_compiler_parameters</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#MinimizationProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.MinimizationProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="icepack.optimization.MinimizationProblem.assemble">
+<code class="sig-name descname">assemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#MinimizationProblem.assemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.MinimizationProblem.assemble" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="icepack.optimization.NewtonSolver">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.optimization.</code><code class="sig-name descname">NewtonSolver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">problem</span></em>, <em class="sig-param"><span class="n">tolerance</span></em>, <em class="sig-param"><span class="n">solver_parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#NewtonSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.NewtonSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="icepack.optimization.NewtonSolver.reinit">
+<code class="sig-name descname">reinit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#NewtonSolver.reinit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.NewtonSolver.reinit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="icepack.optimization.NewtonSolver.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#NewtonSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.NewtonSolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Step the Newton iteration until convergence</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="icepack.optimization.NewtonSolver.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/optimization.html#NewtonSolver.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.optimization.NewtonSolver.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a backtracking line search for the next value of the
+solution and compute the search direction for the next step</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

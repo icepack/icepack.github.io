@@ -3,7 +3,7 @@
     %matplotlib inline
     import matplotlib.pyplot as plt
     import firedrake
-    import icepack, icepack.models, icepack.plot
+    import icepack, icepack.models, icepack.solvers, icepack.plot
 
 Ice streams, once more
 ======================
@@ -57,7 +57,10 @@ vertical basis functions that are constant.
 
 .. code:: ipython3
 
-    Q = firedrake.FunctionSpace(mesh, family='CG', degree=2, vfamily='DG', vdegree=0)
+    Q = firedrake.FunctionSpace(
+        mesh, family='CG', degree=2,
+        vfamily='DG', vdegree=0
+    )
 
 The function space for the velocities is more interesting. For starters,
 we have to explicitly specify the value dimension, since we’re workin
@@ -71,7 +74,10 @@ polynomials are advantageous because they are mutually orthogonal.
 
 .. code:: ipython3
 
-    V = firedrake.VectorFunctionSpace(mesh, dim=2, family='CG', degree=2, vfamily='GL', vdegree=1)
+    V = firedrake.VectorFunctionSpace(
+        mesh, dim=2, family='CG', degree=2,
+        vfamily='GL', vdegree=1
+    )
 
 Creating the input data is mostly the same as before. The
 ``SpatialCoordinate`` function now returns an additional symbol
@@ -79,8 +85,12 @@ representing the terrain-following coordinate :math:`\zeta`.
 
 .. code:: ipython3
 
-    from icepack.constants import (ice_density as ρ_I, water_density as ρ_W,
-                                   gravity as g)
+    from icepack.constants import (
+        ice_density as ρ_I,
+        water_density as ρ_W,
+        weertman_sliding_law as m,
+        gravity as g
+    )
     
     x, y, ζ = firedrake.SpatialCoordinate(mesh)
 
@@ -108,12 +118,11 @@ representing the terrain-following coordinate :math:`\zeta`.
 
 .. code:: ipython3
 
-    temp = 255.0
-    A = firedrake.Constant(icepack.rate_factor(temp))
+    T = firedrake.Constant(255.0)
+    A = icepack.rate_factor(T)
 
 .. code:: ipython3
 
-    from icepack.constants import weertman_sliding_law as m
     C = (0.95 - 0.05 * x/Lx) * τ_D / u_in**(1/m)
     
     p_W = ρ_W * g * firedrake.max_value(0, h0 - s0)
@@ -135,8 +144,9 @@ same way as for the ice stream model.
 .. code:: ipython3
 
     model = icepack.models.HybridModel(friction=friction)
-    opts = {'dirichlet_ids': [1], 'side_wall_ids': [3, 4], 'tol': 1e-6}
-    u0 = model.diagnostic_solve(u0=u0, h=h0, s=s0, A=A, C=C, **opts)
+    opts = {'dirichlet_ids': [1], 'side_wall_ids': [3, 4], 'tolerance': 1e-6}
+    solver = icepack.solvers.FlowSolver(model, **opts)
+    u0 = solver.diagnostic_solve(u=u0, h=h0, s=s0, A=A, C=C)
 
 The ``tricontourf`` function in icepack will detect whether you’re
 trying to plot a 2D or a 3D field. Plotting 3D fields is expensive, so
@@ -174,9 +184,9 @@ demo.
     u = u0.copy(deepcopy=True)
     
     for k in range(num_timesteps + 1):
-        h = model.prognostic_solve(δt, h0=h, a=a, u=u, h_inflow=h0)
-        s = model.compute_surface(h=h, b=b)
-        u = model.diagnostic_solve(u0=u, h=h, s=s, A=A, C=C, **opts)
+        h = solver.prognostic_solve(δt, h=h, a=a, u=u, h_inflow=h0)
+        s = icepack.compute_surface(h=h, b=b)
+        u = solver.diagnostic_solve(u=u, h=h, s=s, A=A, C=C)
         print('.' if k * δt % 10 == 0 else '', end='')
 
 
@@ -238,9 +248,11 @@ previous demo assuming only plug flow.
     bs = np.array(b.at(xs, tolerance=1e-10))
     
     fig, axes = plt.subplots()
-    axes.plot(xs[:, 0], bs, color='black')
-    axes.plot(xs[:, 0], ss - hs, color='blue')
-    axes.plot(xs[:, 0], ss, color='blue')
+    axes.plot(xs[:, 0] / 1e3, bs, color='black')
+    axes.plot(xs[:, 0] / 1e3, ss - hs, color='blue')
+    axes.plot(xs[:, 0] / 1e3, ss, color='blue')
+    axes.set_xlabel('distance along centerline (km)')
+    axes.set_ylabel('elevation (m)')
     plt.show(fig)
 
 
@@ -252,6 +264,8 @@ previous demo assuming only plug flow.
 
     fig, axes = plt.subplots()
     axes.plot(xs[:, 0], hs)
+    axes.set_xlabel('distance along centerline (km)')
+    axes.set_ylabel('thickness (m)')
     plt.show(fig)
 
 
@@ -396,13 +410,20 @@ solution.
 
 .. code:: ipython3
 
-    V_1 = firedrake.VectorFunctionSpace(mesh, dim=2, family='CG', degree=2, vfamily='GL', vdegree=1)
+    V_1 = firedrake.VectorFunctionSpace(
+        mesh, dim=2, family='CG', degree=2,
+        vfamily='GL', vdegree=1
+    )
     u_1 = firedrake.interpolate(u, V_1)
     
-    V_4 = firedrake.VectorFunctionSpace(mesh, dim=2, family='CG', degree=2, vfamily='GL', vdegree=4)
+    V_4 = firedrake.VectorFunctionSpace(
+        mesh, dim=2, family='CG', degree=2,
+        vfamily='GL', vdegree=4
+    )
     u_4 = firedrake.interpolate(u, V_4)
     
-    u_4 = model.diagnostic_solve(u0=u_4, h=h, s=s, A=A, C=C, **opts)
+    solver4 = icepack.solvers.FlowSolver(model, **opts)
+    u_4 = solver4.diagnostic_solve(u=u_4, h=h, s=s, A=A, C=C)
 
 To see how much of a change we get with the extra vertical modes, we’ll
 calculate the relative error in the 2-norm.
@@ -415,7 +436,7 @@ calculate the relative error in the 2-norm.
 
 .. parsed-literal::
 
-    0.030801214737320233
+    0.030796478999795655
 
 
 A mismatch of only 3% is not bad at all! However, if we used a synthetic

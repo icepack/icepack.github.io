@@ -205,6 +205,18 @@ horizontal gradients of 3D fields, lifting 2D fields into 3D, etc.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="icepack.utilities.compute_surface">
+<code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.compute_surface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ice surface elevation consistent with a given
+thickness and bathymetry</p>
+<p>If the bathymetry beneath a tidewater glacier is too low, the ice
+will go afloat. The surface elevation of a floating ice shelf is</p>
+<div class="math notranslate nohighlight">
+\[s = (1 - \rho_I / \rho_W)h,\]</div>
+<p>provided everything is in hydrostatic balance.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="icepack.utilities.depth_average">
 <code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">depth_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q3d</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">Constant(FiniteElement('Real', None, 0), 0)</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#depth_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.depth_average" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the weighted depth average of a function on an extruded mesh</p>
