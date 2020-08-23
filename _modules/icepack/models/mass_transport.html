@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> icepack
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -215,10 +218,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimension must be 2 or 3!&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
-        <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h_inflow&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulation&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness_inflow&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;h_inflow&#39;</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">h_inflow</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -282,7 +284,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the FlowSolver class, &#39;</span>
                       <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                      <span class="ne">FutureWarning</span><span class="p">)</span>
 
         <span class="n">grad</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span>
 
@@ -341,7 +343,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the FlowSolver class, &#39;</span>
                       <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                      <span class="ne">FutureWarning</span><span class="p">)</span>
 
         <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">div</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span>
 
@@ -380,11 +382,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -395,7 +405,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

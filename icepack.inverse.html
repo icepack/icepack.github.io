@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.meshing module" href="icepack.meshing.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -133,6 +135,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -171,7 +174,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">icepack</a> &raquo;</li>
         
@@ -475,10 +478,24 @@ the parameters</p>
 
 <dl class="py method">
 <dt id="icepack.inverse.InverseSolver.solve">
-<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atol</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">rtol</span><span class="o">=</span><span class="default_value">1e-06</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atol</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">rtol</span><span class="o">=</span><span class="default_value">1e-06</span></em>, <em class="sig-param"><span class="n">etol</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="o">=</span><span class="default_value">200</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/inverse.html#InverseSolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.inverse.InverseSolver.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search for a new value of the parameters, stopping once either
 the objective functional gets below a threshold value or stops
 improving.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atol</strong> (<em>float</em>) – Absolute stopping tolerance; stop iterating when the objective
+drops below this value</p></li>
+<li><p><strong>rtol</strong> (<em>float</em>) – Relative stopping tolerance; stop iterating when the relative
+decrease in the objective drops below this value</p></li>
+<li><p><strong>etol</strong> (<em>float</em>) – Expectation stopping tolerance; stop iterating when the relative
+expected decrease in the objective from the Newton decrement drops
+below this value</p></li>
+<li><p><strong>max_iterations</strong> (<em>int</em>) – Maximum number of iterations to take</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -533,11 +550,19 @@ parameters so that we can calculate derivatives</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -548,7 +573,6 @@ parameters so that we can calculate derivatives</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

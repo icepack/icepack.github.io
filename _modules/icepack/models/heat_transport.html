@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> icepack
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -183,12 +186,13 @@
 <span class="c1"># The full text of the license can be found in the file LICENSE in the</span>
 <span class="c1"># icepack source directory or at &lt;http://www.gnu.org/licenses/&gt;.</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">ds_b</span><span class="p">,</span> <span class="n">ds_t</span><span class="p">,</span> <span class="n">ds_v</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">thermal_diffusivity</span> <span class="k">as</span> <span class="n">α</span><span class="p">,</span>
                                <span class="n">heat_capacity</span> <span class="k">as</span> <span class="n">c</span><span class="p">,</span> <span class="n">latent_heat</span> <span class="k">as</span> <span class="n">L</span><span class="p">,</span>
                                <span class="n">melting_temperature</span> <span class="k">as</span> <span class="n">Tm</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">facet_normal_2</span><span class="p">,</span> <span class="n">grad_2</span>
+<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">facet_normal_2</span><span class="p">,</span> <span class="n">grad_2</span><span class="p">,</span> <span class="n">get_kwargs_alt</span>
 
 <div class="viewcode-block" id="HeatTransport3D"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D">[docs]</a><span class="k">class</span> <span class="nc">HeatTransport3D</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for modeling 3D heat transport</span>
@@ -211,12 +215,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_exchange_coefficient</span> <span class="o">=</span> <span class="n">surface_exchange_coefficient</span>
 
 <div class="viewcode-block" id="HeatTransport3D.advective_flux"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.advective_flux">[docs]</a>    <span class="k">def</span> <span class="nf">advective_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
-        <span class="n">E_inflow</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E_inflow&#39;</span><span class="p">]</span>
-        <span class="n">E_surface</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E_surface&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;vertical_velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;energy_inflow&#39;</span><span class="p">,</span> <span class="s1">&#39;energy_surface&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;E_inflow&#39;</span><span class="p">,</span> <span class="s1">&#39;E_surface&#39;</span><span class="p">)</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">E_inflow</span><span class="p">,</span> <span class="n">E_surface</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -244,9 +246,9 @@
         <span class="k">return</span> <span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_outflow</span> <span class="o">+</span> <span class="n">flux_inflow</span></div>
 
 <div class="viewcode-block" id="HeatTransport3D.diffusive_flux"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.diffusive_flux">[docs]</a>    <span class="k">def</span> <span class="nf">diffusive_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
-        <span class="n">E_surface</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E_surface&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="s1">&#39;energy_surface&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;E_surface&#39;</span><span class="p">)</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">E_surface</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -258,10 +260,9 @@
         <span class="k">return</span> <span class="n">cell_flux</span> <span class="o">+</span> <span class="n">surface_flux</span></div>
 
 <div class="viewcode-block" id="HeatTransport3D.sources"><a class="viewcode-back" href="../../../icepack.models.heat_transport.html#icepack.models.heat_transport.HeatTransport3D.sources">[docs]</a>    <span class="k">def</span> <span class="nf">sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
-        <span class="n">q_bed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q_bed&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="s1">&#39;heat&#39;</span><span class="p">,</span> <span class="s1">&#39;heat_bed&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;q_bed&#39;</span><span class="p">)</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_bed</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -325,7 +326,7 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the energy density forward by one timestep&quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the HeatTransportSolver &#39;</span>
                       <span class="s1">&#39;class, this method will be removed in future versions.&#39;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                      <span class="ne">FutureWarning</span><span class="p">)</span>
 
         <span class="n">E_inflow</span> <span class="o">=</span> <span class="n">E_inflow</span> <span class="k">if</span> <span class="n">E_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">E0</span>
         <span class="n">E_surface</span> <span class="o">=</span> <span class="n">E_surface</span> <span class="k">if</span> <span class="n">E_surface</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">E0</span>
@@ -361,11 +362,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -376,7 +385,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

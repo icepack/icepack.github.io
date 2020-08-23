@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.models.mass_transport module" href="icepack.models.mass_transport.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -126,6 +128,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -164,7 +167,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">icepack</a> &raquo;</li>
         
@@ -209,7 +212,7 @@ and surface elevation of a grounded, fast-flowing ice stream.</p>
 </div>
 <dl class="py method">
 <dt id="icepack.models.ice_stream.IceStream.action">
-<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.action" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">action</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the action functional that gives the ice stream
 diagnostic model as the Euler-Lagrange equations</p>
 </dd></dl>
@@ -259,7 +262,7 @@ that were set when this model object was initialized</p>
 
 <dl class="py method">
 <dt id="icepack.models.ice_stream.IceStream.quadrature_degree">
-<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.quadrature_degree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quadrature_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.quadrature_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.quadrature_degree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadrature degree necessary to integrate the action
 functional accurately</p>
 <p>Firedrake uses a very conservative algorithm for estimating the
@@ -270,7 +273,7 @@ reduce the number of quadrature points while preserving accuracy.</p>
 
 <dl class="py method">
 <dt id="icepack.models.ice_stream.IceStream.scale">
-<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#IceStream.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.IceStream.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the positive, convex part of the action functional</p>
 <p>The positive part of the action functional is used as a dimensional
 scale to determine when to terminate an optimization algorithm.</p>
@@ -280,7 +283,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 <dl class="py function">
 <dt id="icepack.models.ice_stream.gravity">
-<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#gravity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the gravitational part of the ice stream action functional</p>
 <p>The gravitational part of the ice stream action functional is</p>
 <div class="math notranslate nohighlight">
@@ -298,7 +301,7 @@ scale to determine when to terminate an optimization algorithm.</p>
 
 <dl class="py function">
 <dt id="icepack.models.ice_stream.terminus">
-<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.ice_stream.</code><code class="sig-name descname">terminus</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/ice_stream.html#terminus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.ice_stream.terminus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the terminal stress part of the ice stream action functional</p>
 <p>The power exerted due to stress at the ice calving terminus <span class="math notranslate nohighlight">\(\Gamma\)</span>
 is</p>
@@ -310,11 +313,9 @@ level is at <span class="math notranslate nohighlight">\(z = 0\)</span> for purp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>u</strong> (<em>firedrake.Function</em>) – ice velocity</p></li>
-<li><p><strong>h</strong> (<em>firedrake.Function</em>) – ice thickness</p></li>
-<li><p><strong>s</strong> (<em>firedrake.Function</em>) – ice surface elevation</p></li>
-<li><p><strong>ice_front_ids</strong> (<em>list of int</em>) – numeric IDs of the parts of the boundary corresponding to the
-calving front</p></li>
+<li><p><strong>velocity</strong> (<em>firedrake.Function</em>) – </p></li>
+<li><p><strong>thickness</strong> (<em>firedrake.Function</em>) – </p></li>
+<li><p><strong>surface</strong> (<em>firedrake.Function</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -342,11 +343,19 @@ calving front</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -357,7 +366,6 @@ calving front</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

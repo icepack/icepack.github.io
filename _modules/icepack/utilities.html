@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> icepack
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -186,11 +189,38 @@
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Miscellaneous utilities for depth-averaging 3D fields, computing</span>
 <span class="sd">horizontal gradients of 3D fields, lifting 2D fields into 3D, etc.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">det</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span>
+
+
+<span class="n">default_solver_parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pc_factor_mat_solver_type&#39;</span><span class="p">:</span> <span class="s1">&#39;mumps&#39;</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_kwargs_alt"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.get_kwargs_alt">[docs]</a><span class="k">def</span> <span class="nf">get_kwargs_alt</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get value from dictionary by key or by an alternate, deprecated key</span>
+
+<span class="sd">    This helper function is to aid in a refactoring of icepack where shorter</span>
+<span class="sd">    keyword arguments were replaced by longer names, for example `velocity`</span>
+<span class="sd">    instead of `u`, `thickness` instead of `h`, etc. For backwards</span>
+<span class="sd">    compatibility, it should be possible to use either the new or old keyword</span>
+<span class="sd">    argument names, but a warning should be thrown on using the old name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">dictionary</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Abbreviated names </span><span class="si">{</span><span class="n">keys_alt</span><span class="si">}</span><span class="s2"> have been deprecated, use &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;full names </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">alt_key</span><span class="p">))</span>
+                  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">alt_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)))</span></div>
+
 
 <div class="viewcode-block" id="facet_normal_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.facet_normal_2">[docs]</a><span class="k">def</span> <span class="nf">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal component of the unit outward normal vector</span>
@@ -227,7 +257,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="compute_surface"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.compute_surface">[docs]</a><span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_surface"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.compute_surface">[docs]</a><span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the ice surface elevation consistent with a given</span>
 <span class="sd">    thickness and bathymetry</span>
 
@@ -239,6 +269,10 @@
 
 <span class="sd">    provided everything is in hydrostatic balance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Remove the &#39;h&#39; and &#39;b&#39; arguments once these are deprecated.</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bed&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">))</span>
+
     <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_function_space</span><span class="p">()</span>
     <span class="n">s_expr</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s_expr</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span></div>
@@ -336,11 +370,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -351,7 +393,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,23 +1,23 @@
 .. code:: ipython3
 
-    %matplotlib inline
+    import tqdm
     import matplotlib.pyplot as plt
     import numpy as np
     import rasterio
     import geojson
     import firedrake
-    import icepack, icepack.plot, icepack.models, icepack.solvers
+    import icepack, icepack.plot
 
 Larsen Ice Shelf
 ================
 
 This demo will involve using real data for the Larsen Ice Shelf in the
 Antarctic Peninsula. The use of real data will mostly change how we set
-up the simulation. The simulation itself – involving successive
-prognostic and diagnostic solves of the physics model – is virtually
+up the simulation. The simulation itself -- involving successive
+prognostic and diagnostic solves of the physics model -- is virtually
 identical to what we saw in the last demo.
 
-To access the data, you’ll need to have a login for
+To access the data, you'll need to have a login for
 `EarthData <https://urs.earthdata.nasa.gov/>`__, the web portal through
 which NASA makes remote sensing data available to the public. Most of
 the ice sheet remote sensing data produced by American research
@@ -38,35 +38,35 @@ The external data that we will use are:
    this satellite image in a `geographic information
    system <https://en.wikipedia.org/wiki/Geographic_information_system>`__.
 
-Rather than manually download these data sets from the websites they’re
-hosted on, we’ll call a few functions in the module ``icepack.datasets``
+Rather than manually download these data sets from the websites they're
+hosted on, we'll call a few functions in the module ``icepack.datasets``
 to fetch them for us. (Internally, these functions use a library called
 `pooch <https://github.com/fatiando/pooch>`__ which handles things like
-caching the data so it doesn’t get downloaded twice, unzipping archived
-files, and so forth.) One we have these data sets we’ll use the library
+caching the data so it doesn't get downloaded twice, unzipping archived
+files, and so forth.) One we have these data sets we'll use the library
 `rasterio <https://rasterio.readthedocs.io/en/stable/>`__ to read the
 gridded data and
 `GeoJSON <https://github.com/jazzband/python-geojson>`__ for the vector
 data. Pooch, rasterio, and GeoJSON will have been installed along with
-icepack, so you don’t need to do this yourself.
+icepack, so you don't need to do this yourself.
 
 Geometry
 ~~~~~~~~
 
-First, we’ll fetch a `GeoJSON <https://en.wikipedia.org/wiki/GeoJSON>`__
+First, we'll fetch a `GeoJSON <https://en.wikipedia.org/wiki/GeoJSON>`__
 file describing the outline of the domain. GeoJSON is a common file
 format for geospatial vector data. In the previous demo, we generated a
 .geo file describing the outline of the domain, and then called gmsh to
-create a triangulation of the interior. For this demo, we’ll use a
+create a triangulation of the interior. For this demo, we'll use a
 different helper script that will turn our .geojson file into the .geo
 format that gmsh expects.
 
-To retrieve the external data, we’ll use several functions in the module
+To retrieve the external data, we'll use several functions in the module
 ``icepack.datasets``. All of these functions start with ``fetch``. These
 functions retrieve the external data from the internet and put them in a
 predictable location so they can be found easily later. The files will
 only be downloaded the first time you fetch them. This caching
-functionality will come in handy because we’ll be using much of the same
+functionality will come in handy because we'll be using much of the same
 data in later demos.
 
 .. code:: ipython3
@@ -80,7 +80,7 @@ data in later demos.
     /home/daniel/.cache/icepack/larsen.geojson
 
 
-To read this file we’ll use the GeoJSON package. We won’t go into a
+To read this file we'll use the GeoJSON package. We won't go into a
 great amount of detail about analyzing geospatial vector data here, but
 a few basic features are worth going over.
 
@@ -89,9 +89,9 @@ a few basic features are worth going over.
     with open(outline_filename, 'r') as outline_file:
         outline = geojson.load(outline_file)
 
-From the user’s perspective, a GeoJSON object looks like a big nested
+From the user's perspective, a GeoJSON object looks like a big nested
 dictionary, and somewhere down the line are some arrays of coordinates.
-Here we’ll access the `coordinate reference system
+Here we'll access the `coordinate reference system
 (CRS) <https://en.wikipedia.org/wiki/Spatial_reference_system>`__ that
 the data are stored in. The most common reference systems are
 standardized and given numeric ID codes by a standards body, the
@@ -110,7 +110,7 @@ the South Pole.
 
 
 The data we care about in this GeoJSON object are the coordinates of all
-the features. Here we’ll compute a bounding box for the domain to
+the features. Here we'll compute a bounding box for the domain to
 illustrate how one iterates over all of the features. In this case,
 every feature of this object is a ``MultiLineString``.
 
@@ -156,13 +156,13 @@ right.
 
 But without some additional context you might not know what each segment
 of the boundary corresponds to on the real ice shelf. To make that
-context more apparent, we’ll show how to plot things on top of satellite
+context more apparent, we'll show how to plot things on top of satellite
 imagery next.
 
 Imagery
 ~~~~~~~
 
-We’ll use the `Mosaic of Antarctica
+We'll use the `Mosaic of Antarctica
 (MOA) <https://nsidc.org/data/moa>`__ as a background for all the plots
 we make in the following. This mosaic was created by compiling several
 hundred images from
@@ -183,9 +183,9 @@ from.
     image_filename = icepack.datasets.fetch_mosaic_of_antarctica()
     image_file = rasterio.open(image_filename, 'r')
 
-We’ve opened the file but we haven’t read any data yet. The image file
+We've opened the file but we haven't read any data yet. The image file
 covers all of Antarctica, so it would be wasteful to read the entire
-image. Instead, we’ll read a window that covers the bounding box we
+image. Instead, we'll read a window that covers the bounding box we
 calculated above.
 
 .. code:: ipython3
@@ -197,8 +197,8 @@ calculated above.
 
 Now we can pass the window to the ``read`` method of ``image_file``,
 which will return a numpy array of the image values over the area that
-we want. The ``indexes`` argument specifies that we’re reading only band
-1; since this is a grayscale image, that’s all we can read. For RGB or
+we want. The ``indexes`` argument specifies that we're reading only band
+1; since this is a grayscale image, that's all we can read. For RGB or
 other multi-spectral images, you might want to get more of the spectral
 bands.
 
@@ -208,7 +208,7 @@ bands.
 
 Now we can make a figure showing the image of the Larsen Ice Shelf
 together with the various segments of the domain boundary. To add in the
-spatial coordinates of all the image pixels, we’ve passed in the
+spatial coordinates of all the image pixels, we've passed in the
 bounding box of the window that we created earlier to ``imshow`` via the
 keyword ``extent``. The ``vmin`` and ``vmax`` arguments were tuned by
 trial and error to get a nice contrast level. You can make out where the
@@ -226,7 +226,7 @@ shelf.
         
         return fig, axes
 
-We’ll use this satellite image on every plot in this demo. Rather than
+We'll use this satellite image on every plot in this demo. Rather than
 add the same boilerplate code every time, the code above defines a
 wrapper function that creates figure and axes objects and adds the image
 to the plot.
@@ -250,14 +250,14 @@ to the plot.
 
 Checking that the domain boundary lines up well with features that are
 visible in the satellite image is a good sanity check. This way we know
-that the coordinate systems haven’t been mixed up, that you haven’t
+that the coordinate systems haven't been mixed up, that you haven't
 accidentally loaded up a mesh of a totally different ice shelf, and so
 forth.
 
 Meshing
 ~~~~~~~
 
-Next we’ll take this GeoJSON object and translate it into a geometry
+Next we'll take this GeoJSON object and translate it into a geometry
 object from pygmsh. The function to do that is contained in the module
 ``icepack.meshing``. We can then save this to a .geo file and run gmsh
 on the result, just like we did in the previous demo.
@@ -271,26 +271,26 @@ on the result, just like we did in the previous demo.
     with open('larsen.geo', 'w') as geo_file:
         geo_file.write(geometry.get_code())
 
-The call to gmsh is the same as in the previous demo, but we’ll make the
+The call to gmsh is the same as in the previous demo, but we'll make the
 output less verbose by passing the flag ``-v 2`` as well.
 
 .. code:: ipython3
 
     !gmsh -2 -format msh2 -v 2 -o larsen.msh larsen.geo
 
-Now that we’ve generated the mesh we can read it just like we did in the
+Now that we've generated the mesh we can read it just like we did in the
 previous demo.
 
 .. code:: ipython3
 
     mesh = firedrake.Mesh('larsen.msh')
 
-Finally we’ll make a plot of the mesh so that we can see all the
+Finally we'll make a plot of the mesh so that we can see all the
 boundary IDs. Boundary segments 1 and 3 correspond to the calving
 terminus and these are where Neumann boundary conditions should be
 applied. Segment 2 borders the Gipps Ice Rise, and the remaining
 segments are where ice is flowing in from. To make things a little
-clearer visually we’re also specifying a muuch smaller line weight for
+clearer visually we're also specifying a muuch smaller line weight for
 the interior edges compared to the boundary edges.
 
 .. code:: ipython3
@@ -359,14 +359,14 @@ fields stored in a NetCDF file.
         Data_citation: Morlighem M. et al., (2019), Deep glacial troughs and stabilizing ridges unveiled beneath the margins of the Antarctic ice sheet, Nature Geoscience (accepted)
         Notes: Data processed at the Department of Earth System Science, University of California, Irvine
         dimensions(sizes): x(13333), y(13333)
-        variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y,x), float32 firn(y,x), float32 surface(y,x), float32 thickness(y,x), float32 bed(y,x), int16 errbed(y,x), int8 source(y,x), int16 geoid(y,x)
+        variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y, x), float32 firn(y, x), float32 surface(y, x), float32 thickness(y, x), float32 bed(y, x), int16 errbed(y, x), int8 source(y, x), int16 geoid(y, x)
         groups: 
 
 
 From this information we can see that the name of the field we want is
 ``thickness``. We can use rasterio to read NetCDF files, but we have to
 add in a bit of extra magic so that it knows which field to extract from
-the file. To specify which field we’re reading, we can prepend
+the file. To specify which field we're reading, we can prepend
 ``netcdf:`` to the beginning of the filename and append ``:FIELD_NAME``
 to the string we pass to ``rasterio.open``.
 
@@ -396,14 +396,14 @@ Modeling
 
 Having done all the leg work to make a mesh and get a good set of input
 data, the modeling itself should be fairly familiar from the last step.
-We’ll assume that the ice temperature is a uniform -13C.
+We'll assume that the ice temperature is a uniform -13C.
 
 One thing is substantially different from previous examples. Before, we
 called the function ``firedrake.SpatialCoordinate`` to get some symbolic
 handles ``x, y`` for the mesh coordinates, and we created symbolic
 expressions to define the input data to our problem analytically. Now
-that we’re working with real glaciers, we’re reading in all the
-observational data using rasterio, but Firedrake doesn’t know how to
+that we're working with real glaciers, we're reading in all the
+observational data using rasterio, but Firedrake doesn't know how to
 interpolate a rasterio dataset. The function ``icepack.interpolate``
 works as a layer on top of the firedrake interpolate function and knows
 what to do with gridded data sets.
@@ -428,7 +428,7 @@ what to do with gridded data sets.
 .. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_45_0.png
 
 
-We’ll set up the model in the same way as the synthetic ice shelf demo,
+We'll set up the model in the same way as the synthetic ice shelf demo,
 but there are more boundary segments for which we need to apply
 Dirichlet conditions.
 
@@ -440,13 +440,17 @@ Dirichlet conditions.
     opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tolerance': 1e-6}
     solver = icepack.solvers.FlowSolver(model, **opts)
 
-Next, we’ll try to solve the shallow shelf equations to obtain the
+Next, we'll try to solve the shallow shelf equations to obtain the
 initial ice velocity.
 
 .. code:: ipython3
 
     try:
-        u = solver.diagnostic_solve(u=u0, h=h0, A=A)
+        u = solver.diagnostic_solve(
+            velocity=u0,
+            thickness=h0,
+            fluidity=A
+        )
     except:
         print('Oh no, nonlinear solver did not converge!')
 
@@ -456,7 +460,7 @@ initial ice velocity.
     Oh no, nonlinear solver did not converge!
 
 
-And now we’ve got our first taste of how difficult working with real
+And now we've got our first taste of how difficult working with real
 data can be! Why did the nonlinear solver fail to converge? The ice
 thickness map from BedMachine is fine enough to resolve pretty
 small-scale topography, even down to the depth of rifts in the ice
@@ -466,28 +470,25 @@ unphysically large driving stress, which is shown in the plot below.
 
 .. code:: ipython3
 
-    from icepack.constants import ice_density as ρ_I, water_density as ρ_W, gravity as g
+    from icepack.constants import (
+        ice_density as ρ_I,
+        water_density as ρ_W,
+        gravity as g
+    )
     from firedrake import grad
     τ_d = firedrake.interpolate(-1e3 * ρ_I * g * (1 - ρ_I / ρ_W) * grad(h0**2), V)
 
 .. code:: ipython3
 
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(τ_d, np.linspace(0., 100., 51),
-                                        extend='max', axes=axes)
+    levels = np.linspace(0., 100., 51)
+    contours = icepack.plot.tricontourf(τ_d, levels, extend='max', axes=axes)
     fig.colorbar(contours, label='kPa')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.colorbar.Colorbar at 0x7f7eee3bb690>
-
-
-
-
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_52_1.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_52_0.png
 
 
 In many regions the driving stress exceeds 100 kilopascals, which would
@@ -519,8 +520,8 @@ for a thickness at which the derivative of :math:`J` is zero.
     firedrake.solve(F == 0, h)
 
 The relative difference between the raw and smoothed thickness is around
-3.5%. That’s not a huge relative error; the corrections for air or water
-in the firn column are comparable.
+3%. That's not a huge relative error; the corrections for tides or for
+air or water in the firn column are comparable.
 
 .. code:: ipython3
 
@@ -529,7 +530,7 @@ in the firn column are comparable.
 
 .. parsed-literal::
 
-    0.03386012075948283
+    0.031702306997219654
 
 
 Finally, the driving stress of the filtered ice thickness tops out
@@ -539,21 +540,14 @@ around 20 kPa, which is much more reasonable.
 
     τ_d = firedrake.interpolate(-1e3 * ρ_I * g * (1 - ρ_I / ρ_W) * grad(h**2), V)
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(τ_d, np.linspace(0., 20., 41),
-                                        extend='max', axes=axes)
+    levels = np.linspace(0., 20., 41)
+    contours = icepack.plot.tricontourf(τ_d, levels, extend='max', axes=axes)
     fig.colorbar(contours, label='kPa')
+    plt.show(fig)
 
 
 
-
-.. parsed-literal::
-
-    <matplotlib.colorbar.Colorbar at 0x7f7eee3a97d0>
-
-
-
-
-.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_58_1.png
+.. image:: icepack.demo.02-larsen-ice-shelf_files/icepack.demo.02-larsen-ice-shelf_58_0.png
 
 
 With this regularized input data the nonlinear solver converges. In
@@ -564,10 +558,14 @@ create such large driving stresses as to no longer be reasonable.
 
 .. code:: ipython3
 
-    u = solver.diagnostic_solve(u=u0, h=h, A=A)
+    u = solver.diagnostic_solve(
+        velocity=u0, 
+        thickness=h,
+        fluidity=A
+    )
 
 The computed velocity is shown below; the result looks pretty reasonable
-if we’re going by the speeds.
+if we're going by the speeds.
 
 .. code:: ipython3
 
@@ -592,11 +590,11 @@ even with a spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.17994448143477162
+    0.18215698687234774
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
-+30 and -30 cm/yr respectively, so we can take the total to be 0. Let’s
++30 and -30 cm/yr respectively, so we can take the total to be 0. Let's
 simulate the evolution of the ice shelf for the next 10 years. The code
 for this loop should be familiar from the previous example.
 
@@ -608,11 +606,28 @@ for this loop should be familiar from the previous example.
     final_time = 10.
     num_steps = 40
     dt = final_time / num_steps
-    for step in range(num_steps + 1):
-        h = solver.prognostic_solve(dt, h=h, a=a, u=u, h_inflow=h_init)
-        u = solver.diagnostic_solve(u=u, h=h, A=A)
+    for step in tqdm.trange(num_steps):
+        h = solver.prognostic_solve(
+            dt,
+            thickness=h,
+            velocity=u,
+            accumulation=a,
+            thickness_inflow=h_init
+        )
+        
+        u = solver.diagnostic_solve(
+            velocity=u, 
+            thickness=h,
+            fluidity=A
+        )
 
-In the plot below we’re using the ``alpha`` keyword argument to the
+
+.. parsed-literal::
+
+    100%|██████████| 40/40 [01:06<00:00,  1.67s/it]
+
+
+In the plot below we're using the ``alpha`` keyword argument to the
 contouring function. This makes the thickness contours about half-way
 transparent so we can see the satellite image underneath.
 
@@ -639,8 +654,10 @@ that makes the 0-contour really obvious.
     δh.assign(h - h_init)
     
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(δh, axes=axes, cmap='RdBu', alpha=0.25,
-                                        levels=np.linspace(-10, +10, 11), extend='both')
+    levels = np.linspace(-10, +10, 11)
+    contours = icepack.plot.tricontourf(
+        δh, levels, axes=axes, cmap='RdBu', alpha=0.25, extend='both'
+    )
     fig.colorbar(contours, label='meters')
     plt.show(fig)
 
@@ -652,7 +669,7 @@ that makes the 0-contour really obvious.
 The greatest mass losses occurred nearest to the calving terminus. The
 pattern in mass change near the rifts on the right edge of the domain is
 more from advecting those oscillations downstream. From the overall
-pattern, it’s clear that the ice shelf is losing mass. To see exactly
+pattern, it's clear that the ice shelf is losing mass. To see exactly
 how much, we can integrate the total thickness change and divide by the
 area of the shelf.
 
@@ -664,10 +681,10 @@ area of the shelf.
 
 .. parsed-literal::
 
-    -3.9019400147892576
+    -3.7907812165828743
 
 
-Seeing as the simulation ran for 10 years, this isn’t a wildly
+Seeing as the simulation ran for 10 years, this isn't a wildly
 unrealistic number. Instead of guessing the net accumulation rate, we
 could improve the fidelity of our simulation by forcing it with the
 output of a climate model.
@@ -691,5 +708,5 @@ might also wash out some real features like the many rifts in the ice.
 
 In order to run the simulation, we had to come up with a guess for the
 ice rheology. The simple choice we made is quite far from the real value
-and in a subsequent demo we’ll show how to estimate it from
+and in a subsequent demo we'll show how to estimate it from
 observational data.

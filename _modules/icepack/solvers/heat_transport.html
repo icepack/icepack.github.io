@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> icepack
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -186,6 +189,10 @@
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">dx</span><span class="p">,</span> <span class="n">Constant</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utilities</span>
+<span class="kn">from</span> <span class="nn">..utilities</span> <span class="kn">import</span> <span class="n">default_solver_parameters</span>
+
+<span class="c1"># TODO: Remove fetching &#39;E&#39; from fields dictionary once this naming scheme is</span>
+<span class="c1"># fully deprecated</span>
 
 <div class="viewcode-block" id="HeatTransportSolver"><a class="viewcode-back" href="../../../icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver">[docs]</a><span class="k">class</span> <span class="nc">HeatTransportSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
@@ -215,8 +222,8 @@
         <span class="n">dflux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">diffusive_flux</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
         <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sources</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
         <span class="n">dE_dt</span> <span class="o">=</span> <span class="n">sources</span> <span class="o">-</span> <span class="n">aflux</span> <span class="o">-</span> <span class="n">dflux</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
         <span class="n">E_0</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
         <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">E_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dE_dt</span>
@@ -227,9 +234,8 @@
             <span class="n">F</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">fc_params</span>
         <span class="p">)</span>
 
-        <span class="n">solver_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;lu&#39;</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalSolver</span><span class="p">(</span>
-            <span class="n">problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver_parameters</span>
+            <span class="n">problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">default_solver_parameters</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_energy_old</span> <span class="o">=</span> <span class="n">E_0</span>
@@ -243,7 +249,7 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
 
-        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_energy_old</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -260,11 +266,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -275,7 +289,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

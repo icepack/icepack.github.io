@@ -6,23 +6,23 @@
     import rasterio
     import geojson
     import firedrake
-    import icepack, icepack.plot, icepack.models, icepack.solvers
+    import icepack, icepack.plot
 
 Inverse problems
 ================
 
-In this demo, we’ll revisit the Larsen Ice Shelf. This time, we’re going
-to estimate the fluidity coefficient :math:`A` in Glen’s flow law
+In this demo, we'll revisit the Larsen Ice Shelf. This time, we're going
+to estimate the fluidity coefficient :math:`A` in Glen's flow law
 
 .. math:: \dot\varepsilon = A\tau^3
 
-from observational data. In the previous demos, we’ve come up with some
+from observational data. In the previous demos, we've come up with some
 value of the fluidity coefficient and computed a velocity field by
 solving an elliptic partial differential equation. The fluidity
 coefficient is roughly a known function of the ice temperature, together
 with some fudge factors for crystal fabric or large-scale damage, so we
 know an approximate range of values that it could take. Nonetheless, we
-don’t have large-scale measurements of the fluidity coefficient from
+don't have large-scale measurements of the fluidity coefficient from
 remote sensing like we do for ice velocity and thickness.
 
 Instead, we can try to come up with a value of :math:`A` that gives a
@@ -37,13 +37,13 @@ where :math:`\sigma` are the standard deviations of the measurements.
 
 One constraint is that the fluidity field has to be positive. Inequality
 constraints can require substantially more sophisticated numerical
-methods. To avoid this problem, we’ll cheat our way out by
+methods. To avoid this problem, we'll cheat our way out by
 reparameterizing :math:`A` in terms of a new variable :math:`\theta`:
 
 .. math:: A = A_0e^\theta.
 
 No matter the value of :math:`\theta`, :math:`A` is always positive. To
-make this change, we’ll give the ``IceShelf`` object our own custom-made
+make this change, we'll give the ``IceShelf`` object our own custom-made
 function for calculating the viscous part of the action functional, just
 like we did for the friction in the last demo.
 
@@ -137,7 +137,7 @@ Shelf.
 .. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_7_0.png
 
 
-Just like in the 2nd demo, we’ll apply the smoothing filter to the
+Just like in the 2nd demo, we'll apply the smoothing filter to the
 thickness, which is necessary to get a reasonable driving stress.
 
 .. code:: ipython3
@@ -172,7 +172,7 @@ us how good a fit to the data we should expect.
     σx = icepack.interpolate(stdx, Q)
     σy = icepack.interpolate(stdy, Q)
 
-Here we’ll plot the velocity errors. You can see from the stripey
+Here we'll plot the velocity errors. You can see from the stripey
 pattern that they depend on the particular swath from the observational
 platform.
 
@@ -190,7 +190,7 @@ platform.
 
 
 We need to make an initial guess for the fluidity parameter. In this
-case, we’ll use the same value as in the second demo – a constant
+case, we'll use the same value as in the second demo -- a constant
 fluidity assuming a temperature of -13C.
 
 .. code:: ipython3
@@ -198,16 +198,27 @@ fluidity assuming a temperature of -13C.
     T0 = firedrake.Constant(260)
     A0 = icepack.rate_factor(T0)
     from icepack.constants import glen_flow_law as n
-    def viscosity(u, h, θ):
+    def viscosity(**kwargs):
+        u = kwargs['velocity']
+        h = kwargs['thickness']
+        θ = kwargs['log_fluidity']
+        
         A = A0 * firedrake.exp(θ)
-        return icepack.models.viscosity.viscosity_depth_averaged(u, h, A)
+        return icepack.models.viscosity.viscosity_depth_averaged(
+            velocity=u, thickness=h, fluidity=A
+        )
     
     θ = firedrake.Function(Q)
     
     model = icepack.models.IceShelf(viscosity=viscosity)
-    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9], 'tolerance': 1e-6}
+    opts = {'dirichlet_ids': [2, 4, 5, 6, 7, 8, 9]}
     solver = icepack.solvers.FlowSolver(model, **opts)
-    u = solver.diagnostic_solve(u=u_obs, h=h, θ=θ)
+    
+    u = solver.diagnostic_solve(
+        velocity=u_obs, 
+        thickness=h,
+        log_fluidity=θ
+    )
 
 .. code:: ipython3
 
@@ -233,7 +244,7 @@ There are four parts that go into an inverse problem:
 
 We already have the physics model and some initial guesses. The next
 step is to write a pair of Python functions that will create the
-model-data misfit functional and the regularization functional. We’ll
+model-data misfit functional and the regularization functional. We'll
 pass these functions to the inverse problem when we create it.
 
 .. code:: ipython3
@@ -249,8 +260,8 @@ pass these functions to the inverse problem when we create it.
     def regularization(θ):
         return 0.5 * (L / Θ)**2 * inner(grad(θ), grad(θ)) * dx
 
-Now we create the ``InverseProblem`` object. We’ve already mentioned
-several objects that the inverse problem needs – the model, the initial
+Now we create the ``InverseProblem`` object. We've already mentioned
+several objects that the inverse problem needs -- the model, the initial
 guess, some functionals, etc. Additionally, it needs to know the name of
 the observed field and the parameter (the ``state_name`` and
 ``parameter_name``) arguments, since these values are passed to the
@@ -258,11 +269,11 @@ forward solver as keyword arguments.
 
 The inverse solver will take this information and create a flow solver
 under the hood for us, but to do so it might need more information than
-we’ve already supplied. First, the keyword argument ``solver_kwargs``
+we've already supplied. First, the keyword argument ``solver_kwargs``
 takes a dictionary of additional keyword arguments to pass when
 initializing the flow solver, such as Dirichlet IDs or tolerances.
 Second, any additional arguments to the diagnostic solve procedure are
-passed in the dictionary ``diagnostic_solver_args``. In our case, that
+passed in the dictionary ``diagnostic_solve_kwargs``. In our case, that
 consists of just the thickness field.
 
 .. code:: ipython3
@@ -271,38 +282,65 @@ consists of just the thickness field.
         model=model,
         objective=objective,
         regularization=regularization,
-        state_name='u',
+        state_name='velocity',
         state=u,
-        parameter_name='θ',
+        parameter_name='log_fluidity',
         parameter=θ,
         solver_kwargs=opts,
-        diagnostic_solve_kwargs={'h': h}
+        diagnostic_solve_kwargs={'thickness': h}
     )
 
-Once we’ve created the problem, we then create a solver object that will
+Once we've created the problem, we then create a solver object that will
 iteratively search for a good value of the parameters. The inverse
 solver has lots of moving parts, all of which are wrapped in a class
-that inherits from ``icepack.inverse.InverseSolver``. In our case, we’ll
+that inherits from ``icepack.inverse.InverseSolver``. In our case, we'll
 be using the Gauss-Newton method, which is implemented in
 ``GaussNewtonSolver``. Using this class should save you from worrying
 about too many low-level details, but still provide a good amount of
 flexibility and transparency.
 
 As a convenience, the inverse solver can take in a function that it will
-call at the end of every iteration. For this demonstration, we’ll have
-it print out the values of the misfit and regularization functionals.
+call at the end of every iteration. For this demonstration, we'll have
+it print out the values of the misfit and regularization functionals and
+the expected decrease in the sum of those two functionals. The expected
+decrease in :math:`J` can be calculated as
+
+.. math:: \Delta = \langle dJ, q\rangle,
+
+where :math:`dJ` is the gradient of :math:`J` and :math:`q` is the
+search direction. The expected decrease should be negative on every step
+-- after all, we're trying to find a minimizer of :math:`J`. If the
+expected decrease becomes positive, that suggests that we've found a
+local minimum and no more improvement is possible. This is an important
+number to watch because it can tell you whether or not it's worthwhile
+to take more iterations of the solver.
+
+We've also passed some extra arguments to ``assemble`` to specify the
+quadrature rule for calculating the expected decrease. By default, the
+assembly routine will be very conservative and use a much more accurate
+quadrature rule than we really need. So this step isn't strictly
+necessary, it's just good practice.
+
+.. code:: ipython3
+
+    qdegree = model.quadrature_degree(velocity=u, thickness=h, log_fluidity=θ)
+    params = {'quadrature_degree': qdegree}
+    
+    area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
+    def callback(solver):
+        dJ = solver.gradient
+        q = solver.search_direction
+        dJ_dq = firedrake.action(dJ, q)
+        Δ = firedrake.assemble(dJ_dq, form_compiler_parameters=params) / area
+    
+        E = firedrake.assemble(solver.objective) / area
+        R = firedrake.assemble(solver.regularization) / area
+        print('{:g}, {:g}, {:g}'.format(E, R, Δ))
+
 You could also, say, make a plot of the state and parameter guess at
 every iteration to make a movie of how the algorithm progresses. In
 programming parlance, a function like this is referred to as a
 *callback*.
-
-.. code:: ipython3
-
-    area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
-    def callback(solver):
-        E = firedrake.assemble(solver.objective)
-        R = firedrake.assemble(solver.regularization)
-        print('{:g}, {:g}'.format(E/area, R/area))
 
 To create the solver object, we only need to give it a problem and
 optionally the callback function.
@@ -314,24 +352,24 @@ optionally the callback function.
 
 .. parsed-literal::
 
-    20.2803, 0
+    20.9827, 0, -38.5756
 
 
-As a general principle, it’s a good idea to separate out the
+As a general principle, it's a good idea to separate out the
 *specification* of a problem, in this case represented by the
 ``InverseProblem`` class, from the method used to solve the problem,
-represented by the ``GaussNewtonSolver`` class. We’ve already seen this
+represented by the ``GaussNewtonSolver`` class. We've already seen this
 pattern before in how flow models (like ``IceShelf``) are distinct from
 the objects that actually calculate the solutions (``FlowSolver``).
 
-Before setting the solver loose, let’s look at the initial search
+Before setting the solver loose, let's look at the initial search
 direction.
 
 .. code:: ipython3
 
     fig, axes = subplots()
-    contours = icepack.plot.tricontourf(solver.search_direction, 20, alpha=0.6,
-                                        cmap='RdBu', axes=axes)
+    ϕ = solver.search_direction
+    contours = icepack.plot.tricontourf(ϕ, 20, alpha=0.6, cmap='RdBu', axes=axes)
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -342,18 +380,24 @@ direction.
 
 The search direction is obtained by multiplying the inverse of the
 Gauss-Newton matrix :math:`H` by the gradient :math:`dJ` of the
-objective function. The Gauss-Newton matrix is dense, so we don’t
+objective function. The Gauss-Newton matrix is dense, so we don't
 actually build the matrix directly. Instead, the solver contains a
-procedure to multiply a vector by :math:`H`, which is all that’s
+procedure to multiply a vector by :math:`H`, which is all that's
 necessary for using iterative methods to solve linear systems. Computing
 the search direction like this is time-consuming, but results in far
-fewer iterations, so it’s a net win.
+fewer iterations, so it's a net win.
 
 The solve method takes in a relative convergence tolerance, an absolute
 tolerance, and a maximum number of iterations, and it returns the total
 number of iterations necessary to achieve the given tolerances. In our
-case, we’ll stop once the relative decrease in the objective function
-from one iteration to the next is less than 1/200.
+case, we'll stop once either (1) the relative decrease in the objective
+function from one iteration to the next is less than 1/200 or (2) the
+expected relative decrease in the objective is less than 1/1,000,000.
+The relevant tolerances for these are respectively ``rtol`` and
+``etol``. There's also an absolute stopping tolerance ``atol``, which we
+won't use this time. Absolute stopping tolerances are good for certain
+statistical problems where you know a priori how good of a fit to the
+data to expect.
 
 The algorithm takes a while to run. Now would be the time to put on a
 fresh pot of coffee.
@@ -362,6 +406,7 @@ fresh pot of coffee.
 
     iterations = solver.solve(
         rtol=5e-3,
+        etol=1e-6,
         atol=0.0,
         max_iterations=30
     )
@@ -369,23 +414,26 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.08165, 0.219766
-    1.08992, 0.393777
-    1.05208, 0.381392
-    1.03218, 0.394129
+    2.06175, 0.225384, -1.67512
+    1.06396, 0.399415, -0.0862985
+    1.02902, 0.385547, -0.013814
+    1.01072, 0.397155, -0.00249328
 
 
 The algorithm converges in just a few iterations because of how good a
-search direction we get from using the Gauss-Newton approximation. Other
-methods like gradient descent take many more iterations to reach the
-same agreement with the data.
+search direction we get from using the Gauss-Newton approximation. It's
+also worth observing how quickly the magnitude of the expected decrease
+in the objective functional gets reduced on every iteration -- usually
+by at least a factor of four every time. Other methods like gradient
+descent take many more iterations to reach the same agreement with the
+data.
 
 Analysis
 ~~~~~~~~
 
-Now that we’re done, we’ll want to do some post-processing and analysis
+Now that we're done, we'll want to do some post-processing and analysis
 on the fluidity parameter that we inferred. The inverse problem object
-stores the parameter we’re inferring and the observed field as the
+stores the parameter we're inferring and the observed field as the
 properties ``parameter`` and ``state`` respectively. The names are
 intentionally not specific to just ice shelves. For other problems, we
 might instead be inferring a friction coefficient rather than a
@@ -393,7 +441,7 @@ fluidity, or we might be observing the thickness instead of the
 velocity. You can see all the publicly visible properties by typing
 ``help(inverse_problem)``.
 
-First, let’s plot the parameter value and the fluidity.
+First, let's plot the parameter value and the fluidity.
 
 .. code:: ipython3
 
@@ -442,13 +490,14 @@ observed values. In this case, the result is a very low value of
 :math:`A`, but for other problems the bias can go in the other
 direction.
 
-To see how well the parameters fit the data, let’s look at the weighted
+To see how well the parameters fit the data, let's look at the weighted
 difference between the computed and observed velocities.
 
 .. code:: ipython3
 
+    u = solver.state
     fig, axes = subplots()
-    δu = firedrake.interpolate((solver.state - u_obs)**2/(2*σ**2), Q)
+    δu = firedrake.interpolate((u - u_obs)**2/(2*σ**2), Q)
     levels = np.linspace(0, 6, 13)
     contours = icepack.plot.tricontourf(
         δu, levels=levels, alpha=0.6, cmap='Reds', extend='max', axes=axes
@@ -465,7 +514,7 @@ The computed ice velocity is mostly similar to observations aside from a
 few blips. The most widespread departures from observations occur around
 the rifts that flow into the Gipps Ice Rise. We regularized the problem
 by looking only for smooth values of the fluidity parameter. As a
-consequence, we won’t be able to see sharp changes that might result
+consequence, we won't be able to see sharp changes that might result
 from features like crevasses or rifts. We might instead try to use the
 total variation functional
 
@@ -473,7 +522,7 @@ total variation functional
 
 if we were interested in features like this.
 
-Finally, let’s try and see how much the inferred parameter departed from
+Finally, let's try and see how much the inferred parameter departed from
 our naive initial guess.
 
 .. code:: ipython3
@@ -484,8 +533,8 @@ our naive initial guess.
 
 .. parsed-literal::
 
-    0.8529458286338006
-    1.0321831795695298
+    0.8518256089651484
+    1.010721938933106
 
 
 The objective function has been reduced by a factor of 10 through the
@@ -497,7 +546,7 @@ like picking a sensible constant value.
 Conclusion
 ~~~~~~~~~~
 
-In this demo, we’ve shown how to back out the fluidity of an ice shelf
+In this demo, we've shown how to back out the fluidity of an ice shelf
 from remote sensing observations. We could then use this value, together
 with a description of how the fluidity evolves, to initialize a
 prognostic model of the ice shelf. For example, we might assume that the
@@ -506,7 +555,7 @@ equations for these fields are fairly simple hyperbolic PDE for which we
 can write solvers using firedrake.
 
 The value of the fluidity that we obtained is not at all spatially
-homogeneous. Unless we were very clever, we probably couldn’t have come
+homogeneous. Unless we were very clever, we probably couldn't have come
 up with some way to parameterize it to get a reasonable guess.
 
 We would expect from statistical estimation theory that the value of the
@@ -516,22 +565,22 @@ which has mean 1, there are two components of the velocity vector, and
 we divide by 2 at the end.) The misfit we obtained once the algorithm
 has converged is very close to 1, which is a sign that the
 regularization parameter has been dialed in just right. However, we
-don’t always get so lucky. Sometimes you can’t fit the data as well as
-you expect from statistics, and there are a number of possible “failure
-modes”:
+don't always get so lucky. Sometimes you can't fit the data as well as
+you expect from statistics, and there are a number of possible "failure
+modes":
 
 1. The error estimates :math:`\sigma` could be wrong.
-2. We don’t have a good way to also account for thickness errors, which
+2. We don't have a good way to also account for thickness errors, which
    are substantial.
 3. We regularized the problem too much.
-4. The ice shelf becomes grounded on some pinning point and we didn’t
+4. The ice shelf becomes grounded on some pinning point and we didn't
    add basal drag.
 5. I implemented the numerical optimization algorithm incorrectly.
 
-Failure modes 1 and 2 happen because we don’t have the right statistical
+Failure modes 1 and 2 happen because we don't have the right statistical
 distribution for the errors, while failure mode 3 happens because we
-don’t have the right prior distribution. Mode 4 is a more insidious type
-of failure. In this case, the physics model doesn’t actually describe
+don't have the right prior distribution. Mode 4 is a more insidious type
+of failure. In this case, the physics model doesn't actually describe
 the true behavior of the system, and as a consequence is unable to
 reproduce the observations with any value of the inputs. Some wrong
 physics models may nonetheless be able to reproduce the observations,

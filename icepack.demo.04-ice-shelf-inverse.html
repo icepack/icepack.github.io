@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Ice streams, once more" href="icepack.demo.05-hybrid-ice-stream.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -121,6 +123,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -159,7 +162,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Inverse problems</li>
     
@@ -186,7 +189,7 @@
 <span class="kn">import</span> <span class="nn">rasterio</span>
 <span class="kn">import</span> <span class="nn">geojson</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span><span class="o">,</span> <span class="nn">icepack.solvers</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span>
 </pre></div>
 </div>
 <div class="section" id="inverse-problems">
@@ -345,16 +348,27 @@ fluidity assuming a temperature of -13C.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T0</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">260</span><span class="p">)</span>
 <span class="n">A0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">rate_factor</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span>
-<span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">viscosity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">]</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;log_fluidity&#39;</span><span class="p">]</span>
+
     <span class="n">A</span> <span class="o">=</span> <span class="n">A0</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">viscosity</span><span class="o">.</span><span class="n">viscosity_depth_averaged</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">viscosity</span><span class="o">.</span><span class="n">viscosity_depth_averaged</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span>
+    <span class="p">)</span>
 
 <span class="n">θ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceShelf</span><span class="p">(</span><span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">)</span>
-<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s1">&#39;tolerance&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">}</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]}</span>
 <span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">FlowSolver</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="n">θ</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+    <span class="n">velocity</span><span class="o">=</span><span class="n">u_obs</span><span class="p">,</span>
+    <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+    <span class="n">log_fluidity</span><span class="o">=</span><span class="n">θ</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
@@ -402,18 +416,18 @@ we’ve already supplied. First, the keyword argument <code class="docutils lite
 takes a dictionary of additional keyword arguments to pass when
 initializing the flow solver, such as Dirichlet IDs or tolerances.
 Second, any additional arguments to the diagnostic solve procedure are
-passed in the dictionary <code class="docutils literal notranslate"><span class="pre">diagnostic_solver_args</span></code>. In our case, that
+passed in the dictionary <code class="docutils literal notranslate"><span class="pre">diagnostic_solve_kwargs</span></code>. In our case, that
 consists of just the thickness field.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">InverseProblem</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
     <span class="n">objective</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span>
     <span class="n">regularization</span><span class="o">=</span><span class="n">regularization</span><span class="p">,</span>
-    <span class="n">state_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span>
+    <span class="n">state_name</span><span class="o">=</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
     <span class="n">state</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-    <span class="n">parameter_name</span><span class="o">=</span><span class="s1">&#39;θ&#39;</span><span class="p">,</span>
+    <span class="n">parameter_name</span><span class="o">=</span><span class="s1">&#39;log_fluidity&#39;</span><span class="p">,</span>
     <span class="n">parameter</span><span class="o">=</span><span class="n">θ</span><span class="p">,</span>
     <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">opts</span><span class="p">,</span>
-    <span class="n">diagnostic_solve_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">}</span>
+    <span class="n">diagnostic_solve_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;thickness&#39;</span><span class="p">:</span> <span class="n">h</span><span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -427,24 +441,48 @@ about too many low-level details, but still provide a good amount of
 flexibility and transparency.</p>
 <p>As a convenience, the inverse solver can take in a function that it will
 call at the end of every iteration. For this demonstration, we’ll have
-it print out the values of the misfit and regularization functionals.
-You could also, say, make a plot of the state and parameter guess at
+it print out the values of the misfit and regularization functionals and
+the expected decrease in the sum of those two functionals. The expected
+decrease in <span class="math notranslate nohighlight">\(J\)</span> can be calculated as</p>
+<div class="math notranslate nohighlight">
+\[\Delta = \langle dJ, q\rangle,\]</div>
+<p>where <span class="math notranslate nohighlight">\(dJ\)</span> is the gradient of <span class="math notranslate nohighlight">\(J\)</span> and <span class="math notranslate nohighlight">\(q\)</span> is the
+search direction. The expected decrease should be negative on every step
+– after all, we’re trying to find a minimizer of <span class="math notranslate nohighlight">\(J\)</span>. If the
+expected decrease becomes positive, that suggests that we’ve found a
+local minimum and no more improvement is possible. This is an important
+number to watch because it can tell you whether or not it’s worthwhile
+to take more iterations of the solver.</p>
+<p>We’ve also passed some extra arguments to <code class="docutils literal notranslate"><span class="pre">assemble</span></code> to specify the
+quadrature rule for calculating the expected decrease. By default, the
+assembly routine will be very conservative and use a much more accurate
+quadrature rule than we really need. So this step isn’t strictly
+necessary, it’s just good practice.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qdegree</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">log_fluidity</span><span class="o">=</span><span class="n">θ</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;quadrature_degree&#39;</span><span class="p">:</span> <span class="n">qdegree</span><span class="p">}</span>
+
+<span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
+    <span class="n">dJ</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">gradient</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">search_direction</span>
+    <span class="n">dJ_dq</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">dJ</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+    <span class="n">Δ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">dJ_dq</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
+
+    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Δ</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>You could also, say, make a plot of the state and parameter guess at
 every iteration to make a movie of how the algorithm progresses. In
 programming parlance, a function like this is referred to as a
 <em>callback</em>.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
-    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">area</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">area</span><span class="p">))</span>
-</pre></div>
-</div>
 <p>To create the solver object, we only need to give it a problem and
 optionally the callback function.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">inverse</span><span class="o">.</span><span class="n">GaussNewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">20.2803</span><span class="p">,</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">20.9827</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">38.5756</span>
 </pre></div>
 </div>
 <p>As a general principle, it’s a good idea to separate out the
@@ -456,8 +494,8 @@ the objects that actually calculate the solutions (<code class="docutils literal
 <p>Before setting the solver loose, let’s look at the initial search
 direction.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">search_direction</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-                                    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">ϕ</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">search_direction</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -474,27 +512,37 @@ fewer iterations, so it’s a net win.</p>
 <p>The solve method takes in a relative convergence tolerance, an absolute
 tolerance, and a maximum number of iterations, and it returns the total
 number of iterations necessary to achieve the given tolerances. In our
-case, we’ll stop once the relative decrease in the objective function
-from one iteration to the next is less than 1/200.</p>
+case, we’ll stop once either (1) the relative decrease in the objective
+function from one iteration to the next is less than 1/200 or (2) the
+expected relative decrease in the objective is less than 1/1,000,000.
+The relevant tolerances for these are respectively <code class="docutils literal notranslate"><span class="pre">rtol</span></code> and
+<code class="docutils literal notranslate"><span class="pre">etol</span></code>. There’s also an absolute stopping tolerance <code class="docutils literal notranslate"><span class="pre">atol</span></code>, which we
+won’t use this time. Absolute stopping tolerances are good for certain
+statistical problems where you know a priori how good of a fit to the
+data to expect.</p>
 <p>The algorithm takes a while to run. Now would be the time to put on a
 fresh pot of coffee.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iterations</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
     <span class="n">rtol</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span>
+    <span class="n">etol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
     <span class="n">atol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">max_iterations</span><span class="o">=</span><span class="mi">30</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.08165</span><span class="p">,</span> <span class="mf">0.219766</span>
-<span class="mf">1.08992</span><span class="p">,</span> <span class="mf">0.393777</span>
-<span class="mf">1.05208</span><span class="p">,</span> <span class="mf">0.381392</span>
-<span class="mf">1.03218</span><span class="p">,</span> <span class="mf">0.394129</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.06175</span><span class="p">,</span> <span class="mf">0.225384</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.67512</span>
+<span class="mf">1.06396</span><span class="p">,</span> <span class="mf">0.399415</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0862985</span>
+<span class="mf">1.02902</span><span class="p">,</span> <span class="mf">0.385547</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.013814</span>
+<span class="mf">1.01072</span><span class="p">,</span> <span class="mf">0.397155</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.00249328</span>
 </pre></div>
 </div>
 <p>The algorithm converges in just a few iterations because of how good a
-search direction we get from using the Gauss-Newton approximation. Other
-methods like gradient descent take many more iterations to reach the
-same agreement with the data.</p>
+search direction we get from using the Gauss-Newton approximation. It’s
+also worth observing how quickly the magnitude of the expected decrease
+in the objective functional gets reduced on every iteration – usually
+by at least a factor of four every time. Other methods like gradient
+descent take many more iterations to reach the same agreement with the
+data.</p>
 </div>
 <div class="section" id="analysis">
 <h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
@@ -545,8 +593,9 @@ observed values. In this case, the result is a very low value of
 direction.</p>
 <p>To see how well the parameters fit the data, let’s look at the weighted
 difference between the computed and observed velocities.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">state</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">σ</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">state</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
+<span class="n">δu</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">u</span> <span class="o">-</span> <span class="n">u_obs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">σ</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">Q</span><span class="p">)</span>
 <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
 <span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
     <span class="n">δu</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
@@ -572,8 +621,8 @@ our naive initial guess.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8529458286338006</span>
-<span class="mf">1.0321831795695298</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.8518256089651484</span>
+<span class="mf">1.010721938933106</span>
 </pre></div>
 </div>
 <p>The objective function has been reduced by a factor of 10 through the
@@ -649,11 +698,19 @@ be caught through testing on synthetic problems.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -664,7 +721,6 @@ be caught through testing on synthetic problems.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

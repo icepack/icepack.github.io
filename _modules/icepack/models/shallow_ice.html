@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> icepack
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -189,10 +192,10 @@
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">,</span>
                                <span class="n">glen_flow_law</span> <span class="k">as</span> <span class="n">n</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.models.mass_transport</span> <span class="kn">import</span> <span class="n">LaxWendroff</span><span class="p">,</span> <span class="n">Continuity</span>
-<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">add_kwarg_wrapper</span>
+<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">add_kwarg_wrapper</span><span class="p">,</span> <span class="n">get_kwargs_alt</span>
 
 
-<div class="viewcode-block" id="mass"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.mass">[docs]</a><span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="mass"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.mass">[docs]</a><span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the mass term for the shallow ice action functional</span>
 
 <span class="sd">    Mass fuction for the shallow ice action functional is</span>
@@ -209,10 +212,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    firedrake.Form</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">u</span><span class="p">))</span></div>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the gravity term for the shallow ice action functional</span>
 
 <span class="sd">    The gravity function for the shallow ice action functional is</span>
@@ -222,23 +226,23 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : firedrake.Function</span>
-<span class="sd">        ice velocity</span>
-<span class="sd">    h : firedrake.Function</span>
-<span class="sd">        ice thickness</span>
-<span class="sd">    s : firedrake.Function</span>
-<span class="sd">        ice surface elevation</span>
-<span class="sd">    A : firedrake.Function or firedrake.Constant</span>
-<span class="sd">        rate factor</span>
+<span class="sd">    velocity : firedrake.Function</span>
+<span class="sd">    thickness : firedrake.Function</span>
+<span class="sd">    surface : firedrake.Function</span>
+<span class="sd">    fluidity : firedrake.Function or firedrake.Constant</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    firedrake.Form</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="s1">&#39;fluidity&#39;</span><span class="p">)</span>
+    <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span><span class="p">)</span><span class="o">**</span><span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="penalty"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.penalty">[docs]</a><span class="k">def</span> <span class="nf">penalty</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="penalty"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.penalty">[docs]</a><span class="k">def</span> <span class="nf">penalty</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the penalty of the shallow ice action functional</span>
 
 <span class="sd">    The penalty for the shallow ice action functional is</span>
@@ -248,13 +252,13 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : firedrake.Function</span>
-<span class="sd">        ice velocity</span>
+<span class="sd">    velocity : firedrake.Function</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    firedrake.Form</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">u</span><span class="p">,</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,),</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,))</span>
     <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">CellDiameter</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">ufl_domain</span><span class="p">())</span>
     <span class="k">return</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">l</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
 
@@ -274,20 +278,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">penalty</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">continuity</span> <span class="o">=</span> <span class="n">continuity</span>
 
-<div class="viewcode-block" id="ShallowIce.action"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ShallowIce.action"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the action functional that gives the shallow ice</span>
 <span class="sd">        diagnostic model as the Euler-Lagrange equations</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        u : firedrake.Function</span>
-<span class="sd">            Ice velocity</span>
-<span class="sd">        h : firedrake.Function</span>
-<span class="sd">            Ice thickness</span>
-<span class="sd">        s : firedrake.Function</span>
-<span class="sd">            Ice surface elevation</span>
-<span class="sd">        A : firedrake.Function or firedrake.Constant</span>
-<span class="sd">            Rate factor</span>
+<span class="sd">        velocity : firedrake.Function</span>
+<span class="sd">        thickness : firedrake.Function</span>
+<span class="sd">        surface : firedrake.Function</span>
+<span class="sd">        fluidity : firedrake.Function or firedrake.Constant</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -300,22 +300,26 @@
 <span class="sd">            All other keyword arguments will be passed on to the</span>
 <span class="sd">            &#39;mass&#39;, &#39;gravity&#39; and &#39;penalty&#39; functionals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
-        <span class="n">gravity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gravity</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
-        <span class="n">penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">gravity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
         <span class="k">return</span> <span class="n">mass</span> <span class="o">+</span> <span class="n">gravity</span> <span class="o">+</span> <span class="n">penalty</span></div>
 
-<div class="viewcode-block" id="ShallowIce.scale"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ShallowIce.scale"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the positive, convex part of the action functional</span>
 
 <span class="sd">        The positive part of the action functional is used as a dimensional</span>
 <span class="sd">        scale to determine when to terminate an optimization algorithm.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span></div>
 
-<div class="viewcode-block" id="ShallowIce.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ShallowIce.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.shallow_ice.html#icepack.models.shallow_ice.ShallowIce.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
 <span class="sd">        functional accurately&quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">))</span>
+
         <span class="n">degree_u</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
         <span class="n">degree_h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
         <span class="n">degree_s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
@@ -351,7 +355,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the FlowSolver class, &#39;</span>
                       <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                      <span class="ne">FutureWarning</span><span class="p">)</span>
 
         <span class="n">u</span> <span class="o">=</span> <span class="n">u0</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -379,11 +383,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -394,7 +406,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

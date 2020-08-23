@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Synthetic ice stream" href="icepack.demo.03-synthetic-ice-stream.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -123,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Larsen Ice Shelf</li>
     
@@ -182,13 +185,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+  <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">rasterio</span>
 <span class="kn">import</span> <span class="nn">geojson</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span><span class="o">,</span> <span class="nn">icepack.models</span><span class="o">,</span> <span class="nn">icepack.solvers</span>
+<span class="kn">import</span> <span class="nn">icepack</span><span class="o">,</span> <span class="nn">icepack.plot</span>
 </pre></div>
 </div>
 <div class="section" id="larsen-ice-shelf">
@@ -476,7 +479,7 @@ root group (NETCDF4_CLASSIC data model, file format HDF5):
     Data_citation: Morlighem M. et al., (2019), Deep glacial troughs and stabilizing ridges unveiled beneath the margins of the Antarctic ice sheet, Nature Geoscience (accepted)
     Notes: Data processed at the Department of Earth System Science, University of California, Irvine
     dimensions(sizes): x(13333), y(13333)
-    variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y,x), float32 firn(y,x), float32 surface(y,x), float32 thickness(y,x), float32 bed(y,x), int16 errbed(y,x), int8 source(y,x), int16 geoid(y,x)
+    variables(dimensions): |S1 mapping(), int32 x(x), int32 y(y), int8 mask(y, x), float32 firn(y, x), float32 surface(y, x), float32 thickness(y, x), float32 bed(y, x), int16 errbed(y, x), int8 source(y, x), int16 geoid(y, x)
     groups:
 </pre></div>
 </div>
@@ -544,7 +547,11 @@ Dirichlet conditions.</p>
 <p>Next, we’ll try to solve the shallow shelf equations to obtain the
 initial ice velocity.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span>
+        <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span>
+    <span class="p">)</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Oh no, nonlinear solver did not converge!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -559,21 +566,23 @@ small-scale topography, even down to the depth of rifts in the ice
 shelf. Having such a high-resolution dataset means that the thickness
 can jump over a very small distance. This could result in an
 unphysically large driving stress, which is shown in the plot below.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span> <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span> <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span>
+    <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+    <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">grad</span>
 <span class="n">τ_d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="o">-</span><span class="mf">1e3</span> <span class="o">*</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">h0</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">τ_d</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span>
-                                    <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">τ_d</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7eee3bb690</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_52_1.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_52_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_52_0.png" />
 <p>In many regions the driving stress exceeds 100 kilopascals, which would
 be reasonable for a steep Greenland outlet glacier, not for a floating
 ice shelf.</p>
@@ -599,33 +608,35 @@ for a thickness at which the derivative of <span class="math notranslate nohighl
 </pre></div>
 </div>
 <p>The relative difference between the raw and smoothed thickness is around
-3.5%. That’s not a huge relative error; the corrections for air or water
-in the firn column are comparable.</p>
+3%. That’s not a huge relative error; the corrections for tides or for
+air or water in the firn column are comparable.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">assemble</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">dx</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.03386012075948283</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.031702306997219654</span>
 </pre></div>
 </div>
 <p>Finally, the driving stress of the filtered ice thickness tops out
 around 20 kPa, which is much more reasonable.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">τ_d</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="o">-</span><span class="mf">1e3</span> <span class="o">*</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ_I</span> <span class="o">/</span> <span class="n">ρ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">τ_d</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mi">41</span><span class="p">),</span>
-                                    <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mi">41</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">τ_d</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;kPa&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">Colorbar</span> <span class="n">at</span> <span class="mh">0x7f7eee3a97d0</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<img alt="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" src="_images/icepack.demo.02-larsen-ice-shelf_58_1.png" />
+<img alt="_images/icepack.demo.02-larsen-ice-shelf_58_0.png" src="_images/icepack.demo.02-larsen-ice-shelf_58_0.png" />
 <p>With this regularized input data the nonlinear solver converges. In
 general, the nonlinear solvers in icepack should always converge on
 reasonable input data, and sometimes even on unreasonable data too. A
 sharp gradient in an overly-resolved thickness field, however, will
 create such large driving stresses as to no longer be reasonable.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+    <span class="n">velocity</span><span class="o">=</span><span class="n">u0</span><span class="p">,</span>
+    <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+    <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>The computed velocity is shown below; the result looks pretty reasonable
@@ -643,7 +654,7 @@ even with a spatially homogeneous guess for the ice temperature.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">u0</span><span class="p">)</span> <span class="o">/</span> <span class="n">icepack</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u0</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.17994448143477162</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.18215698687234774</span>
 </pre></div>
 </div>
 <p>Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -656,9 +667,23 @@ for this loop should be familiar from the previous example.</p>
 <span class="n">final_time</span> <span class="o">=</span> <span class="mf">10.</span>
 <span class="n">num_steps</span> <span class="o">=</span> <span class="mi">40</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">final_time</span> <span class="o">/</span> <span class="n">num_steps</span>
-<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h_init</span><span class="p">)</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span>
+        <span class="n">dt</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+        <span class="n">accumulation</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+        <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h_init</span>
+    <span class="p">)</span>
+
+    <span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|██████████| 40/40 [01:06&lt;00:00,  1.67s/it]
 </pre></div>
 </div>
 <p>In the plot below we’re using the <code class="docutils literal notranslate"><span class="pre">alpha</span></code> keyword argument to the
@@ -679,8 +704,10 @@ that makes the 0-contour really obvious.</p>
 <span class="n">δh</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_init</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">subplots</span><span class="p">()</span>
-<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">δh</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-                                    <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span>
+    <span class="n">δh</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s1">&#39;both&#39;</span>
+<span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;meters&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
@@ -696,7 +723,7 @@ area of the shelf.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">assemble</span><span class="p">(</span><span class="n">δh</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.9019400147892576</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">3.7907812165828743</span>
 </pre></div>
 </div>
 <p>Seeing as the simulation ran for 10 years, this isn’t a wildly
@@ -745,11 +772,19 @@ observational data.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -760,7 +795,6 @@ observational data.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

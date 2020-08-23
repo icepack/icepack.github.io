@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="icepack.plot module" href="icepack.plot.html" /> 
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -132,6 +134,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -170,7 +173,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">icepack</a> &raquo;</li>
         
@@ -206,7 +209,7 @@ horizontal gradients of 3D fields, lifting 2D fields into 3D, etc.</p>
 
 <dl class="py function">
 <dt id="icepack.utilities.compute_surface">
-<code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.compute_surface" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.compute_surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ice surface elevation consistent with a given
 thickness and bathymetry</p>
 <p>If the bathymetry beneath a tidewater glacier is too low, the ice
@@ -246,6 +249,17 @@ eigenvalues of a 2D rank-2 tensor</p>
 <code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">facet_normal_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mesh</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#facet_normal_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.facet_normal_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the horizontal component of the unit outward normal vector
 to a mesh</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.utilities.get_kwargs_alt">
+<code class="sig-prename descclassname">icepack.utilities.</code><code class="sig-name descname">get_kwargs_alt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dictionary</span></em>, <em class="sig-param"><span class="n">keys</span></em>, <em class="sig-param"><span class="n">keys_alt</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#get_kwargs_alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.utilities.get_kwargs_alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get value from dictionary by key or by an alternate, deprecated key</p>
+<p>This helper function is to aid in a refactoring of icepack where shorter
+keyword arguments were replaced by longer names, for example <cite>velocity</cite>
+instead of <cite>u</cite>, <cite>thickness</cite> instead of <cite>h</cite>, etc. For backwards
+compatibility, it should be possible to use either the new or old keyword
+argument names, but a warning should be thrown on using the old name.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -301,11 +315,19 @@ the function space must only go up to degree 0 in the vertical.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -316,7 +338,6 @@ the function space must only go up to degree 0 in the vertical.</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

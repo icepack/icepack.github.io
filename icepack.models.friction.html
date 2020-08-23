@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="icepack.models.heat_transport module" href="icepack.models.heat_transport.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> icepack
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -126,6 +128,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -164,7 +167,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">icepack</a> &raquo;</li>
         
@@ -195,7 +198,7 @@
 <span id="icepack-models-friction-module"></span><h1>icepack.models.friction module<a class="headerlink" href="#module-icepack.models.friction" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="icepack.models.friction.bed_friction">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">bed_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">C</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.bed_friction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">bed_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">C</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#bed_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.bed_friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bed friction part of the ice stream action functional</p>
 <p>The frictional part of the ice stream action functional is</p>
 <div class="math notranslate nohighlight">
@@ -213,7 +216,7 @@
 
 <dl class="py function">
 <dt id="icepack.models.friction.normal_flow_penalty">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">normal_flow_penalty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">exponent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#normal_flow_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.normal_flow_penalty" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">normal_flow_penalty</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#normal_flow_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.normal_flow_penalty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the penalty for flow normal to the domain boundary</p>
 <p>For problems where a glacier flows along some boundary, e.g. a fjord
 wall, the velocity has to be parallel to this boundary. Rather than
@@ -223,7 +226,7 @@ flow to the action functional.</p>
 
 <dl class="py function">
 <dt id="icepack.models.friction.side_friction">
-<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">side_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">Cs</span><span class="o">=</span><span class="default_value">Constant(FiniteElement('Real', None, 0), 1)</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#side_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.side_friction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">icepack.models.friction.</code><code class="sig-name descname">side_friction</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/friction.html#side_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.models.friction.side_friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the side wall friction part of the action functional</p>
 <p>The component of the action functional due to friction along the side
 walls of the domain is</p>
@@ -257,11 +260,19 @@ with rock walls on either side.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -272,7 +283,6 @@ with rock walls on either side.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

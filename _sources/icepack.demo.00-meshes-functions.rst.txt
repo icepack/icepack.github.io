@@ -10,13 +10,13 @@ Meshes, functions
 
 This demo will show some of the basic features of the finite element
 modeling package `firedrake <https://www.firedrakeproject.org>`__, which
-icepack is built on. These are the kinds of things you’d need to know
-before you begin to model anything. First, we’ll show to create a simple
+icepack is built on. These are the kinds of things you'd need to know
+before you begin to model anything. First, we'll show to create a simple
 mesh, and how to define a function on that mesh symbolically using
 handles for the x- and y-coordinates of the points of the domain. Then
-we’ll demonstrate some of the plotting routines included in icepack,
+we'll demonstrate some of the plotting routines included in icepack,
 which are meant to mimic as closely as possible the corresponding
-routines in matplotlib. Finally, we’ll show how to analyze a function by
+routines in matplotlib. Finally, we'll show how to analyze a function by
 evaluating some area and contour integrals.
 
 Meshes
@@ -28,9 +28,9 @@ available, you can type
 
 ::
 
-   help(firedrake.utility_meshes)
+    help(firedrake.utility_meshes)
 
-from the python interpreter. In this demo we’ll use a mesh of the unit
+from the python interpreter. In this demo we'll use a mesh of the unit
 square.
 
 .. code:: ipython3
@@ -66,16 +66,16 @@ functions.
 
 First, we have to construct a function space ``Q``. We already have a
 mesh, and we need to decide what element family and polynomial degree.
-In almost all the cases you’ll encounter, the element family consists of
+In almost all the cases you'll encounter, the element family consists of
 continuous piecewise-polynomial functions in each triangle, which is
-abbreviated to ``CG`` for “continuous Galerkin”.
+abbreviated to ``CG`` for "continuous Galerkin".
 
 Next, we have to make an expression for the function and interpolate it
 to the function space ``Q``. The function
 ``firedrake.SpatialCoordinate`` returns two symbolic objects ``x``,
 ``y`` for the coordinates of each point of the mesh. We can then use
-these symbols to define expressions for the function we’d like to
-analyze. In this case, I’ve chosen the `Rosenbrock
+these symbols to define expressions for the function we'd like to
+analyze. In this case, I've chosen the `Rosenbrock
 function <https://en.wikipedia.org/wiki/Rosenbrock_function>`__.
 Firedrake has built-in functions for evaluating various transcendental
 functions of the coordinates, for example the sine, cosine, exponential,
@@ -131,7 +131,7 @@ graphics.
 Post-processing
 ~~~~~~~~~~~~~~~
 
-We’ve already seen about how to visualize a scalar or a vector field;
+We've already seen about how to visualize a scalar or a vector field;
 this is just a call to the function ``icepack.plot``. To analyze the
 results of a simulation, you might also want to evaluate scalar or
 vector fields at points in the domain:
@@ -145,8 +145,8 @@ vector fields at points in the domain:
 
 .. parsed-literal::
 
-    -2.42861286636753e-17
-    [ 3.30313376e-15 -2.45162624e-15]
+    -2.0816681711721685e-17
+    [ 2.16126216e-15 -1.41054703e-15]
 
 
 Firedrake also provides a rich set of operations for evaluating integral
@@ -169,9 +169,9 @@ call the function ``firedrake.assemble`` to evaluate it.
 
 .. parsed-literal::
 
-    0.24999999999999967
-    2.083334604899086
-    172.01609669791287
+    0.25
+    2.0833346048990853
+    172.01609669791264
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary
@@ -210,13 +210,13 @@ Conclusion
 
 Icepack uses the functions in firedrake to implement solvers for the
 various physics problems that show up in ice sheet modeling. The
-firedrake routines that we’ve demonstrated here can be used for
+firedrake routines that we've demonstrated here can be used for
 analyzing simulation results, either through visualization, evaluating
 fields at points, or evaluating integrals of fields. They can also be
 used to define input fields of simulations, if those fields have a
-simple analytical expression. In the next demo, we’ll show how to use
+simple analytical expression. In the next demo, we'll show how to use
 icepack to solve for the velocity and thickness of a floating ice shelf
-with a synthetic geometry. In later demos, we’ll show how to use real
+with a synthetic geometry. In later demos, we'll show how to use real
 observational data sets, as well as more complicated geometries imported
 from mesh generators.
 

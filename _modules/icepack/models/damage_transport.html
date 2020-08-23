@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> icepack
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icepack
           
 
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -113,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -190,13 +193,14 @@
 <span class="sd">describes the evolution of ice damage (Albrecht and Levermann 2014).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span>
                        <span class="n">det</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">conditional</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">icepack.models.viscosity</span> <span class="kn">import</span> <span class="n">M</span>
 <span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="n">year</span>
-<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">eigenvalues</span>
+<span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">get_kwargs_alt</span>
 
 
 <div class="viewcode-block" id="DamageTransport"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport">[docs]</a><span class="k">class</span> <span class="nc">DamageTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -208,9 +212,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">healing_rate</span> <span class="o">=</span> <span class="n">healing_rate</span>
 
 <div class="viewcode-block" id="DamageTransport.flux"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>
-        <span class="n">D_inflow</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;D_inflow&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;damage&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;damage_inflow&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;D_inflow&#39;</span><span class="p">)</span>
+        <span class="n">D</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">D_inflow</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="n">Q</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
         <span class="n">φ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
@@ -228,9 +232,9 @@
         <span class="k">return</span> <span class="n">flux_faces</span> <span class="o">+</span> <span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_out</span> <span class="o">+</span> <span class="n">flux_in</span></div>
 
 <div class="viewcode-block" id="DamageTransport.sources"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.sources">[docs]</a>    <span class="k">def</span> <span class="nf">sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;damage&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;fluidity&#39;</span><span class="p">)</span>
+        <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+        <span class="n">D</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
 
         <span class="c1"># Increase/decrease damage depending on stress and strain rates</span>
         <span class="n">ε</span> <span class="o">=</span> <span class="n">sym</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
@@ -274,6 +278,9 @@
 <span class="sd">        D : firedrake.Function</span>
 <span class="sd">            Ice damage at `t + dt`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Solving methods have moved to the DamageSolver class, &#39;</span>
+                      <span class="s1">&#39;this method will be removed in future versions.&#39;</span><span class="p">,</span>
+                      <span class="ne">FutureWarning</span><span class="p">)</span>
 
         <span class="n">D_inflow</span> <span class="o">=</span> <span class="n">D_inflow</span> <span class="k">if</span> <span class="n">D_inflow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">D0</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="n">D0</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
@@ -324,11 +331,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2017, Daniel Shapero
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -339,7 +354,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
