@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -201,7 +200,7 @@
 <span class="kn">from</span> <span class="nn">icepack</span> <span class="kn">import</span> <span class="n">utilities</span>
 
 
-<div class="viewcode-block" id="Continuity"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.Continuity">[docs]</a><span class="k">class</span> <span class="nc">Continuity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Continuity"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.Continuity">[docs]</a><span class="k">class</span> <span class="nc">Continuity</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Describes the form of the mass continuity equation&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -234,7 +233,7 @@
         <span class="k">return</span> <span class="n">accumulation</span> <span class="o">-</span> <span class="p">(</span><span class="n">flux_in</span> <span class="o">+</span> <span class="n">flux_out</span> <span class="o">+</span> <span class="n">flux_cells</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MassTransport"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">[docs]</a><span class="k">class</span> <span class="nc">MassTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="MassTransport"><a class="viewcode-back" href="../../../icepack.models.mass_transport.html#icepack.models.mass_transport.MassTransport">[docs]</a><span class="k">class</span> <span class="nc">MassTransport</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">facet_normal</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span>

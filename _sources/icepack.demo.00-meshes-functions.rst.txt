@@ -171,7 +171,7 @@ call the function ``firedrake.assemble`` to evaluate it.
 
     0.25
     2.0833346048990853
-    172.01609669791264
+    172.01609669791267
 
 
 We can also evaluate integrals over the boundary of the mesh. Boundary

@@ -45,7 +45,6 @@ extensibility
    :caption: Development
 
    contributing.rst
-   testing.rst
    design.rst
 
 .. toctree::

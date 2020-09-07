@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -189,7 +188,7 @@
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solvers for ice physics models&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">firedrake</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">dx</span><span class="p">,</span> <span class="n">Constant</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">dx</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">Constant</span>
 <span class="kn">from</span> <span class="nn">icepack.optimization</span> <span class="kn">import</span> <span class="n">MinimizationProblem</span><span class="p">,</span> <span class="n">NewtonSolver</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utilities</span>
 <span class="kn">from</span> <span class="nn">..utilities</span> <span class="kn">import</span> <span class="n">default_solver_parameters</span>
@@ -197,7 +196,8 @@
 <span class="c1"># TODO: Remove all dictionary access of &#39;u&#39; and &#39;h&#39; once these names are</span>
 <span class="c1"># fully deprecated from the library</span>
 
-<div class="viewcode-block" id="FlowSolver"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver">[docs]</a><span class="k">class</span> <span class="nc">FlowSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FlowSolver"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.FlowSolver">[docs]</a><span class="k">class</span> <span class="nc">FlowSolver</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solves the diagnostic and prognostic models of ice physics</span>
 
 <span class="sd">    The actual solver data is initialized lazily on the first call</span>
@@ -209,6 +209,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dirichlet_ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dirichlet_ids&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">side_wall_ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;side_wall_ids&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tolerance</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;tolerance&#39;</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">)</span>
+
+        <span class="n">prognostic_parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s1">&#39;prognostic_solver_parameters&#39;</span><span class="p">,</span> <span class="n">default_solver_parameters</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;prognostic_solver_type&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">solver_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;prognostic_solver_type&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">solvers_dict</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;implicit-euler&#39;</span><span class="p">:</span> <span class="n">ImplicitEuler</span><span class="p">,</span>
+                    <span class="s1">&#39;lax-wendroff&#39;</span><span class="p">:</span> <span class="n">LaxWendroff</span>
+                <span class="p">}</span>
+                <span class="n">solver_type</span> <span class="o">=</span> <span class="n">solvers_dict</span><span class="p">[</span><span class="n">solver_type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solver_type</span> <span class="o">=</span> <span class="n">LaxWendroff</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prognostic_solver</span> <span class="o">=</span> <span class="n">solver_type</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">continuity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">,</span> <span class="n">prognostic_parameters</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -254,7 +273,7 @@
         <span class="n">problem</span> <span class="o">=</span> <span class="n">MinimizationProblem</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bcs</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_diagnostic_solver</span> <span class="o">=</span> <span class="n">NewtonSolver</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tolerance</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FlowSolver.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="FlowSolver.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.FlowSolver.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve the diagnostic model physics for the ice velocity&quot;&quot;&quot;</span>
         <span class="c1"># Set up the diagnostic solver if it hasn&#39;t been already, otherwise</span>
         <span class="c1"># copy all the input field values</span>
@@ -270,44 +289,109 @@
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_prognostic_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+<div class="viewcode-block" id="FlowSolver.prognostic_solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.FlowSolver.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve the prognostic model physics for the new value of the ice</span>
+<span class="sd">        thickness&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prognostic_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
-        <span class="c1"># Create the residual equation represending the PDE</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-        <span class="n">dh_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">continuity</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ImplicitEuler"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.ImplicitEuler">[docs]</a><span class="k">class</span> <span class="nc">ImplicitEuler</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">continuity</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_continuity</span> <span class="o">=</span> <span class="n">continuity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_parameters</span> <span class="o">=</span> <span class="n">solver_parameters</span>
+
+<div class="viewcode-block" id="ImplicitEuler.setup"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.ImplicitEuler.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">dh_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_continuity</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
         <span class="n">h_0</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
         <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dh_dt</span>
 
-        <span class="c1"># Create problem and solver objects for this equation</span>
-        <span class="c1"># TODO: make form compiler and solver parameters customizable</span>
         <span class="n">problem</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prognostic_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalSolver</span><span class="p">(</span>
-            <span class="n">problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">default_solver_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalSolver</span><span class="p">(</span>
+            <span class="n">problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver_parameters</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness_old</span> <span class="o">=</span> <span class="n">h_0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span> <span class="o">=</span> <span class="n">dt</span>
 
-<div class="viewcode-block" id="FlowSolver.prognostic_solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.flow_solver.FlowSolver.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve the prognostic model physics for the new value of the ice</span>
-<span class="sd">        thickness&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_prognostic_solver&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prognostic_setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness_old</span> <span class="o">=</span> <span class="n">h_0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span> <span class="o">=</span> <span class="n">dt</span></div>
+
+<div class="viewcode-block" id="ImplicitEuler.solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.ImplicitEuler.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_solver&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
 
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thickness_old</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prognostic_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LaxWendroff"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.LaxWendroff">[docs]</a><span class="k">class</span> <span class="nc">LaxWendroff</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">continuity</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_continuity</span> <span class="o">=</span> <span class="n">continuity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_parameters</span> <span class="o">=</span> <span class="n">solver_parameters</span>
+
+<div class="viewcode-block" id="LaxWendroff.setup"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.LaxWendroff.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">))</span>
+        <span class="n">h_0</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_continuity</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">facet_normal</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">mesh</span><span class="p">())</span>
+        <span class="n">outflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">inflow</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">min_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+        <span class="n">div</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">div</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ds</span>
+        <span class="n">flux_cells</span> <span class="o">=</span> <span class="o">-</span><span class="n">div</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">grad</span><span class="p">(</span><span class="n">q</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">flux_out</span> <span class="o">=</span> <span class="n">div</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">outflow</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">flux_in</span> <span class="o">=</span> <span class="n">div</span><span class="p">(</span><span class="n">h_0</span> <span class="o">*</span> <span class="n">u</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">inflow</span> <span class="o">*</span> <span class="n">ds</span>
+        <span class="n">d2h_dt2</span> <span class="o">=</span> <span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_out</span> <span class="o">+</span> <span class="n">flux_in</span>
+
+        <span class="n">dh_dt</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">h_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">dh_dt</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">d2h_dt2</span><span class="p">)</span>
+
+        <span class="n">problem</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">NonlinearVariationalSolver</span><span class="p">(</span>
+            <span class="n">problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver_parameters</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness_old</span> <span class="o">=</span> <span class="n">h_0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span> <span class="o">=</span> <span class="n">dt</span></div>
+
+<div class="viewcode-block" id="LaxWendroff.solve"><a class="viewcode-back" href="../../../icepack.solvers.flow_solver.html#icepack.solvers.LaxWendroff.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_solver&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;thickness&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness_old</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
 </pre></div>
 

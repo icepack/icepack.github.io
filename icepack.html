@@ -106,7 +106,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -203,6 +202,119 @@
             
   <div class="section" id="module-icepack">
 <span id="icepack-package"></span><h1>icepack package<a class="headerlink" href="#module-icepack" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="icepack.compute_surface">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">compute_surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#compute_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.compute_surface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ice surface elevation consistent with a given
+thickness and bathymetry</p>
+<p>If the bathymetry beneath a tidewater glacier is too low, the ice
+will go afloat. The surface elevation of a floating ice shelf is</p>
+<div class="math notranslate nohighlight">
+\[s = (1 - \rho_I / \rho_W)h,\]</div>
+<p>provided everything is in hydrostatic balance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.depth_average">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">depth_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q3d</span></em>, <em class="sig-param"><span class="n">weight</span><span class="o">=</span><span class="default_value">Constant(FiniteElement('Real', None, 0), 0)</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#depth_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.depth_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the weighted depth average of a function on an extruded mesh</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.interpolate">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">Q</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'linear'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/interpolate.html#interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate an expression or a gridded data set to a function space</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>rasterio dataset</em><em> or </em><em>tuple of rasterio datasets</em>) – The gridded data set for scalar fields or the tuple of gridded data
+sets for each component</p></li>
+<li><p><strong>Q</strong> (<em>firedrake.FunctionSpace</em>) – The function space where the result will live</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A finite element function defined on <cite>Q</cite> with the same nodal values
+as the data <cite>f</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.lift3d">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">lift3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q2d</span></em>, <em class="sig-param"><span class="n">Q3D</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/utilities.html#lift3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.lift3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a 3D function that extends the given 2D function as a constant
+in the vertical</p>
+<p>This is the reverse operation of depth averaging – it takes a 2D function
+<cite>q2d</cite> and returns a function <cite>q3d</cite> defined over a 3D function space such
+<cite>q3d(x, y, z) == q2d(x, y)</cite> for any <cite>x, y</cite>. The space <cite>Q3D</cite> of the result
+must have the same horizontal element as the input function and a vertical
+degree of 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q2d</strong> (<em>firedrake.Function</em>) – A function defined on a 2D footprint mesh</p></li>
+<li><p><strong>Q3D</strong> (<em>firedrake.Function</em>) – A function space defined on a 3D mesh extruded from the footprint mesh;
+the function space must only go up to degree 0 in the vertical.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>q3d</strong> – The 3D-lifted input field</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>firedrake.Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.norm">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">norm_type</span><span class="o">=</span><span class="default_value">'L2'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/norms.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the norm of a field</p>
+<p>Computes one of any number of norms of a scalar or vector field. The
+available options are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L2</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega|u|^2dx\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">H01</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega|\nabla u|^2dx\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">H1</span></code>: <span class="math notranslate nohighlight">\(\|u\|^2 = \int_\Omega\left(|u|^2 + L^2|\nabla u|^2\right)dx\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L1</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \int_\Omega|u|dx\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TV</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \int_\Omega|\nabla u|dx\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Linfty</span></code>: <span class="math notranslate nohighlight">\(\|u\| = \max_{x\in\Omega}|u(x)|\)</span></p></li>
+</ul>
+<p>The extra factor <span class="math notranslate nohighlight">\(L\)</span> in the <span class="math notranslate nohighlight">\(H^1\)</span> norm is the diameter of
+the domain in the infinity metric. This extra factor is included to
+make the norm scale appropriately with the size of the domain.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="icepack.rate_factor">
+<code class="sig-prename descclassname">icepack.</code><code class="sig-name descname">rate_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/models/viscosity.html#rate_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.rate_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the rate factor in Glen’s flow law for a given temperature</p>
+<p>The strain rate <span class="math notranslate nohighlight">\(\dot\varepsilon\)</span> of ice resulting from a stress
+<span class="math notranslate nohighlight">\(\tau\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\dot\varepsilon = A(T)\tau^3\]</div>
+<p>where <span class="math notranslate nohighlight">\(A(T)\)</span> is the temperature-dependent rate factor:</p>
+<div class="math notranslate nohighlight">
+\[A(T) = A_0\exp(-Q/RT)\]</div>
+<p>where <span class="math notranslate nohighlight">\(R\)</span> is the ideal gas constant, <span class="math notranslate nohighlight">\(Q\)</span> has units of
+energy per mole, and <span class="math notranslate nohighlight">\(A_0\)</span> is a prefactor with units of
+pressure <span class="math notranslate nohighlight">\(\text{MPa}^{-3}\times\text{yr}^{-1}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em><em>, </em><em>np.ndarray</em><em>, or </em><em>UFL expression</em>) – The ice temperature</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>A</strong> – The ice fluidity</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>same type as T</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

@@ -219,7 +219,7 @@ demo.
 
 .. parsed-literal::
 
-    100%|██████████| 500/500 [13:11<00:00,  1.58s/it]
+    100%|██████████| 500/500 [12:44<00:00,  1.53s/it]
 
 
 As a sanity check, we can plot the thickness, velocity, and mass
@@ -477,7 +477,7 @@ calculate the relative error in the 2-norm.
 
 .. parsed-literal::
 
-    0.030888191673214025
+    0.030892670304589694
 
 
 A mismatch of only 3% is not bad at all! However, if we used a synthetic

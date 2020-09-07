@@ -590,7 +590,7 @@ even with a spatially homogeneous guess for the ice temperature.
 
 .. parsed-literal::
 
-    0.18215698687234774
+    0.1821569868723466
 
 
 Ballpark estimate, the surface and basal mass balance of Larsen C are
@@ -624,7 +624,7 @@ for this loop should be familiar from the previous example.
 
 .. parsed-literal::
 
-    100%|██████████| 40/40 [01:06<00:00,  1.67s/it]
+    100%|██████████| 40/40 [01:04<00:00,  1.61s/it]
 
 
 In the plot below we're using the ``alpha`` keyword argument to the
@@ -681,7 +681,7 @@ area of the shelf.
 
 .. parsed-literal::
 
-    -3.7907812165828743
+    -3.7870624686107948
 
 
 Seeing as the simulation ran for 10 years, this isn't a wildly

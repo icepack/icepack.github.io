@@ -106,7 +106,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -227,6 +226,38 @@
 <dd><p>Solve the prognostic model physics for the new value of the ice
 thickness</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="icepack.solvers.flow_solver.ImplicitEuler">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.solvers.flow_solver.</code><code class="sig-name descname">ImplicitEuler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">continuity</span></em>, <em class="sig-param"><span class="n">fields</span></em>, <em class="sig-param"><span class="n">solver_parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#ImplicitEuler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.ImplicitEuler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="icepack.solvers.flow_solver.ImplicitEuler.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#ImplicitEuler.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.ImplicitEuler.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="icepack.solvers.flow_solver.ImplicitEuler.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#ImplicitEuler.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.ImplicitEuler.solve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="icepack.solvers.flow_solver.LaxWendroff">
+<em class="property">class </em><code class="sig-prename descclassname">icepack.solvers.flow_solver.</code><code class="sig-name descname">LaxWendroff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">continuity</span></em>, <em class="sig-param"><span class="n">fields</span></em>, <em class="sig-param"><span class="n">solver_parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#LaxWendroff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.LaxWendroff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="icepack.solvers.flow_solver.LaxWendroff.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#LaxWendroff.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.LaxWendroff.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="icepack.solvers.flow_solver.LaxWendroff.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dt</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/icepack/solvers/flow_solver.html#LaxWendroff.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#icepack.solvers.flow_solver.LaxWendroff.solve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

@@ -1,6 +1,5 @@
 .. code:: ipython3
 
-    %matplotlib inline
     import matplotlib.pyplot as plt
     import numpy as np
     import rasterio
@@ -164,8 +163,8 @@ us how good a fit to the data we should expect.
     velocity_filename = icepack.datasets.fetch_measures_antarctica()
     vx = rasterio.open('netcdf:' + velocity_filename + ':VX', 'r')
     vy = rasterio.open('netcdf:' + velocity_filename + ':VY', 'r')
-    stdx = rasterio.open('netcdf:' + velocity_filename + ':STDX', 'r')
-    stdy = rasterio.open('netcdf:' + velocity_filename + ':STDY', 'r')
+    stdx = rasterio.open('netcdf:' + velocity_filename + ':ERRX', 'r')
+    stdy = rasterio.open('netcdf:' + velocity_filename + ':ERRY', 'r')
     
     V = firedrake.VectorFunctionSpace(mesh, family='CG', degree=2)
     u_obs = icepack.interpolate((vx, vy), V)
@@ -195,8 +194,8 @@ fluidity assuming a temperature of -13C.
 
 .. code:: ipython3
 
-    T0 = firedrake.Constant(260)
-    A0 = icepack.rate_factor(T0)
+    T = firedrake.Constant(260)
+    A0 = icepack.rate_factor(T)
     from icepack.constants import glen_flow_law as n
     def viscosity(**kwargs):
         u = kwargs['velocity']
@@ -256,7 +255,7 @@ pass these functions to the inverse problem when we create it.
         return 0.5 * ((δu[0] / σx)**2 + (δu[1] / σy)**2) * dx
     
     Θ = firedrake.Constant(1.)
-    L = firedrake.Constant(19.5e3)
+    L = firedrake.Constant(7.5e3)
     def regularization(θ):
         return 0.5 * (L / Θ)**2 * inner(grad(θ), grad(θ)) * dx
 
@@ -278,7 +277,7 @@ consists of just the thickness field.
 
 .. code:: ipython3
 
-    problem = icepack.inverse.InverseProblem(
+    inverse_problem = icepack.inverse.InverseProblem(
         model=model,
         objective=objective,
         regularization=regularization,
@@ -327,14 +326,14 @@ necessary, it's just good practice.
     params = {'quadrature_degree': qdegree}
     
     area = firedrake.assemble(firedrake.Constant(1) * dx(mesh))
-    def callback(solver):
-        dJ = solver.gradient
-        q = solver.search_direction
+    def callback(inverse_solver):
+        dJ = inverse_solver.gradient
+        q = inverse_solver.search_direction
         dJ_dq = firedrake.action(dJ, q)
         Δ = firedrake.assemble(dJ_dq, form_compiler_parameters=params) / area
     
-        E = firedrake.assemble(solver.objective) / area
-        R = firedrake.assemble(solver.regularization) / area
+        E = firedrake.assemble(inverse_solver.objective) / area
+        R = firedrake.assemble(inverse_solver.regularization) / area
         print('{:g}, {:g}, {:g}'.format(E, R, Δ))
 
 You could also, say, make a plot of the state and parameter guess at
@@ -347,12 +346,14 @@ optionally the callback function.
 
 .. code:: ipython3
 
-    solver = icepack.inverse.GaussNewtonSolver(problem, callback)
+    inverse_solver = icepack.inverse.GaussNewtonSolver(
+        inverse_problem, callback, search_max_iterations=200
+    )
 
 
 .. parsed-literal::
 
-    20.9827, 0, -38.5756
+    1946.2, 0, -3826.51
 
 
 As a general principle, it's a good idea to separate out the
@@ -363,13 +364,21 @@ pattern before in how flow models (like ``IceShelf``) are distinct from
 the objects that actually calculate the solutions (``FlowSolver``).
 
 Before setting the solver loose, let's look at the initial search
-direction.
+direction. The search direction is zero throughout most of the ice
+shelf. It has strong positive anomalies in the vicinity of the sharp
+rifts on the grid-east side of the domain. In other words, starting from
+a spatially constant initial guess, the fastest way to reduce the
+model-data misfit would be to make the shelf more fluid in the vicinity
+of these rifts.
 
 .. code:: ipython3
 
     fig, axes = subplots()
-    ϕ = solver.search_direction
-    contours = icepack.plot.tricontourf(ϕ, 20, alpha=0.6, cmap='RdBu', axes=axes)
+    ϕ = inverse_solver.search_direction
+    levels = np.linspace(-8., +8., 17)
+    contours = icepack.plot.tricontourf(
+        ϕ, levels=levels, cmap='RdBu_r', extend='both', axes=axes
+    )
     fig.colorbar(contours)
     plt.show(fig)
 
@@ -399,12 +408,12 @@ won't use this time. Absolute stopping tolerances are good for certain
 statistical problems where you know a priori how good of a fit to the
 data to expect.
 
-The algorithm takes a while to run. Now would be the time to put on a
-fresh pot of coffee.
+The algorithm takes about 30-45 minutes to run. Now would be the time to
+put on a fresh pot of coffee.
 
 .. code:: ipython3
 
-    iterations = solver.solve(
+    iterations = inverse_solver.solve(
         rtol=5e-3,
         etol=1e-6,
         atol=0.0,
@@ -414,10 +423,15 @@ fresh pot of coffee.
 
 .. parsed-literal::
 
-    2.06175, 0.225384, -1.67512
-    1.06396, 0.399415, -0.0862985
-    1.02902, 0.385547, -0.013814
-    1.01072, 0.397155, -0.00249328
+    289.891, 1.93217, -548.589
+    42.3915, 3.81328, -61.6379
+    19.2631, 3.79951, -15.4448
+    15.1544, 3.89021, -6.89123
+    11.5231, 4.27517, -1.25408
+    10.9789, 4.35935, -0.600591
+    10.716, 4.43903, -0.295118
+    10.5498, 4.49167, -0.198552
+    10.4638, 4.5233, -0.0895792
 
 
 The algorithm converges in just a few iterations because of how good a
@@ -441,15 +455,15 @@ fluidity, or we might be observing the thickness instead of the
 velocity. You can see all the publicly visible properties by typing
 ``help(inverse_problem)``.
 
-First, let's plot the parameter value and the fluidity.
+First, let's plot the parameter values.
 
 .. code:: ipython3
 
-    θ = solver.parameter
+    θ = inverse_solver.parameter
     fig, axes = subplots()
-    levels = np.linspace(-3, 3, 61)
+    levels = np.linspace(-5, 5, 21)
     contours = icepack.plot.tricontourf(
-        θ, levels=levels, alpha=0.6, cmap='RdBu_r', extend='both', axes=axes
+        θ, levels=levels, extend='both', axes=axes
     )
     fig.colorbar(contours)
     plt.show(fig)
@@ -457,22 +471,6 @@ First, let's plot the parameter value and the fluidity.
 
 
 .. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_31_0.png
-
-
-.. code:: ipython3
-
-    A = firedrake.interpolate(A0 * firedrake.exp(θ), Q)
-    fig, axes = subplots()
-    levels = np.linspace(0, 32, 9)
-    contours = icepack.plot.tricontourf(
-        A, levels=levels, alpha=0.6, extend='max', axes=axes
-    )
-    fig.colorbar(contours)
-    plt.show(fig)
-
-
-
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_32_0.png
 
 
 The fluidity is much higher around areas of heavy crevassing, such as
@@ -495,19 +493,19 @@ difference between the computed and observed velocities.
 
 .. code:: ipython3
 
-    u = solver.state
+    u = inverse_solver.state
     fig, axes = subplots()
     δu = firedrake.interpolate((u - u_obs)**2/(2*σ**2), Q)
-    levels = np.linspace(0, 6, 13)
+    levels = np.linspace(0., 50., 51)
     contours = icepack.plot.tricontourf(
-        δu, levels=levels, alpha=0.6, cmap='Reds', extend='max', axes=axes
+        δu, levels=levels, cmap='Reds', extend='max', axes=axes
     )
     fig.colorbar(contours)
     plt.show(fig)
 
 
 
-.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_35_0.png
+.. image:: icepack.demo.04-ice-shelf-inverse_files/icepack.demo.04-ice-shelf-inverse_34_0.png
 
 
 The computed ice velocity is mostly similar to observations aside from a
@@ -527,19 +525,19 @@ our naive initial guess.
 
 .. code:: ipython3
 
-    print(icepack.norm(solver.parameter) / np.sqrt(area))
-    print(firedrake.assemble(solver.objective) / area)
+    print(icepack.norm(inverse_solver.parameter) / np.sqrt(area))
+    print(firedrake.assemble(inverse_solver.objective) / area)
 
 
 .. parsed-literal::
 
-    0.8518256089651484
-    1.010721938933106
+    1.5384648573412578
+    10.46382713590122
 
 
-The objective function has been reduced by a factor of 10 through the
-optimization procedure, and our final approximation departs quite
-substantially from the initial guess. This suggests that data
+The model-data misfit has been reduced by two orders of mangitude
+through the optimization procedure, and our final approximation departs
+quite substantially from the initial guess. This suggests that data
 assimilation does give a substantial benefit over an ad-hoc approach
 like picking a sensible constant value.
 
@@ -563,30 +561,35 @@ misfit functional divided by the shelf area will be around 1. (A sum of
 squares of normal random variables has a :math:`\chi^2` distribution,
 which has mean 1, there are two components of the velocity vector, and
 we divide by 2 at the end.) The misfit we obtained once the algorithm
-has converged is very close to 1, which is a sign that the
-regularization parameter has been dialed in just right. However, we
-don't always get so lucky. Sometimes you can't fit the data as well as
-you expect from statistics, and there are a number of possible "failure
-modes":
+has converged is much larger than 1. Why might this happen?
 
-1. The error estimates :math:`\sigma` could be wrong.
-2. We don't have a good way to also account for thickness errors, which
+1. We made a poor choice of regularization parameter; the solution is
+   too smooth to fit the data.
+2. The regularization parameter is fine, but the error estimates
+   :math:`\sigma` are wrong.
+3. The standard deviations :math:`\sigma` of the error estimates are
+   correct, but the error distribution is non-normal and has heavier
+   tails.
+4. We don't have a good way to also account for thickness errors, which
    are substantial.
-3. We regularized the problem too much.
-4. The ice shelf becomes grounded on some pinning point and we didn't
-   add basal drag.
-5. I implemented the numerical optimization algorithm incorrectly.
+5. The ice shelf is actually grounded on some isolated pinning points or
+   ice rises and we didn't add any basal drag.
+6. The model physics don't adequately account for the effects of rifts
+   and crevasses.
+7. I implemented the numerical optimization algorithm incorrectly.
 
-Failure modes 1 and 2 happen because we don't have the right statistical
-distribution for the errors, while failure mode 3 happens because we
-don't have the right prior distribution. Mode 4 is a more insidious type
+Failure modes 1 happens because we don't have the right prior
+distribution, while modes 2, 3, and 4 occur because we don't have the
+correct observational likelihood. Modes 5 and 6 are more insidious types
 of failure. In this case, the physics model doesn't actually describe
-the true behavior of the system, and as a consequence is unable to
-reproduce the observations with any value of the inputs. Some wrong
-physics models may nonetheless be able to reproduce the observations,
-provided that they are
+the true behavior of the system. This might mean that the model cannot
+reproduce the observations with *any* value of the input data. That kind
+of failure is difficult to miss. But some wrong physics models -- those
+that are
 `controllable <https://en.wikipedia.org/wiki/Controllability>`__ as a
-function of the input parameters. Diagnosing this type of failure is
-arguably the most difficult. Last but not least is human error in
+function of the input parameters -- might still be able to reproduce the
+observations. The catch is that they will "explain" the data however
+they can, even if the reasons are wrong! Diagnosing this type of failure
+is arguably the most difficult. Last but not least is human error in
 implementing the optimization algorithms. These kinds of failures should
 be caught through testing on synthetic problems.

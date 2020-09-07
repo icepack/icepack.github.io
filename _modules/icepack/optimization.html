@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -189,8 +188,9 @@
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">.utilities</span> <span class="kn">import</span> <span class="n">default_solver_parameters</span>
 
-<div class="viewcode-block" id="MinimizationProblem"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.MinimizationProblem">[docs]</a><span class="k">class</span> <span class="nc">MinimizationProblem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bcs</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MinimizationProblem"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.MinimizationProblem">[docs]</a><span class="k">class</span> <span class="nc">MinimizationProblem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bcs</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Nonlinear optimization problem argmin E(u).</span>
 
 <span class="sd">        Parameters</span>
@@ -215,7 +215,7 @@
         <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="NewtonSolver"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.NewtonSolver">[docs]</a><span class="k">class</span> <span class="nc">NewtonSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="NewtonSolver"><a class="viewcode-back" href="../../icepack.optimization.html#icepack.optimization.NewtonSolver">[docs]</a><span class="k">class</span> <span class="nc">NewtonSolver</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve a MinimizationProblem using Newton&#39;s method with backtracking</span>
 <span class="sd">        line search</span>

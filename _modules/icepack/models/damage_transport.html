@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -194,7 +193,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">firedrake</span>
 <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">sym</span><span class="p">,</span>
                        <span class="n">det</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">conditional</span><span class="p">)</span>
@@ -203,7 +201,7 @@
 <span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">get_kwargs_alt</span>
 
 
-<div class="viewcode-block" id="DamageTransport"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport">[docs]</a><span class="k">class</span> <span class="nc">DamageTransport</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="DamageTransport"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.DamageTransport">[docs]</a><span class="k">class</span> <span class="nc">DamageTransport</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">damage_stress</span><span class="o">=.</span><span class="mi">07</span><span class="p">,</span> <span class="n">damage_rate</span><span class="o">=.</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">healing_strain_rate</span><span class="o">=</span><span class="mf">2e-10</span> <span class="o">*</span> <span class="n">year</span><span class="p">,</span> <span class="n">healing_rate</span><span class="o">=.</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">damage_stress</span> <span class="o">=</span> <span class="n">damage_stress</span>
@@ -211,7 +209,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">healing_strain_rate</span> <span class="o">=</span> <span class="n">healing_strain_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">healing_rate</span> <span class="o">=</span> <span class="n">healing_rate</span>
 
-<div class="viewcode-block" id="DamageTransport.flux"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DamageTransport.flux"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.DamageTransport.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;damage&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;damage_inflow&#39;</span><span class="p">)</span>
         <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;D_inflow&#39;</span><span class="p">)</span>
         <span class="n">D</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">D_inflow</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
@@ -231,7 +229,7 @@
 
         <span class="k">return</span> <span class="n">flux_faces</span> <span class="o">+</span> <span class="n">flux_cells</span> <span class="o">+</span> <span class="n">flux_out</span> <span class="o">+</span> <span class="n">flux_in</span></div>
 
-<div class="viewcode-block" id="DamageTransport.sources"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.sources">[docs]</a>    <span class="k">def</span> <span class="nf">sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DamageTransport.sources"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.DamageTransport.sources">[docs]</a>    <span class="k">def</span> <span class="nf">sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;damage&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;fluidity&#39;</span><span class="p">)</span>
         <span class="n">keys_alt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
         <span class="n">D</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">get_kwargs_alt</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)</span>
@@ -253,7 +251,7 @@
 
         <span class="k">return</span> <span class="n">healing</span> <span class="o">+</span> <span class="n">fracture</span></div>
 
-<div class="viewcode-block" id="DamageTransport.solve"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.damage_transport.DamageTransport.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">D0</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">D_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DamageTransport.solve"><a class="viewcode-back" href="../../../icepack.models.damage_transport.html#icepack.models.DamageTransport.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">D0</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">D_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propogate the damage forward by one timestep</span>
 
 <span class="sd">        This function uses a Runge-Kutta scheme to upwind damage</span>
@@ -299,20 +297,24 @@
 
         <span class="c1"># Three-stage strong structure-preserving Runge Kutta (SSPRK3) method</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;bjacobi&#39;</span><span class="p">,</span> <span class="s1">&#39;sub_pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ilu&#39;</span>
+            <span class="s1">&#39;solver_parameters&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;ksp_type&#39;</span><span class="p">:</span> <span class="s1">&#39;preonly&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;bjacobi&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;sub_pc_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ilu&#39;</span>
+            <span class="p">}</span>
         <span class="p">}</span>
-        <span class="n">prob1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
-        <span class="n">solv1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">prob1</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">prob2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
-        <span class="n">solv2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">prob2</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">prob3</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L3</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
-        <span class="n">solv3</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">prob3</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">problem1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
+        <span class="n">solver1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">problem1</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">problem2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
+        <span class="n">solver2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">problem2</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">problem3</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">L3</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
+        <span class="n">solver3</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span><span class="n">problem3</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
-        <span class="n">solv1</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="n">solver1</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="n">D1</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">D</span> <span class="o">+</span> <span class="n">dq</span><span class="p">)</span>
-        <span class="n">solv2</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="n">solver2</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="n">D2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="mf">0.75</span> <span class="o">*</span> <span class="n">D</span> <span class="o">+</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="p">(</span><span class="n">D1</span> <span class="o">+</span> <span class="n">dq</span><span class="p">))</span>
-        <span class="n">solv3</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="n">solver3</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="n">D</span><span class="o">.</span><span class="n">assign</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D</span> <span class="o">+</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">D2</span> <span class="o">+</span> <span class="n">dq</span><span class="p">))</span>
 
         <span class="c1"># Add sources and clamp damage field to [0, 1]</span>

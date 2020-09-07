@@ -141,20 +141,20 @@ notebook.
 .. parsed-literal::
 
     Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.5.6, 1 node, max. 1 thread]
-    Info    : Started on Sat Aug 22 21:13:23 2020
+    Info    : Started on Mon Sep  7 10:05:28 2020
     Info    : Reading 'ice-shelf.geo'...
     Info    : Done reading 'ice-shelf.geo'
     Info    : Meshing 1D...
     Info    : [  0 %] Meshing curve 1 (Circle)
     Info    : [ 50 %] Meshing curve 2 (Circle)
-    Info    : Done meshing 1D (0.000918 s)
+    Info    : Done meshing 1D (0.000671 s)
     Info    : Meshing 2D...
     Info    : Meshing surface 4 (Plane, Frontal-Delaunay)
-    Info    : Done meshing 2D (0.150106 s)
+    Info    : Done meshing 2D (0.10108 s)
     Info    : 3373 nodes 6744 elements
     Info    : Writing 'ice-shelf.msh'...
     Info    : Done writing 'ice-shelf.msh'
-    Info    : Stopped on Sat Aug 22 21:13:24 2020
+    Info    : Stopped on Mon Sep  7 10:05:28 2020
 
 
 The terminal output from gmsh gives us some diagnostics like how many
@@ -407,7 +407,7 @@ ice shelf is roughly in steady state.
 
 .. parsed-literal::
 
-    100%|██████████| 200/200 [07:19<00:00,  2.20s/it]
+    100%|██████████| 200/200 [04:23<00:00,  1.32s/it]
 
 
 The main loop to run the simulation consists of alternating calls to the
@@ -501,7 +501,7 @@ actual work of evaluating the integral.
 
 .. parsed-literal::
 
-    Flux: 38.13050177780159 km^3 / year
+    Flux: 38.10962034251982 km^3 / year
 
 
 To check the degree to which the system really is in steady state, we
@@ -517,7 +517,7 @@ set the accumulation rate to be zero.
 
 .. parsed-literal::
 
-    Influx: 38.15450891607242 km^3 / year
+    Influx: 38.14282879795248 km^3 / year
 
 
 The influx and outflux are reasonably close, with the influx slightly
@@ -679,7 +679,7 @@ to the other fields we've already seen.
 
 .. parsed-literal::
 
-    100%|██████████| 200/200 [03:48<00:00,  1.14s/it]
+    100%|██████████| 200/200 [03:58<00:00,  1.19s/it]
 
 
 Finally we'll plot the result. An interesting feature you can see in the

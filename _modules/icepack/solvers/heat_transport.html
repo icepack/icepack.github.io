@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -194,7 +193,8 @@
 <span class="c1"># TODO: Remove fetching &#39;E&#39; from fields dictionary once this naming scheme is</span>
 <span class="c1"># fully deprecated</span>
 
-<div class="viewcode-block" id="HeatTransportSolver"><a class="viewcode-back" href="../../../icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver">[docs]</a><span class="k">class</span> <span class="nc">HeatTransportSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HeatTransportSolver"><a class="viewcode-back" href="../../../icepack.solvers.heat_transport.html#icepack.solvers.HeatTransportSolver">[docs]</a><span class="k">class</span> <span class="nc">HeatTransportSolver</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -241,7 +241,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_energy_old</span> <span class="o">=</span> <span class="n">E_0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span> <span class="o">=</span> <span class="n">dt</span>
 
-<div class="viewcode-block" id="HeatTransportSolver.solve"><a class="viewcode-back" href="../../../icepack.solvers.heat_transport.html#icepack.solvers.heat_transport.HeatTransportSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HeatTransportSolver.solve"><a class="viewcode-back" href="../../../icepack.solvers.heat_transport.html#icepack.solvers.HeatTransportSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_solver&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

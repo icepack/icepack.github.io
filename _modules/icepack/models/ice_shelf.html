@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -198,7 +197,7 @@
 <span class="kn">from</span> <span class="nn">icepack.utilities</span> <span class="kn">import</span> <span class="n">add_kwarg_wrapper</span><span class="p">,</span> <span class="n">get_kwargs_alt</span>
 
 
-<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the gravitational part of the ice shelf action functional</span>
 
 <span class="sd">    The gravitational part of the ice shelf action functional is</span>
@@ -223,7 +222,7 @@
     <span class="k">return</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the terminus stress part of the ice shelf action functional</span>
 
 <span class="sd">    The power exerted due to stress at the calving terminus :math:`\Gamma` is</span>
@@ -242,7 +241,7 @@
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="IceShelf"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf">[docs]</a><span class="k">class</span> <span class="nc">IceShelf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf">[docs]</a><span class="k">class</span> <span class="nc">IceShelf</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for modelling the flow of floating ice shelves</span>
 
 <span class="sd">    This class provides functions that solve for the velocity and</span>
@@ -265,7 +264,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">terminus</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">terminus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">continuity</span> <span class="o">=</span> <span class="n">continuity</span>
 
-<div class="viewcode-block" id="IceShelf.action"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf.action"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the action functional that gives the ice shelf diagnostic</span>
 <span class="sd">        model as the Euler-Lagrange equations</span>
 
@@ -315,7 +314,7 @@
 
         <span class="k">return</span> <span class="n">viscosity</span> <span class="o">+</span> <span class="n">side_friction</span> <span class="o">-</span> <span class="n">gravity</span> <span class="o">-</span> <span class="n">terminus</span> <span class="o">+</span> <span class="n">penalty</span></div>
 
-<div class="viewcode-block" id="IceShelf.scale"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf.scale"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the positive, convex part of the action functional</span>
 
 <span class="sd">        The positive part of the action functional is used as a dimensional</span>
@@ -323,7 +322,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span></div>
 
-<div class="viewcode-block" id="IceShelf.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
 <span class="sd">        functional accurately</span>
 
@@ -339,7 +338,7 @@
         <span class="n">degree_h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">degree_u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_h</span></div>
 
-<div class="viewcode-block" id="IceShelf.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve for the ice velocity from the thickness</span>
 
 <span class="sd">        Parameters</span>
@@ -390,7 +389,7 @@
         <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">u</span></div>
 
-<div class="viewcode-block" id="IceShelf.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.ice_shelf.IceShelf.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IceShelf.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_shelf.html#icepack.models.IceShelf.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
 
 <span class="sd">        See :meth:`icepack.models.mass_transport.MassTransport.solve`</span>

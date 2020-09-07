@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -204,7 +203,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_kwargs_alt"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.get_kwargs_alt">[docs]</a><span class="k">def</span> <span class="nf">get_kwargs_alt</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">):</span>
+<div class="viewcode-block" id="get_kwargs_alt"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.get_kwargs_alt">[docs]</a><span class="k">def</span> <span class="nf">get_kwargs_alt</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get value from dictionary by key or by an alternate, deprecated key</span>
 
 <span class="sd">    This helper function is to aid in a refactoring of icepack where shorter</span>
@@ -222,24 +221,24 @@
                   <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">alt_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">keys_alt</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="facet_normal_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.facet_normal_2">[docs]</a><span class="k">def</span> <span class="nf">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<div class="viewcode-block" id="facet_normal_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.facet_normal_2">[docs]</a><span class="k">def</span> <span class="nf">facet_normal_2</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal component of the unit outward normal vector</span>
 <span class="sd">    to a mesh&quot;&quot;&quot;</span>
     <span class="n">ν</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">as_vector</span><span class="p">((</span><span class="n">ν</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ν</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
 
 
-<div class="viewcode-block" id="grad_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.grad_2">[docs]</a><span class="k">def</span> <span class="nf">grad_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="grad_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.grad_2">[docs]</a><span class="k">def</span> <span class="nf">grad_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal gradient of a 3D field&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">((</span><span class="n">q</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="div_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.div_2">[docs]</a><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="div_2"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.div_2">[docs]</a><span class="k">def</span> <span class="nf">div_2</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the horizontal divergence of a 3D field&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="eigenvalues"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.eigenvalues">[docs]</a><span class="k">def</span> <span class="nf">eigenvalues</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="eigenvalues"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.eigenvalues">[docs]</a><span class="k">def</span> <span class="nf">eigenvalues</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a pair of symbolic expressions for the largest and smallest</span>
 <span class="sd">    eigenvalues of a 2D rank-2 tensor&quot;&quot;&quot;</span>
     <span class="n">tr_a</span> <span class="o">=</span> <span class="n">tr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
@@ -249,7 +248,7 @@
     <span class="k">return</span> <span class="p">((</span><span class="n">tr_a</span> <span class="o">+</span> <span class="n">Δ</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">tr_a</span> <span class="o">-</span> <span class="n">Δ</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="diameter"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.diameter">[docs]</a><span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<div class="viewcode-block" id="diameter"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.diameter">[docs]</a><span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the diameter of the mesh in the L-infinity metric&quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data_ro</span>
     <span class="n">xmin</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">allreduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">op</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span>
@@ -257,7 +256,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="compute_surface"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.compute_surface">[docs]</a><span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_surface"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.compute_surface">[docs]</a><span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the ice surface elevation consistent with a given</span>
 <span class="sd">    thickness and bathymetry</span>
 
@@ -278,7 +277,7 @@
     <span class="k">return</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s_expr</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="depth_average"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.depth_average">[docs]</a><span class="k">def</span> <span class="nf">depth_average</span><span class="p">(</span><span class="n">q3d</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+<div class="viewcode-block" id="depth_average"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.depth_average">[docs]</a><span class="k">def</span> <span class="nf">depth_average</span><span class="p">(</span><span class="n">q3d</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the weighted depth average of a function on an extruded mesh&quot;&quot;&quot;</span>
     <span class="n">element3d</span> <span class="o">=</span> <span class="n">q3d</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span>
 
@@ -316,7 +315,7 @@
     <span class="k">return</span> <span class="n">q2d</span></div>
 
 
-<div class="viewcode-block" id="lift3d"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.lift3d">[docs]</a><span class="k">def</span> <span class="nf">lift3d</span><span class="p">(</span><span class="n">q2d</span><span class="p">,</span> <span class="n">Q3D</span><span class="p">):</span>
+<div class="viewcode-block" id="lift3d"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.lift3d">[docs]</a><span class="k">def</span> <span class="nf">lift3d</span><span class="p">(</span><span class="n">q2d</span><span class="p">,</span> <span class="n">Q3D</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a 3D function that extends the given 2D function as a constant</span>
 <span class="sd">    in the vertical</span>
 
@@ -345,7 +344,7 @@
     <span class="k">return</span> <span class="n">q3d</span></div>
 
 
-<div class="viewcode-block" id="add_kwarg_wrapper"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.utilities.add_kwarg_wrapper">[docs]</a><span class="k">def</span> <span class="nf">add_kwarg_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<div class="viewcode-block" id="add_kwarg_wrapper"><a class="viewcode-back" href="../../icepack.utilities.html#icepack.add_kwarg_wrapper">[docs]</a><span class="k">def</span> <span class="nf">add_kwarg_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;VAR_KEYWORD&#39;</span>
            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>

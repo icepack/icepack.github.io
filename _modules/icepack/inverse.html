@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -202,6 +201,7 @@
 <span class="kn">from</span> <span class="nn">.solvers</span> <span class="kn">import</span> <span class="n">FlowSolver</span>
 <span class="kn">from</span> <span class="nn">.utilities</span> <span class="kn">import</span> <span class="n">default_solver_parameters</span>
 
+
 <span class="k">def</span> <span class="nf">_bracket</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given a decreasing real function of a single variable, return a value</span>
 <span class="sd">    `t` such that `f(t) &lt; f(0)`, which can then be used for a more thorough</span>
@@ -221,7 +221,7 @@
     <span class="k">return</span> <span class="n">t</span>
 
 
-<div class="viewcode-block" id="InverseProblem"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseProblem">[docs]</a><span class="k">class</span> <span class="nc">InverseProblem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="InverseProblem"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseProblem">[docs]</a><span class="k">class</span> <span class="nc">InverseProblem</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Specifies an inverse problem</span>
 
 <span class="sd">    This object is used to specify an inverse problem, i.e. estimating a</span>
@@ -295,7 +295,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">regularization</span> <span class="o">=</span> <span class="n">regularization</span></div>
 
 
-<div class="viewcode-block" id="InverseSolver"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver">[docs]</a><span class="k">class</span> <span class="nc">InverseSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="InverseSolver"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.InverseSolver">[docs]</a><span class="k">class</span> <span class="nc">InverseSolver</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for approximating the solution of an inverse problem</span>
 
 <span class="sd">    This object stores most of the data needed to iteratively optimize the</span>
@@ -568,7 +568,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_search_direction_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="GaussNewtonCG"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.GaussNewtonCG">[docs]</a><span class="k">class</span> <span class="nc">GaussNewtonCG</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GaussNewtonCG"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.GaussNewtonCG">[docs]</a><span class="k">class</span> <span class="nc">GaussNewtonCG</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;State machine for solving the Gauss-Newton subproblem via the</span>
 <span class="sd">        preconditioned conjugate gradient method&quot;&quot;&quot;</span>
@@ -596,7 +596,9 @@
         <span class="n">φ</span><span class="p">,</span> <span class="n">ψ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">),</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">φ</span> <span class="o">*</span> <span class="n">ψ</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">derivative</span><span class="p">(</span><span class="n">dR</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
         <span class="n">residual_problem</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span>
-            <span class="n">M</span><span class="p">,</span> <span class="o">-</span><span class="n">dJ</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_fc_params</span>
+            <span class="n">M</span><span class="p">,</span> <span class="o">-</span><span class="n">dJ</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+            <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_fc_params</span><span class="p">,</span>
+            <span class="n">constant_jacobian</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
         <span class="n">residual_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span>
             <span class="n">residual_problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_solver_params</span>
@@ -647,7 +649,9 @@
         <span class="n">δz</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
         <span class="n">Gs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_product</span>
         <span class="n">delta_residual_problem</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalProblem</span><span class="p">(</span>
-            <span class="n">M</span><span class="p">,</span> <span class="n">Gs</span><span class="p">,</span> <span class="n">δz</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_fc_params</span>
+            <span class="n">M</span><span class="p">,</span> <span class="n">Gs</span><span class="p">,</span> <span class="n">δz</span><span class="p">,</span>
+            <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_fc_params</span><span class="p">,</span>
+            <span class="n">constant_jacobian</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
         <span class="n">delta_residual_solver</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">LinearVariationalSolver</span><span class="p">(</span>
             <span class="n">delta_residual_problem</span><span class="p">,</span> <span class="n">solver_parameters</span><span class="o">=</span><span class="n">solver</span><span class="o">.</span><span class="n">_solver_params</span>
@@ -775,10 +779,17 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Run the iteration until the objective functional does not decrease</span>
 <span class="sd">        to within tolerance&quot;&quot;&quot;</span>
         <span class="n">objective</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
-        <span class="k">while</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">&lt;</span> <span class="n">max_iterations</span><span class="p">)</span> <span class="ow">and</span>
-               <span class="p">(</span><span class="n">objective</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">objective</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective</span> <span class="o">&lt;=</span> <span class="n">tolerance</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy</span><span class="p">:</span>
+                <span class="k">return</span>
+
             <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="k">raise</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">ConvergenceError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Gauss-Newton CG failed to converge after </span><span class="si">{</span><span class="n">max_iterations</span><span class="si">}</span><span class="s2"> steps!&quot;</span>
+        <span class="p">)</span></div></div>
+
 
 <div class="viewcode-block" id="GaussNewtonSolver"><a class="viewcode-back" href="../../icepack.inverse.html#icepack.inverse.GaussNewtonSolver">[docs]</a><span class="k">class</span> <span class="nc">GaussNewtonSolver</span><span class="p">(</span><span class="n">InverseSolver</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implementation of `InverseSolver` using an approximation to the Hessian</span>
@@ -883,7 +894,7 @@
 <span class="sd">        low-rank approximation of the Hessian inverse to the derivative of the</span>
 <span class="sd">        objective functional. See Nocedal and Wright, Numerical Optimization,</span>
 <span class="sd">        2nd ed., algorithm 7.4.&quot;&quot;&quot;</span>
-        <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dJ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span>
+        <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_direction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_search_direction_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span>
 

@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -197,7 +196,7 @@
 
 
 <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
-    <span class="n">xres</span><span class="p">,</span> <span class="n">yres</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">res</span>
+    <span class="n">xres</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">bounds</span>
     <span class="n">xmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">xres</span><span class="p">,</span> <span class="n">bounds</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
     <span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">xres</span><span class="p">,</span> <span class="n">bounds</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
@@ -226,7 +225,7 @@
     <span class="k">return</span> <span class="n">interpolator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../icepack.interpolate.html#icepack.interpolate.interpolate">[docs]</a><span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../icepack.interpolate.html#icepack.interpolate">[docs]</a><span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interpolate an expression or a gridded data set to a function space</span>
 
 <span class="sd">    Parameters</span>

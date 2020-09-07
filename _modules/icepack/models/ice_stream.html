@@ -104,7 +104,6 @@
 <p class="caption"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -200,7 +199,7 @@
                                <span class="n">compute_surface</span> <span class="k">as</span> <span class="n">_compute_surface</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="gravity"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.gravity">[docs]</a><span class="k">def</span> <span class="nf">gravity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the gravitational part of the ice stream action functional</span>
 
 <span class="sd">    The gravitational part of the ice stream action functional is</span>
@@ -224,7 +223,7 @@
     <span class="k">return</span> <span class="o">-</span><span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">u</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="terminus"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.terminus">[docs]</a><span class="k">def</span> <span class="nf">terminus</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the terminal stress part of the ice stream action functional</span>
 
 <span class="sd">    The power exerted due to stress at the ice calving terminus :math:`\Gamma`</span>
@@ -255,7 +254,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">τ_I</span> <span class="o">-</span> <span class="n">τ_W</span><span class="p">)</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="IceStream"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream">[docs]</a><span class="k">class</span> <span class="nc">IceStream</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream">[docs]</a><span class="k">class</span> <span class="nc">IceStream</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for modelling the flow of grounded ice streams</span>
 
 <span class="sd">    This class provides functions that solve for the velocity, thickness,</span>
@@ -279,7 +278,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">terminus</span> <span class="o">=</span> <span class="n">add_kwarg_wrapper</span><span class="p">(</span><span class="n">terminus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">continuity</span> <span class="o">=</span> <span class="n">continuity</span>
 
-<div class="viewcode-block" id="IceStream.action"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.action"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the action functional that gives the ice stream</span>
 <span class="sd">        diagnostic model as the Euler-Lagrange equations&quot;&quot;&quot;</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">))</span>
@@ -298,10 +297,11 @@
         <span class="n">ds_t</span> <span class="o">=</span> <span class="n">ds</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">subdomain_id</span><span class="o">=</span><span class="n">ice_front_ids</span><span class="p">)</span>
         <span class="n">terminus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminus</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">ds_t</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">viscosity</span> <span class="o">+</span> <span class="n">friction</span> <span class="o">+</span> <span class="n">side_friction</span>
-                <span class="o">-</span> <span class="n">gravity</span> <span class="o">-</span> <span class="n">terminus</span> <span class="o">+</span> <span class="n">penalty</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">viscosity</span> <span class="o">+</span> <span class="n">friction</span> <span class="o">+</span> <span class="n">side_friction</span> <span class="o">-</span> <span class="n">gravity</span> <span class="o">-</span> <span class="n">terminus</span> <span class="o">+</span> <span class="n">penalty</span>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="IceStream.scale"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.scale"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the positive, convex part of the action functional</span>
 
 <span class="sd">        The positive part of the action functional is used as a dimensional</span>
@@ -309,7 +309,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viscosity</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">friction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span></div>
 
-<div class="viewcode-block" id="IceStream.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.quadrature_degree"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.quadrature_degree">[docs]</a>    <span class="k">def</span> <span class="nf">quadrature_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the quadrature degree necessary to integrate the action</span>
 <span class="sd">        functional accurately</span>
 
@@ -325,7 +325,7 @@
         <span class="n">degree_h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">ufl_element</span><span class="p">()</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">degree_u</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degree_h</span></div>
 
-<div class="viewcode-block" id="IceStream.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.diagnostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.diagnostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">diagnostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">dirichlet_ids</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve for the ice velocity from the thickness and surface</span>
 <span class="sd">        elevation</span>
 
@@ -378,14 +378,14 @@
         <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">u</span></div>
 
-<div class="viewcode-block" id="IceStream.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.prognostic_solve"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.prognostic_solve">[docs]</a>    <span class="k">def</span> <span class="nf">prognostic_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Propagate the ice thickness forward one timestep</span>
 
 <span class="sd">        See :meth:`icepack.models.mass_transport.ImplicitEuler.solve`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_transport</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">h_inflow</span><span class="o">=</span><span class="n">h_inflow</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IceStream.compute_surface"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.ice_stream.IceStream.compute_surface">[docs]</a>    <span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="IceStream.compute_surface"><a class="viewcode-back" href="../../../icepack.models.ice_stream.html#icepack.models.IceStream.compute_surface">[docs]</a>    <span class="k">def</span> <span class="nf">compute_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Compute surface moved from member function of models to&#39;</span>
                       <span class="s1">&#39; icepack module; call `icepack.compute_surface` instead&#39;</span>
                       <span class="s1">&#39; of e.g. `ice_stream.compute_surface`&#39;</span><span class="p">,</span>
