@@ -1,7 +1,0 @@
-icepack.models.hybrid module
-============================
-
-.. automodule:: icepack.models.hybrid
-   :members:
-   :undoc-members:
-   :show-inheritance:

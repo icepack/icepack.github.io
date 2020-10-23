@@ -1,287 +1,95 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>icepack &mdash; icepack 0.0.3 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overview" href="overview.html" /> 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Home | icepack</title>
+<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Home">
+<meta property="og:url" content="https://icepack.github.io/">
+<meta property="og:description" content="Welcome to the homepage for icepack!
+Icepack is a Python library for solving the equations of motion of glacier flow.
+Our goals are to lower than barrier to entry to using flow models if you're not an">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-05T15:58:59-07:00">
+<meta property="article:tag" content="mathjax">
 </head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="." title="icepack" rel="home">
+        <img src="images/logo.svg" alt="icepack" id="logo"></a></h1>
 
-<body class="wy-body-for-nav">
+        
 
-   
-  <div class="wy-grid-for-nav">
+        
+    <nav id="menu"><ul>
+<li class="active"><a href=".">Home<span class="sr-only"> (active)</span></a></li>
+                <li><a href="install/">Install</a></li>
+                <li><a href="tutorials/">Tutorials</a></li>
+                <li><a href="how-to/">How-to</a></li>
+                <li><a href="developers/">Development</a></li>
+                <li><a href="contact/">Contact</a></li>
+
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
 
-          
-            <a href="#" class="icon icon-home" alt="Documentation Home"> icepack
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                0.0.3
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Basics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-</ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">icepack</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>icepack</li>
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="icepack">
-<h1>icepack<a class="headerlink" href="#icepack" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the documentation for <cite>icepack</cite>, a python library for modeling the flow of ice sheets and glaciers!
-The main design goals for icepack are:</p>
-<dl class="simple">
-<dt>interactivity</dt><dd><p>You can run simulations and visualize the results from the python interpreter.</p>
-</dd>
-<dt>robustness</dt><dd><p>The numerical solvers should “just work” with little or no tweaking on the part of you, the user.</p>
-</dd>
-<dt>transparency</dt><dd><p>Each physics solver returns the relevant field and you can analyze or post-process it any way you want.</p>
-</dd>
-<dt>extensibility</dt><dd><p>Different parts of the model physics are relatively orthogonal to each other, and can be swapped out with little effort.</p>
-</dd>
-</dl>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Basics</span></p>
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Welcome to the homepage for <em>icepack</em>!
+Icepack is a Python library for solving the equations of motion of glacier flow.
+Our goals are to lower than barrier to entry to using flow models if you're not an expert in numerical simulation, and to produce a set of tools that will be useful to you if you are.</p>
+<p>Some features we're especially proud of include:</p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li>We have solvers for several flow models, from the simplest to the most complex.</li>
+<li>All the stress balance models are customizable -- changing the friction law is a few lines of code.</li>
+<li>We've got a state-of-the-art inverse solver using the Gauss-Newton algorithm.</li>
 </ul>
+<p>For examples of what icepack is capable of, have a look at the <a href="tutorials/">tutorials</a> and <a href="how-to/">how-to</a> guides.</p>
+<h3>How to use this site</h3>
+<p><strong>You're just getting started:</strong> See the <a href="install/">install</a> page for how to get icepack working on your machine.
+The <a href="tutorials/">tutorials</a> will show you how to set up and run simulations and analyze the results.</p>
+<p><strong>You're doing real research:</strong> The <a href="how-to/">how-to</a> guides assume you've already got off the ground, and you now want to do larger, more complex simulations and publish the results in peer-reviewed papers.
+If there are new features you'd like to see included in icepack, see the <a href="developers/">development</a> page.</p>
+<h3>Who we are</h3>
+<p>We're a team of researchers and PhD students, mostly at the University of Washington.
+If you're interested in using icepack and need some help getting started, we'd love to hear from you!
+If you already find icepack useful and want to get involved in development, we'll take all the help we can get!
+Please see the <a href="contact/">contact</a> page for how to get in touch.</p>
 </div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.00-meshes-functions.html">Meshes, functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.01-synthetic-ice-shelf.html">Synthetic ice shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.02-larsen-ice-shelf.html">Larsen Ice Shelf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.03-synthetic-ice-stream.html">Synthetic ice stream</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.04-ice-shelf-inverse.html">Inverse problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="icepack.demo.05-hybrid-ice-stream.html">Ice streams, once more</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">icepack</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-</ul>
-</div>
-
-
-           </div>
-           
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
     </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
+    
         
-        &copy; Copyright 2017, Daniel Shapero
-
-    </p>
-  </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+    },
+    displayAlign: 'center', // Change this to 'left' if you want left-aligned equations.
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}}
+    }
+});
+</script></article></main>
+</div>
     
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-  
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-
-  
-  
-    
-   
-
+            <script src="assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
 </body>
 </html>

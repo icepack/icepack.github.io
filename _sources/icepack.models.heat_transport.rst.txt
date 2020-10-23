@@ -1,7 +1,0 @@
-icepack.models.heat\_transport module
-=====================================
-
-.. automodule:: icepack.models.heat_transport
-   :members:
-   :undoc-members:
-   :show-inheritance:

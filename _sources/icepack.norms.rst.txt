@@ -1,7 +1,0 @@
-icepack.norms module
-====================
-
-.. automodule:: icepack.norms
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-icepack.models.damage\_transport module
-=======================================
-
-.. automodule:: icepack.models.damage_transport
-   :members:
-   :undoc-members:
-   :show-inheritance:

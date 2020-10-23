@@ -1,7 +1,0 @@
-icepack.models.ice\_stream module
-=================================
-
-.. automodule:: icepack.models.ice_stream
-   :members:
-   :undoc-members:
-   :show-inheritance:

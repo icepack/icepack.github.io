@@ -1,7 +1,0 @@
-icepack.solvers.damage\_solver module
-=====================================
-
-.. automodule:: icepack.solvers.damage_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:

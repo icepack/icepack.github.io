@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Style | icepack</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/style/">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Style">
+<meta property="og:url" content="https://icepack.github.io/style/">
+<meta property="og:description" content="Icepack is a community project and we gratefully accept contributions from anyone.
+At the same time, we also want to keep the code as readable and maintainable as possible and that involves a bit of d">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-18T08:25:57-07:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+        <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../">Home</a></li>
+                <li><a href="../install/">Install</a></li>
+                <li><a href="../tutorials/">Tutorials</a></li>
+                <li><a href="../how-to/">How-to</a></li>
+                <li><a href="../developers/">Development</a></li>
+                <li><a href="../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Style</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Icepack is a community project and we gratefully accept contributions from anyone.
+At the same time, we also want to keep the code as readable and maintainable as possible and that involves a bit of discipline.
+The Python development team has published a very general set of guidelines for Python coding style called <a href="https://pep8.org/">PEP8</a> and we try to conform to this as best we can.
+There are specific considerations around coding style for scientific software that we’ll try to address too.</p>
+<h4>Tooling</h4>
+<p>There are tools like black or YAPF for automatically formatting code.
+We sometimes use these tools on individual code patches, but we don' apply them to the entire code base because they're often too rigid.</p>
+<p>Other tools will merely point out potential problems and allow you to either ignore or fix them according to your judgment.
+For example, <a href="https://flake8.pycqa.org/en/latest/">flake8</a> can detect things like importing a module or a symbol but not actually using it, not putting the recommended amount of spacing around class or function definitions, and so forth.
+A common feature of these tools is that they spit out loads of warnings for perfectly innocuous code, so using them effectively means figuring out how to make them less annoyingly pedantic.
+The incantation we use for flake8 is:</p>
+<pre class="code literal-block"><span></span><code>flake8 --ignore<span class="o">=</span>E741,E501,W504 ./
+</code></pre>
+
+
+<p>The <code>--ignore</code> flag removes a few warning types that we don't care about.
+While flake8 looks mostly for stylistic problems, the tool <a href="https://github.com/PyCQA/pylint">pylint</a> goes much further.
+Pylint will suggest things like refactoring repeated code, splitting up long functions into smaller ones, and so forth.
+The pylint invocation that we've found works best is</p>
+<pre class="code literal-block"><span></span><code>pylint --disable<span class="o">=</span>invalid-name,non-ascii-name,attribute-defined-outside-init,invalid-unary-operand-type ./
+</code></pre>
+
+
+<p>This form disables several warning types that we don't consider helpful.
+For example, both pylint and flake8 suggest that single-character identifier names like <code>i</code> and <code>j</code> are ambiguous.
+But if you were writing code to do linear algebra, the variable names <code>i</code> and <code>j</code> match perfectly the symbols that are commonly used for the row and column of a matrix in numerical linear algebra textbooks.</p>
+<h4>Naming</h4>
+<p>An old quote that's become folklore by now: "There are only two hard things in computer science, cache invalidation and naming things."</p>
+<p>Throughout icepack, we employ two different guiding principles for how to name identifiers.
+Some code is meant to be read by everyone – glaciologists, curious oceanographers, or us, the maintainers of the project.
+For example, everyone will need to call the diagnostic and prognostic solve routines for some flow solver.
+In these parts of the code base it’s critical to use English names that clearly and succinctly indicate the role of the object, like <code>velocity</code>, <code>thickness</code>, <code>viscosity</code>, <code>solve</code>, and so forth.</p>
+<p>Other parts of the code are only meant to be read by someone who is familiar with the physics and mathematics.
+<strong>Mathematical code should look as much like the mathematics as possible.</strong>
+The internal details of what makes up the viscous part of the action functional for a particular ice flow model is a good example.
+If you are reading that code, you should know that it will involve quantities like the strain rate tensor, and you should be familiar with the fact that this field is usually denoted with a Greek letter epsilon in most books on continuum mechanics.
+In these parts of the code, we freely use single-character identifiers like <code>u</code> for velocity, as long as they match what appears in textbooks.
+We will even sometimes use Greek letters like <code>ε</code> or <code>φ</code> where appropriate.
+(Most text editors include shortcuts for inserting these symbols.
+For example, in vim, you can insert a Greek letter <code>φ</code> by entering insert mode, typing <code>ctrl + k</code>, and then typing <code>f</code>.
+In a Jupyter notebook, you can start typing <code>\phi</code> and then hit the tab key.)
+These are never to be used in the public user interface, but they can make the code more mnemonic and familiar once you know the mathematics.
+The kind of code where you would write like this will be written once, debugged twice, and read hundreds or thousands of times.
+Make it look like the math we all know and love, and it’ll be that much easier to pair up with your preexisting conceptions of what that code is for.</p>
+</div>
+    </div>
+    
+
+</article></main>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

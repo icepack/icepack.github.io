@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Install | icepack</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/install/">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Install">
+<meta property="og:url" content="https://icepack.github.io/install/">
+<meta property="og:description" content="This page will tell you how to install icepack and its main dependency, the Firedrake package.
+The installation procedure for Firedrake is a little unusual compared to a typical Python package.
+If you">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-14T13:40:48-07:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+        <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../">Home</a></li>
+                <li class="active"><a href=".">Install<span class="sr-only"> (active)</span></a></li>
+                <li><a href="../tutorials/">Tutorials</a></li>
+                <li><a href="../how-to/">How-to</a></li>
+                <li><a href="../developers/">Development</a></li>
+                <li><a href="../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Install</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This page will tell you how to install icepack and its main dependency, the <a href="https://firedrakeproject.org">Firedrake</a> package.
+The installation procedure for Firedrake is a little unusual compared to a typical Python package.
+If you run into difficulties installing Firedrake, please consult their <a href="https://firedrakeproject.org/download.html#system-requirements">website</a>, which includes a debugging guide and other information on system requirements.
+For other problems, you can always <a href="../contact/">get in touch</a> for more assistance.
+For more explanation, see below.</p>
+<h4>Quick start</h4>
+<p>Install Firedrake, building PETSc along the way:</p>
+<pre class="code literal-block"><span></span><code>curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python3 firedrake-install --install icepack
+</code></pre>
+
+
+<p>Activate the Firedrake virtual environment:</p>
+<pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
+</code></pre>
+
+
+<p>Run one of the icepack unit tests to make sure it works:</p>
+<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
+pytest -s test/ice_shelf_test.py
+</code></pre>
+
+
+<p>Your icepack installation lives in the directory <code>$VIRTUAL_ENV/src/icepack</code>.</p>
+<h4>Run the demos</h4>
+<p>Install the mesh generator <a href="http://gmsh.info/">gmsh</a>.
+Binaries are available on their website, or you can use your system package manager.
+On MacOS,</p>
+<pre class="code literal-block"><span></span><code>brew install gmsh
+</code></pre>
+
+
+<p>On Debian, Mint, or Ubuntu:</p>
+<pre class="code literal-block"><span></span><code>sudo apt-get install gmsh
+</code></pre>
+
+
+<p>Now make a Jupyter kernel for firedrake:</p>
+<pre class="code literal-block"><span></span><code>pip3 install ipykernel
+python3 -m ipykernel install --user --name<span class="o">=</span>firedrake
+</code></pre>
+
+
+<p>Run the demo notebooks:</p>
+<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/demo
+</code></pre>
+
+
+<h4>Comments</h4>
+<p>Most python projects use the simple <code>python setup.py install</code> formula to build and install everything.
+Firedrake is appreciably more complex -- it consists of several dependent sub-packages along with a complete PETSc installation -- and thus has its own custom build process.
+Rather than install the project in your system python package directory, Firedrake's install script builds it inside an isolated <a href="https://docs.python.org/3/tutorial/venv.html"><em>virtual environment</em></a>.
+Python virtual environments were created to solve problems of conflicting package versions possibly breaking installed libraries.
+Rather than install every Python package globally, you can create an isolated virtual environment for one particular package.
+This environment includes a Python executable and all of the package's dependencies.
+Virtual environments can be activated and deactivated for a particular shell session.
+The added layer of isolation keeps one package from breaking other packages on the system or doing anything that's both undesirable and hard to roll back.</p>
+<p>However, it does introduce an annoying layer of bureaucracy -- you have to manually activate the virtual environment every time you want to use it by invoking:</p>
+<pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
+</code></pre>
+
+
+<p>Again, activating a virtual environment affects only the current shell session and doesn't do anything permanent.</p>
+<p>You can save yourself the trouble of remembering where the activate script lives by adding a function like this to your <code>.bashrc</code> or <code>.bash_profile</code>:</p>
+<pre class="code literal-block"><span></span><code>firedrake-env<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">source</span> &lt;/absolute/path/to/virtual/environment&gt;/bin/activate
+<span class="o">}</span>
+</code></pre>
+
+
+<p>When you type <code>firedrake-env</code> at the terminal, the firedrake virtual environment will be activated.
+If you find yourself using lots of different virtual environments, you might also like <a href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>
+<p>Firedrake uses the library <a href="https://www.mcs.anl.gov/petsc/">PETSc</a> for many of its internal data structures (meshes, vectors, matrices).
+PETSc has loads of optional features, chiefly interfaces to other computational libraries.
+Some of these features are mandatory for firedrake.
+The Firedrake install script will build its own PETSc installation with the right configuration, but this could create problems if you already do have PETSc installed on your system.
+In that case, you will need to unset <code>$PETSC_DIR</code> and <code>$PETSC_ARCH</code> while installing Firedrake and every time you activate the virtual environment.
+You can add an extra line to the <code>firedrake-env</code> command above to unset these variables if you want to keep a pre-existing PETSc installation.
+While installing Firedrake will fail with an error if you have a pre-existing PETSc installation, trying to run a script that uses Firedrake will instead crash with a segmentation fault if you have not first unset the PETSc environment variables.</p>
+<p>To run all of the demos, you'll need to have the mesh generator gmsh.
+Gmsh will take a description of the outline of some domain in 2D and calculate a triangulation of the interior.
+Since the shape of most real glaciers is very irregular and thus can't easily be represented by a rectilinear grid, a tool like gmsh is indispensible.
+Gmsh is available through the package managers of most operating systems or as a binary executable from the project website.</p>
+</div>
+    </div>
+    
+
+</article></main>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

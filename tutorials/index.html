@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Tutorials | icepack</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/tutorials/">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Tutorials">
+<meta property="og:url" content="https://icepack.github.io/tutorials/">
+<meta property="og:description" content="Tutorials
+Meshes, functions
+Synthetic ice sheet
+Synthetic ice shelf
+Larsen Ice Shelf
+Synthetic ice stream
+Inverse problems
+Ice streams, once more
+
+This page is for you if you're just starting out with">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-09T20:58:16-08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+        <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../">Home</a></li>
+                <li><a href="../install/">Install</a></li>
+                <li class="active"><a href=".">Tutorials<span class="sr-only"> (active)</span></a></li>
+                <li><a href="../how-to/">How-to</a></li>
+                <li><a href="../developers/">Development</a></li>
+                <li><a href="../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<div class="sidebar">
+<p class="sidebar-title">Tutorials</p>
+<p><a class="reference external" href="../notebooks/tutorials/00-meshes-functions/">Meshes, functions</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/01-synthetic-ice-sheet/">Synthetic ice sheet</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/02-synthetic-ice-shelf/">Synthetic ice shelf</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/03-larsen-ice-shelf/">Larsen Ice Shelf</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/04-synthetic-ice-stream/">Synthetic ice stream</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/05-ice-shelf-inverse/">Inverse problems</a></p>
+<p><a class="reference external" href="../notebooks/tutorials/06-hybrid-ice-stream/">Ice streams, once more</a></p>
+</div>
+<p>This page is for you if you're just starting out with icepack and you want to learn how to use it.
+These tutorials demonstate all of the functionality of the library that you will need to set up simulations of glacier flow.
+These pages are rendered from Jupyter notebooks that come with the icepack source distribution under the directory <code class="docutils literal">notebooks/tutorials/</code>.
+You can and should run all of this code yourself.</p>
+<p>At this point, you should have a working installation of Firedrake and icepack, a Jupyter kernel for Firedrake, and you should be able to run the tutorial notebooks.
+See the <a class="reference external" href="../install/">install</a> page for instructions.</p>
+<p>To understanding what's in these tutorials, you'll need to know a bit about glacier physics.
+We'll expect that you're familiar with:</p>
+<ul class="simple">
+<li><p>mass, momentum, and heat transport</p></li>
+<li><p>the Stokes equations and simplified models</p></li>
+<li><p>Glen's flow law</p></li>
+</ul>
+<p>Additionally, you should know going in that <strong>all quantities are reported in units of megapascals - meters - years</strong>.
+We borrowed this slightly unconventional unit system from the package <a class="reference external" href="http://elmerice.elmerfem.org/">Elmer/Ice</a>.
+In this unit system, most of the physical constants and quantities that we care about live in a reasonable numerical range.
+For example, the ice fluidity factor <cite>A</cite> in Glen's flow law is usually between 1 and 50.</p>
+<p>The goal of the tutorials is to get you off the ground.
+If you already have a good grasp of what icepack does and you want to use it to solve new and interesting problems, you can look at our collection of how-to guides.
+Those pages will show you the ingredients for more realistic simulations that you might use in original research for publication in peer-reviewed journal articles.</p>
+</div>
+    </div>
+    
+
+</article></main>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

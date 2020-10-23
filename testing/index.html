@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Testing | icepack</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/testing/">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Testing">
+<meta property="og:url" content="https://icepack.github.io/testing/">
+<meta property="og:description" content="All of the physics solvers in icepack are subject to a battery of tests.
+When you submit new code to icepack, either to add a new feature or to fix a bug, we'll ask you to write tests for that code as">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-17T16:48:40-07:00">
+<meta property="article:tag" content="mathjax">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+        <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../">Home</a></li>
+                <li><a href="../install/">Install</a></li>
+                <li><a href="../tutorials/">Tutorials</a></li>
+                <li><a href="../how-to/">How-to</a></li>
+                <li><a href="../developers/">Development</a></li>
+                <li><a href="../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Testing</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>All of the physics solvers in icepack are subject to a battery of tests.
+When you submit new code to icepack, either to add a new feature or to fix a bug, we'll ask you to write tests for that code as well.
+If you're fixing a bug, clearly our existing test suite didn't catch it.
+A good test for a bug fix is something that fails on the old broken code but succeeds on the new fixed code.
+Writing tests for completely new code is harder and this page aims to offer some guidance.</p>
+<p>The goal of a test suite is to check the correctness of the algorithms on simplified problems in the hopes of detecting errors in the implementation.
+For example, for a floating ice shelf where the fluidity is constant and the ice thickness decreases linearly towards the ice front, the shallow shelf equations can be solved analytically.
+To check that the diagnostic solver is working correctly, the numerically computed solution is compared against the exact solution, and a significant departure indicates a mistake.</p>
+<p><strong>Designing effective tests for scientific software is difficult because the answers we get are only approximations.</strong>
+Our results never match analytical solutions perfectly, so at what point should a given mismatch be considered a failure?
+This breakdown point can be calculated only for the simplest PDEs and spatial domains.</p>
+<p>Instead, we know from finite element theory that the solutions should converge as $\mathcal{O}(\delta x^p)$ where $\delta x$ is the mesh spacing and $p$ is some exponent depending on the problem and discretization.
+We can then take a sequence of meshes and do a log-log fit of the errors against $\delta x$ to check that this asymptotic behavior is indeed achieved.
+But the asymptotic estimates never quite hold exactly.
+For example, using piecewise linear finite elements and the backward Euler scheme to solve the mass transport equation should give errors that decrease as $\mathcal{O}(\delta x)$.
+What if, instead, you find that the errors decay like $\delta x^{0.95}$?
+Should that indicate failure, even if it suggests that the numerical solutions do get more accurate?
+There isn't really a good answer for this – we just have to do our best and be as critical as we can.</p>
+<p>Another difficult issue is <em>generalizability</em>.
+Does the convergence of a solver on simplified problems imply that it will also perform well on harder problems?
+When no analytical solution is available at all, how should one design a useful test?
+The best we can hope for in this situation is to rely on mathematical properties of the solution, such as conservation laws or variational principles.
+Rather than check against an analytical solution, these properties serve as sanity checks.
+For example, given an approximate solution to the shallow shelf equations, one can take a random perturbation to it and check that this perturbation has a higher value of the action functional due to the minimization property.</p>
+</div>
+    </div>
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+    },
+    displayAlign: 'center', // Change this to 'left' if you want left-aligned equations.
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}}
+    }
+});
+</script></article></main>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

@@ -1,7 +1,0 @@
-icepack.optimization module
-===========================
-
-.. automodule:: icepack.optimization
-   :members:
-   :undoc-members:
-   :show-inheritance:
