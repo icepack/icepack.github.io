@@ -31,7 +31,7 @@ import icepack, icepack.plot
 
 Inverse problems¶In this demo, we'll revisit the Larsen Ice">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2020-10-22T08:38:27-07:00">
+<meta property="article:published_time" content="2020-10-23T12:24:50-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -253,7 +253,7 @@ We can then use a descent method to iterate towards a critical point, which is h
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">thickness_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_bedmachine_antarctica</span><span class="p">()</span>
-<span class="n">thickness</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'netcdf:'</span> <span class="o">+</span> <span class="n">thickness_filename</span> <span class="o">+</span> <span class="s1">':thickness'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'netcdf:</span><span class="si">{</span><span class="n">thickness_filename</span><span class="si">}</span><span class="s1">:thickness'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
 
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">h0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
@@ -286,10 +286,10 @@ The fidelity of the measurements tells us how good a fit to the data we should e
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">velocity_filename</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_measures_antarctica</span><span class="p">()</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'netcdf:'</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">':VX'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'netcdf:'</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">':VY'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
-<span class="n">stdx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'netcdf:'</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">':ERRX'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
-<span class="n">stdy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'netcdf:'</span> <span class="o">+</span> <span class="n">velocity_filename</span> <span class="o">+</span> <span class="s1">':ERRY'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">vx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'netcdf:</span><span class="si">{</span><span class="n">velocity_filename</span><span class="si">}</span><span class="s1">:VX'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">vy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'netcdf:</span><span class="si">{</span><span class="n">velocity_filename</span><span class="si">}</span><span class="s1">:VY'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">stdx</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'netcdf:</span><span class="si">{</span><span class="n">velocity_filename</span><span class="si">}</span><span class="s1">:ERRX'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">stdy</span> <span class="o">=</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'netcdf:</span><span class="si">{</span><span class="n">velocity_filename</span><span class="si">}</span><span class="s1">:ERRY'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
 
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">u_obs</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">interpolate</span><span class="p">((</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span> <span class="n">V</span><span class="p">)</span>
@@ -514,8 +514,8 @@ The expected decrease should be negative on every step -- after all, we're tryin
 If the expected decrease becomes positive, that suggests that we've found a local minimum and no more improvement is possible.
 This is an important number to watch because it can tell you whether or not it's worthwhile to take more iterations of the solver.</p>
 <p>We've also passed some extra arguments to <code>assemble</code> to specify the quadrature rule for calculating the expected decrease.
-By default, the assembly routine will be very conservative and use a much more accurate quadrature rule than we really need.
-So this step isn't strictly necessary, it's just good practice.</p>
+The assembly routine will default to being very conservative and use a much more accurate quadrature rule than we really need and throw a warning about this behavior.
+This step isn't strictly necessary, it's just good practice.</p>
 
 </div>
 </div>
@@ -525,7 +525,9 @@ So this step isn't strictly necessary, it's just good practice.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qdegree</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">log_fluidity</span><span class="o">=</span><span class="n">θ</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qdegree</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">quadrature_degree</span><span class="p">(</span>
+    <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">log_fluidity</span><span class="o">=</span><span class="n">θ</span>
+<span class="p">)</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'quadrature_degree'</span><span class="p">:</span> <span class="n">qdegree</span><span class="p">}</span>
 
 <span class="n">area</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">firedrake</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span><span class="p">(</span><span class="n">mesh</span><span class="p">))</span>
@@ -533,11 +535,11 @@ So this step isn't strictly necessary, it's just good practice.</p>
     <span class="n">dJ</span> <span class="o">=</span> <span class="n">inverse_solver</span><span class="o">.</span><span class="n">gradient</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">inverse_solver</span><span class="o">.</span><span class="n">search_direction</span>
     <span class="n">dJ_dq</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">dJ</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-    <span class="n">Δ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">dJ_dq</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
+    <span class="n">Δ</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">dJ_dq</span><span class="p">,</span> <span class="n">form_compiler_parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 
-    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">, </span><span class="si">{:g}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Δ</span><span class="p">))</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_solver</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">inverse_solver</span><span class="o">.</span><span class="n">regularization</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">E</span> <span class="o">/</span> <span class="n">area</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">R</span> <span class="o">/</span> <span class="n">area</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">Δ</span> <span class="o">/</span> <span class="n">area</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 </pre></div>
 
     </div>

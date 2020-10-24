@@ -29,7 +29,7 @@ from firedrake import (
 )
 impo">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2020-10-22T08:38:21-07:00">
+<meta property="article:published_time" content="2020-10-23T11:12:27-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -94,7 +94,7 @@ impo">
 <p>In this demo we'll run an idealized experiment inspired by the paper <a href="https://www.nature.com/articles/ngeo201"><em>Fjord insertion into continental margins
 driven by topographic steering of ice</em></a> by Kessler et al. (2008).
 Their work simulated the evolution of an entire ice sheet on millenial timescales, with the added twist that the bedrock topography freely evolved under the influence of erosion. We will simulate an ice sheet on a similar bedrock topography, but the bed will stay constant and we will not include erosion.</p>
-<p>Starting with a rough guess for the initial ice thickness, we'll solve the <em>diagnostic equation</em> for the velocity througout the ice sheet.
+<p>Starting with a rough guess for the initial ice thickness, we'll solve the <em>diagnostic equation</em> for the velocity throughout the ice sheet.
 We'll then solve the <em>prognostic equation</em> to obtain the ice thickness at a slightly later time.
 By assuming a given rate of ice accumulation and melting, we can successively solve the prognostic and diagnostic equations until the system is close to a steady state.</p>
 <p>The whole simulation can be divided into three parts:</p>
@@ -729,7 +729,7 @@ We'll save information about how much the ice thickness changes with time to lat
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 50/50 [01:07&lt;00:00,  1.35s/it]
+<pre>100%|██████████| 50/50 [01:09&lt;00:00,  1.39s/it]
 </pre>
 </div>
 </div>
@@ -979,7 +979,10 @@ If you want to experiment with this example a bit more, you can run this noteboo
 <li>change the depth of the bedrock valleys or height of the ridge</li>
 <li>change the initial ice sheet geometry</li>
 </ul>
-<p>In the next demo, we'll show how to simulate the evolution of an idealized floating ice shelf.</p>
+<p>The mass balance parameters are in units of meters/year.
+A typical accumulation rate deep in the interior of Antarctica would be on the order of 7 cm/year, whereas southeast Greenland can have rates closer to 50 cm / year to 1.5 m / year.
+You can learn more about the mass balance of glaciers around the world from the <a href="https://essd.copernicus.org/articles/10/1959/2018/">SUMup</a> database.
+To make things even more interesting, you can try changing the accumulation rate or lapse rate as a function of time to simulate glacial cycles.</p>
 
 </div>
 </div>

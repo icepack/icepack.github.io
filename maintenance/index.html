@@ -64,11 +64,14 @@ git remote add <span class="se">\</span>
 
 <p>Next, you'll want to activate the virtual environment and install both icepack and the dependencies for building the documentation in editable mode:</p>
 <pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;/path/to/firedrake&gt;/bin/activate
-pip3 install --editable .<span class="s2">"[doc]"</span>
+pip3 install --editable &lt;/path/to/icepack&gt;<span class="s2">"[doc]"</span>
 </code></pre>
 
 
-<p>The <code>--editable</code> flag guarantees that changes you make to the source code get seen automatically whenever you import icepack; without this flag, you'd have to reinstall again every time you made changes.</p>
+<p>The <code>--editable</code> flag guarantees that changes you make to the source code get seen automatically whenever you import icepack.
+Without this flag, you'd have to reinstall again every time you made changes.
+The flag <code>"[doc]"</code> at the end tells pip to also install the dependencies you'll need to build the icepack documentation.
+This is part of a <a href="https://setuptools.readthedocs.io/en/latest/references/keywords.html">general mechanism</a> of Python's setuptools for specifying optional dependencies.</p>
 <p>In the unfortunate event that your Firedrake installation becomes unusable, for example because your operating system decided to upgrade Python out from under you, you can delete the entire Firedrake virtual environment and reinstall a fresh one without losing any changes you made to your branch of icepack.</p>
 <h4>Editors and IDEs</h4>
 <p>Nearly every editor nowadays offers syntax highlighting for Python.
