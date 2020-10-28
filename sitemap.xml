@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://icepack.github.io/</loc>
-  <lastmod>2020-10-22T15:38:00Z</lastmod>
+  <lastmod>2020-10-27T19:56:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/archive.html</loc>
-  <lastmod>2020-10-22T15:38:00Z</lastmod>
+  <lastmod>2020-10-27T19:56:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/blog/</loc>
@@ -80,6 +80,10 @@
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream/</loc>
   <lastmod>2020-10-22T15:38:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://icepack.github.io/physics/</loc>
+  <lastmod>2020-10-27T19:56:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/pull-requests/</loc>
