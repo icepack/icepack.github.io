@@ -14,6 +14,8 @@
 
     `Checkpointing </notebooks/how-to/02-checkpointing/>`_
 
+    `Mesh refinement </notebooks/how-to/03-adaptivity/>`_
+
 
 
 This page is for you if you've already mastered the content in the icepack tutorials, and now you want to run large, complex, and realistic simulations of glaciers and ice sheets.
