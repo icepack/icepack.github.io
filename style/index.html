@@ -23,7 +23,7 @@ At the same time, we also want to keep the code as readable and maintainable as 
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -52,34 +52,12 @@ At the same time, we also want to keep the code as readable and maintainable as 
 At the same time, we also want to keep the code as readable and maintainable as possible and that involves a bit of discipline.
 The Python development team has published a very general set of guidelines for Python coding style called <a href="https://pep8.org/">PEP8</a> and we try to conform to this as best we can.
 There are specific considerations around coding style for scientific software that we’ll try to address too.</p>
-<h4>Tooling</h4>
-<p>There are tools like black or YAPF for automatically formatting code.
-We sometimes use these tools on individual code patches, but we don' apply them to the entire code base because they're often too rigid.</p>
-<p>Other tools will merely point out potential problems and allow you to either ignore or fix them according to your judgment.
-For example, <a href="https://flake8.pycqa.org/en/latest/">flake8</a> can detect things like importing a module or a symbol but not actually using it, not putting the recommended amount of spacing around class or function definitions, and so forth.
-A common feature of these tools is that they spit out loads of warnings for perfectly innocuous code, so using them effectively means figuring out how to make them less annoyingly pedantic.
-The incantation we use for flake8 is:</p>
-<pre class="code literal-block"><span></span><code>flake8 --ignore<span class="o">=</span>E741,E501,W504 ./
-</code></pre>
-
-
-<p>The <code>--ignore</code> flag removes a few warning types that we don't care about.
-While flake8 looks mostly for stylistic problems, the tool <a href="https://github.com/PyCQA/pylint">pylint</a> goes much further.
-Pylint will suggest things like refactoring repeated code, splitting up long functions into smaller ones, and so forth.
-The pylint invocation that we've found works best is</p>
-<pre class="code literal-block"><span></span><code>pylint --disable<span class="o">=</span>invalid-name,non-ascii-name,attribute-defined-outside-init,invalid-unary-operand-type ./
-</code></pre>
-
-
-<p>This form disables several warning types that we don't consider helpful.
-For example, both pylint and flake8 suggest that single-character identifier names like <code>i</code> and <code>j</code> are ambiguous.
-But if you were writing code to do linear algebra, the variable names <code>i</code> and <code>j</code> match perfectly the symbols that are commonly used for the row and column of a matrix in numerical linear algebra textbooks.</p>
-<h4>Naming</h4>
+<h4>Variable naming</h4>
 <p>An old quote that's become folklore by now: "There are only two hard things in computer science, cache invalidation and naming things."</p>
 <p>Throughout icepack, we employ two different guiding principles for how to name identifiers.
 Some code is meant to be read by everyone – glaciologists, curious oceanographers, or us, the maintainers of the project.
 For example, everyone will need to call the diagnostic and prognostic solve routines for some flow solver.
-In these parts of the code base it’s critical to use English names that clearly and succinctly indicate the role of the object, like <code>velocity</code>, <code>thickness</code>, <code>viscosity</code>, <code>solve</code>, and so forth.</p>
+In these parts of the code base it's critical to use English names that clearly and succinctly indicate the role of the object, like <code>velocity</code>, <code>thickness</code>, <code>viscosity</code>, <code>solve</code>, and so forth.</p>
 <p>Other parts of the code are only meant to be read by someone who is familiar with the physics and mathematics.
 <strong>Mathematical code should look as much like the mathematics as possible.</strong>
 The internal details of what makes up the viscous part of the action functional for a particular ice flow model is a good example.
@@ -91,7 +69,26 @@ For example, in vim, you can insert a Greek letter <code>φ</code> by entering i
 In a Jupyter notebook, you can start typing <code>\phi</code> and then hit the tab key.)
 These are never to be used in the public user interface, but they can make the code more mnemonic and familiar once you know the mathematics.
 The kind of code where you would write like this will be written once, debugged twice, and read hundreds or thousands of times.
-Make it look like the math we all know and love, and it’ll be that much easier to pair up with your preexisting conceptions of what that code is for.</p>
+Make it look like the math we all know and love, and it'll be that much easier to pair up with your preexisting conceptions of what that code is for.</p>
+<h4>Style</h4>
+<p>We use the automatic formatter <a href="https://black.readthedocs.io/en/stable/">black</a> for all code in icepack.
+Black will do things like normalize all quotes, wrap long lines, and generally fix annoying stylistic issues that aren't worth the time you spend on them.
+The style that it enforces isn't perfect but it helps reduce entropy growth.
+To run it, first <code>pip3 install black</code> and then do:</p>
+<pre class="code literal-block"><span></span><code>black ./
+</code></pre>
+
+<p>This will edit any Python source files in the current directory in-place.
+Formatting is part of the test suite -- pull requests will fail if the code hasn't been formatted.</p>
+<p>We've also developed a few coding conventions outside of what black enforces:</p>
+<ul>
+<li>In internal code, use <a href="https://docs.python.org/3/library/operator.html#operator.itemgetter">operator.itemgetter</a> from the standard library to fetch several values from a dictionary by key.
+This pattern appears everywhere internally because all physical fields are passed by keyword to the various solvers.</li>
+<li>In tutorial code, fetch every value separately only its own line.</li>
+<li>Use <a href="https://docs.python.org/3/tutorial/inputoutput.html">f-strings</a> instead of <code>.format</code>.</li>
+<li>When a line of code grows too long, find sub-expressions that can be given obvious and informative names and hoist them into local variables, even if they'll only be used once.</li>
+</ul>
+<p>These aren't universal rules that apply to all Python code, they're just cases where there's more than one way to do something and we had to pick a way in order to keep the code consistent.</p>
 </div>
     </div>
     

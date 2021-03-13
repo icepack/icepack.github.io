@@ -24,7 +24,7 @@ If you">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -60,17 +60,14 @@ For more explanation, see below.</p>
 python3 firedrake-install --install icepack
 </code></pre>
 
-
 <p>Activate the Firedrake virtual environment:</p>
 <pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
 </code></pre>
-
 
 <p>Run one of the icepack unit tests to make sure it works:</p>
 <pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
 pytest -s test/ice_shelf_test.py
 </code></pre>
-
 
 <p>Your icepack installation lives in the directory <code>$VIRTUAL_ENV/src/icepack</code>.</p>
 <h4>Run the demos</h4>
@@ -80,22 +77,19 @@ On MacOS,</p>
 <pre class="code literal-block"><span></span><code>brew install gmsh
 </code></pre>
 
-
 <p>On Debian, Mint, or Ubuntu:</p>
 <pre class="code literal-block"><span></span><code>sudo apt-get install gmsh
 </code></pre>
-
 
 <p>Now make a Jupyter kernel for firedrake:</p>
 <pre class="code literal-block"><span></span><code>pip3 install ipykernel
 python3 -m ipykernel install --user --name<span class="o">=</span>firedrake
 </code></pre>
 
-
 <p>Run the demo notebooks:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/demo
+<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/notebooks
+jupyter notebook
 </code></pre>
-
 
 <h4>Comments</h4>
 <p>Most python projects use the simple <code>python setup.py install</code> formula to build and install everything.
@@ -110,14 +104,12 @@ The added layer of isolation keeps one package from breaking other packages on t
 <pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
 </code></pre>
 
-
 <p>Again, activating a virtual environment affects only the current shell session and doesn't do anything permanent.</p>
 <p>You can save yourself the trouble of remembering where the activate script lives by adding a function like this to your <code>.bashrc</code> or <code>.bash_profile</code>:</p>
 <pre class="code literal-block"><span></span><code>firedrake-env<span class="o">()</span> <span class="o">{</span>
     <span class="nb">source</span> &lt;/absolute/path/to/virtual/environment&gt;/bin/activate
 <span class="o">}</span>
 </code></pre>
-
 
 <p>When you type <code>firedrake-env</code> at the terminal, the firedrake virtual environment will be activated.
 If you find yourself using lots of different virtual environments, you might also like <a href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>

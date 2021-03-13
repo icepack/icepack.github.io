@@ -23,7 +23,7 @@ Working collaboratively on software presents new challenges, like how to keep up
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -62,17 +62,20 @@ git remote add <span class="se">\</span>
     git@github.com:&lt;your GitHub username&gt;/icepack.git
 </code></pre>
 
-
 <p>Next, you'll want to activate the virtual environment and install both icepack and the dependencies for building the documentation in editable mode:</p>
 <pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;/path/to/firedrake&gt;/bin/activate
 pip3 install --editable &lt;/path/to/icepack&gt;<span class="s2">"[doc]"</span>
 </code></pre>
 
-
 <p>The <code>--editable</code> flag guarantees that changes you make to the source code get seen automatically whenever you import icepack.
 Without this flag, you'd have to reinstall again every time you made changes.
 The flag <code>"[doc]"</code> at the end tells pip to also install the dependencies you'll need to build the icepack documentation.
 This is part of a <a href="https://setuptools.readthedocs.io/en/latest/references/keywords.html">general mechanism</a> of Python's setuptools for specifying optional dependencies.</p>
+<p>As icepack is updated, you may find that you need to check for and install any missing dependencies.
+To do this, navigate to the icepack directory and run:</p>
+<pre class="code literal-block"><span></span><code>pip3 install -e .
+</code></pre>
+
 <p>In the unfortunate event that your Firedrake installation becomes unusable, for example because your operating system decided to upgrade Python out from under you, you can delete the entire Firedrake virtual environment and reinstall a fresh one without losing any changes you made to your branch of icepack.</p>
 <h4>Editors and IDEs</h4>
 <p>Nearly every editor nowadays offers syntax highlighting for Python.
@@ -90,7 +93,6 @@ In order to pull the latest changes into your branch, you can run the following 
 git rebase origin/master
 </code></pre>
 
-
 <p>The git <code>rebase</code> command is a really powerful tool which you should read more about.
 What it does is effectively rewrite the commit history to put the changes in your branch on top of any changes from the master branch.
 The nice part about <code>rebase</code> as opposed to <code>merge</code> is that it won't create an unnecessary merge commit, unless there are conflicts to deal with.</p>
@@ -98,7 +100,6 @@ The nice part about <code>rebase</code> as opposed to <code>merge</code> is that
 This is best done through an <em>interactive</em> rebase:</p>
 <pre class="code literal-block"><span></span><code>git rebase --interactive HEAD~&lt;number of commits&gt;
 </code></pre>
-
 
 <p>Git will then fire up the text editor of your choice and present you with a list of the number of commits you selected.
 You can then choose to <code>pick</code> those commits, <code>edit</code> the changes in that commit, <code>squash</code> two commits into each other, or change the order in which those commits were applied.
