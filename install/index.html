@@ -24,7 +24,7 @@ If you">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -34,7 +34,6 @@ If you">
 <li><a href="../">Home</a></li>
                 <li class="active"><a href=".">Install<span class="sr-only"> (active)</span></a></li>
                 <li><a href="../tutorials/">Tutorials</a></li>
-                <li><a href="../how-to/">How-to</a></li>
                 <li><a href="../developers/">Development</a></li>
                 <li><a href="../physics/">Physics</a></li>
                 <li><a href="../contact/">Contact</a></li>
@@ -43,11 +42,7 @@ If you">
 
     
     
-    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Install</a></h1>
-
-        
-
-    </header><div class="e-content entry-content" itemprop="articleBody text">
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
 <p>This page will tell you how to install icepack and its main dependency, the <a href="https://firedrakeproject.org">Firedrake</a> package.
 The installation procedure for Firedrake is a little unusual compared to a typical Python package.
@@ -134,9 +129,7 @@ Gmsh is available through the package managers of most operating systems or as a
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

@@ -24,7 +24,7 @@ When you thi">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -34,7 +34,6 @@ When you thi">
 <li><a href="../">Home</a></li>
                 <li><a href="../install/">Install</a></li>
                 <li><a href="../tutorials/">Tutorials</a></li>
-                <li><a href="../how-to/">How-to</a></li>
                 <li><a href="../developers/">Development</a></li>
                 <li><a href="../physics/">Physics</a></li>
                 <li><a href="../contact/">Contact</a></li>
@@ -93,9 +92,7 @@ We decide what to add next based on what we think will make the most difference 
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

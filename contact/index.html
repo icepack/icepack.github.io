@@ -23,7 +23,7 @@ See the Develope">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -33,7 +33,6 @@ See the Develope">
 <li><a href="../">Home</a></li>
                 <li><a href="../install/">Install</a></li>
                 <li><a href="../tutorials/">Tutorials</a></li>
-                <li><a href="../how-to/">How-to</a></li>
                 <li><a href="../developers/">Development</a></li>
                 <li><a href="../physics/">Physics</a></li>
                 <li class="active"><a href=".">Contact<span class="sr-only"> (active)</span></a></li>
@@ -42,11 +41,7 @@ See the Develope">
 
     
     
-    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Contact</a></h1>
-
-        
-
-    </header><div class="e-content entry-content" itemprop="articleBody text">
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
 <p>If you have questions that aren't answered in these pages, if you run into problems that you don't know how to solve, or you want to get involved and don't know how, please reach out.
 See the <a href="../developers/">Developers</a> section for more background on the internals of icepack and how to contribute.</p>
@@ -68,9 +63,7 @@ If you're using icepack regularly, this is where we'll announce important change
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

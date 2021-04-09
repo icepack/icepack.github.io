@@ -24,7 +24,7 @@ If this is you">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -34,7 +34,6 @@ If this is you">
 <li><a href="../">Home</a></li>
                 <li><a href="../install/">Install</a></li>
                 <li><a href="../tutorials/">Tutorials</a></li>
-                <li><a href="../how-to/">How-to</a></li>
                 <li><a href="../developers/">Development</a></li>
                 <li><a href="../physics/">Physics</a></li>
                 <li><a href="../contact/">Contact</a></li>
@@ -70,6 +69,9 @@ Give the branch a name that clearly indicates what you're trying to achieve with
 Keeping changes small helps the other developers easily digest each individual unit of work to provide the best feedback possible.
 Give a clear description of that change in the commit message.</li>
 <li>
+<strong>Clean up</strong> your code by running <a href="https://black.readthedocs.io/en/stable/">black</a> on it.
+This will deal with line wrapping and other annoying formatting minutia.</li>
+<li>
 <strong>Create a <a href="https://github.com/icepack/icepack/pulls">pull request</a></strong> on the project page.
 In the pull request description, you'll start by saying something like "Resolves issue #X."
 The issue will get automatically linked to the pull request.
@@ -82,7 +84,8 @@ You can always add new commits that fix any problems you find to your branch and
 They might request some changes from you.
 <em>Code review involves a lot of back-and-forth</em>, especially for complicated patches or features.
 This is totally normal!</li>
-<li>Some projects might ask you to <em>rebase</em> your branch either on top of upstream changes, or to make the commit history easier to digest later.</li>
+<li>We might ask you to <strong>rebase</strong> your branch either on top of upstream changes, or to make the commit history easier to digest later.
+Rebasing is a little hard the first time, so we're happy to walk you through it.</li>
 <li>Finally, another developer will <strong>merge your pull request</strong>.</li>
 </ul>
 <p>The point of all this bureaucracy is to make sure that all the code we commit to the master branch of icepack is correct and ready for others to use.
@@ -95,13 +98,13 @@ To remove any outputs or plots and restore a notebook to its original state, you
 nbstripout icepack/demo/&lt;name of demo&gt;.ipynb
 </code></pre>
 
-
 <p>Jupyter notebooks have lots other unnecessary metadata that this command can remove for us.</p>
 <h4>Coding style</h4>
-<p>We don't have a rigorously enforced coding style.
-Nonetheless, we do use tools like flake8 and pylint to help us be consistent and clear in things like formatting, identifier naming, and overall code structure.
-If you're not already familiar with these tools, please see the <a href="../style/">style</a> section for more information.
-Running flake8 and pylint on your code and making the suggested changes before making a pull request will help it get reviewed faster because we mostly won't have to address coding style.</p>
+<p>We use the tool <a href="https://black.readthedocs.io/en/stable/">black</a> to help clean up the code.
+This program will automatically adjust line wrapping, quote styles, and the like so that you don't have to.
+The test suite will report a failure if the code hasn't been formatted first.
+There are other less clear-cut issues of coding style that only another person can catch, for example things like whether identifier names clearly indicate what a variable is supposed to mean.
+See the <a href="../style/">coding style</a> page for more information.</p>
 </div>
     </div>
     
@@ -112,9 +115,7 @@ Running flake8 and pylint on your code and making the suggested changes before m
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

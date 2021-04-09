@@ -25,7 +25,7 @@ Our goal is to lower than barrier to entry to using flow models if you're not an
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="." title="icepack" rel="home">
         <img src="images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -35,7 +35,6 @@ Our goal is to lower than barrier to entry to using flow models if you're not an
 <li class="active"><a href=".">Home<span class="sr-only"> (active)</span></a></li>
                 <li><a href="install/">Install</a></li>
                 <li><a href="tutorials/">Tutorials</a></li>
-                <li><a href="how-to/">How-to</a></li>
                 <li><a href="developers/">Development</a></li>
                 <li><a href="physics/">Physics</a></li>
                 <li><a href="contact/">Contact</a></li>
@@ -55,11 +54,11 @@ Our goal is to lower than barrier to entry to using flow models if you're not an
 <li>All the stress balance models are customizable -- changing the friction law is a few lines of code.</li>
 <li>We've got a state-of-the-art inverse solver using the Gauss-Newton algorithm.</li>
 </ul>
-<p>For examples of what icepack is capable of, have a look at the <a href="tutorials/">tutorials</a> and <a href="how-to/">how-to</a> guides.</p>
+<p>For examples of what icepack is capable of, have a look at the <a href="tutorials/">tutorials</a>.</p>
 <h3>How to use this site</h3>
 <p><strong>You're just getting started:</strong> See the <a href="install/">install</a> page for how to get icepack working on your machine.
 The <a href="tutorials/">tutorials</a> will show you how to set up and run simulations and analyze the results.</p>
-<p><strong>You're doing real research:</strong> The <a href="how-to/">how-to</a> guides assume you've already got off the ground, and you now want to do larger, more complex simulations and publish the results in peer-reviewed papers.
+<p><strong>You're doing real research:</strong> The how-to guides on the <a href="tutorials/">tutorials</a> page assume you've already got off the ground, and you now want to do larger, more complex simulations and publish the results in peer-reviewed papers.
 If there are new features you'd like to see included in icepack, see the <a href="developers/">development</a> page.</p>
 <h3>Who we are</h3>
 <p>We're a team of researchers and PhD students, mostly at the University of Washington.
@@ -69,7 +68,7 @@ Please see the <a href="contact/">contact</a> page for how to get in touch.</p>
 <h3>Thanks</h3>
 <p>Several people and organizations have made this project possible.
 We're grateful to the National Science Foundation, National Aeronautics and Space Administration, and the University of Washington eScience Institute for their generous financial support.
-The Juneau Icefield Research Program has provided wonderful opportunities for field work.
+The <a href="https://juneauicefield.org/">Juneau Icefield Research Program</a> has provided wonderful opportunities for field work.
 <a href="http://jeremystock.com/">Jeremy Stock</a> designed our logo.
 This webpage is powered by the static site generator <a href="https://getnikola.com">Nikola</a>.</p>
 <p><img src="https://www.nsf.gov/images/logos/NSF_4-Color_bitmap_Logo_thumb.jpg" height="100px"><img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" height="100px"><img src="https://images.squarespace-cdn.com/content/v1/506e663fe4b04973cff68e47/1369952390562-6Z312A18G5AXIP7B4ZUH/ke17ZwdGBToddI8pDm48kPN_12wwgQFQ1P_MNUxodclZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PIptSEwx6RWl3Iho5G7dcdVrve9aC9KuCr35c8ZMFQhoQKMshLAGzx4R3EDFOm1kBS/JIRP_Blue.jpg" height="100px"></p>
@@ -95,9 +94,7 @@ MathJax.Hub.Config({
             <script src="assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

@@ -30,7 +30,7 @@ Icepack ">
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
     <div id="container">
         
-    <header id="header"><h1 id="brand"><a href="https://icepack.github.io/" title="icepack" rel="home">
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
         <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
 
         
@@ -40,7 +40,6 @@ Icepack ">
 <li><a href="../">Home</a></li>
                 <li><a href="../install/">Install</a></li>
                 <li><a href="../tutorials/">Tutorials</a></li>
-                <li><a href="../how-to/">How-to</a></li>
                 <li class="active"><a href=".">Development<span class="sr-only"> (active)</span></a></li>
                 <li><a href="../physics/">Physics</a></li>
                 <li><a href="../contact/">Contact</a></li>
@@ -87,9 +86,7 @@ This page describes our philosophy around how to not just write correct code but
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>
