@@ -119,6 +119,38 @@ While installing Firedrake will fail with an error if you have a pre-existing PE
 Gmsh will take a description of the outline of some domain in 2D and calculate a triangulation of the interior.
 Since the shape of most real glaciers is very irregular and thus can't easily be represented by a rectilinear grid, a tool like gmsh is indispensible.
 Gmsh is available through the package managers of most operating systems or as a binary executable from the project website.</p>
+<h4>M1 Macs</h4>
+<p>The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, so many packages don't have binary releases yet.
+On top of that, Homebrew has decided to move everything around once again because reasons.
+You'll first need to install Firedrake by itself, without icepack (for now), and activate the virtual environment:</p>
+<pre class="code literal-block"><span></span><code>curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python3 firedrake-install
+<span class="nb">source</span> firedrake/bin/activate
+</code></pre>
+
+<p>Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:</p>
+<pre class="code literal-block"><span></span><code><span class="nv">OPENBLAS</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix openblas<span class="k">)</span><span class="s2">"</span> pip3 install scipy
+<span class="nv">HDF5_DIR</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span>/src/petsc/default pip3 install netCDF4
+<span class="nb">export</span> <span class="nv">SHAPELY_HASH</span><span class="o">=</span>c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
+pip3 install git+https://github.com/Toblerity/Shapely.git@<span class="nv">$SHAPELY_HASH</span>
+</code></pre>
+
+<p>These commands will (1) install scipy with some extra information about where to find OpenBLAS, (2) install the netCDF4 Python bindings with extra info about where to find the HDF5 library that PETSc installed, and (3) install a newer version of Shapely that includes some extra hackery around the paths where Homebrew puts things now.
+Finally, you can clone icepack and install it:</p>
+<pre class="code literal-block"><span></span><code>git clone https://github.com/icepack/icepack
+pip3 install --editable icepack/
+</code></pre>
+
+<p>Additionally, if you're using pyenv to manage Python installations and virtual environments, there are some more hurdles to jump through when first installing a particular version of Python:</p>
+<pre class="code literal-block"><span></span><code><span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/lib"</span>
+<span class="nb">export</span> <span class="nv">CPPFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/include"</span>
+<span class="nb">export</span> <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/lib/pkgconfig"</span>
+<span class="nv">PYTHON_CONFIGURE_OPTS</span><span class="o">=</span><span class="s2">"--enable-shared"</span> pyenv install <span class="m">3</span>.9.7
+</code></pre>
+
+<p>(See <a href="https://stackoverflow.com/a/66937351">this SO answer</a>.)
+If you have an M1 and find other install problems, please report them to us using the contact page linked above.
+These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.</p>
 </div>
     </div>
     

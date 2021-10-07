@@ -112,3 +112,45 @@ To run all of the demos, you'll need to have the mesh generator gmsh.
 Gmsh will take a description of the outline of some domain in 2D and calculate a triangulation of the interior.
 Since the shape of most real glaciers is very irregular and thus can't easily be represented by a rectilinear grid, a tool like gmsh is indispensible.
 Gmsh is available through the package managers of most operating systems or as a binary executable from the project website.
+
+### M1 Macs
+
+The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, so many packages don't have binary releases yet.
+On top of that, Homebrew has decided to move everything around once again because reasons.
+You'll first need to install Firedrake by itself, without icepack (for now), and activate the virtual environment:
+
+```shell
+curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python3 firedrake-install
+source firedrake/bin/activate
+```
+
+Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:
+
+```shell
+OPENBLAS="$(brew --prefix openblas)" pip3 install scipy
+HDF5_DIR=$VIRTUAL_ENV/src/petsc/default pip3 install netCDF4
+export SHAPELY_HASH=c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
+pip3 install git+https://github.com/Toblerity/Shapely.git@$SHAPELY_HASH
+```
+
+These commands will (1) install scipy with some extra information about where to find OpenBLAS, (2) install the netCDF4 Python bindings with extra info about where to find the HDF5 library that PETSc installed, and (3) install a newer version of Shapely that includes some extra hackery around the paths where Homebrew puts things now.
+Finally, you can clone icepack and install it:
+
+```shell
+git clone https://github.com/icepack/icepack
+pip3 install --editable icepack/
+```
+
+Additionally, if you're using pyenv to manage Python installations and virtual environments, there are some more hurdles to jump through when first installing a particular version of Python:
+
+```shell
+export LDFLAGS="-L$(brew --prefix xz)/lib"
+export CPPFLAGS="-I$(brew --prefix xz)/include"
+export PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig"
+PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.7
+```
+
+(See [this SO answer](https://stackoverflow.com/a/66937351).)
+If you have an M1 and find other install problems, please report them to us using the contact page linked above.
+These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Energy | icepack</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/physics-energy/">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Energy">
+<meta property="og:url" content="https://icepack.github.io/physics-energy/">
+<meta property="og:description" content="The final key conserved quantity is thermal energy.
+It's customary to use temperature as the main descriptive field, but in the following we're going to instead use the energy density.
+Energy is trans">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-08-27T15:49:57-07:00">
+<meta property="article:tag" content="mathjax">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="icepack" rel="home">
+        <img src="../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../">Home</a></li>
+                <li><a href="../install/">Install</a></li>
+                <li><a href="../tutorials/">Tutorials</a></li>
+                <li><a href="../developers/">Development</a></li>
+                <li><a href="../physics/">Physics</a></li>
+                <li><a href="../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>The final key conserved quantity is thermal energy.
+It's customary to use temperature as the main descriptive field, but in the following we're going to instead use the <em>energy density</em>.
+Energy is transported just like any material quantity.
+Usually energy is lost through the ice surface to the atmosphere.
+The sources of energy are from ocean heating at the ice base and from strain heating within the ice column.
+The full weak form for energy is</p>
+<p>$$\begin{align}
+\int_\Omega\int_b^s\left(\partial_tE\cdot\phi - Eu\cdot\nabla\phi + k\partial_zT\cdot\partial_z\phi - Q\phi\right)dz\,dx = 0
+\end{align}$$</p>
+</div>
+    </div>
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+    },
+    displayAlign: 'center', // Change this to 'left' if you want left-aligned equations.
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}}
+    }
+});
+</script></article></main>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>
