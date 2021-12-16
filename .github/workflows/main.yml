@@ -30,7 +30,9 @@ jobs:
         git checkout $src_branch
         printf '\n\nGITHUB_REMOTE_NAME = "ghpages"\nGITHUB_COMMIT_SOURCE = False\n' >> conf.py
     - name: Execute notebooks
-      run: make notebooks
+      run: |
+        cp ~/registry-nsidc.txt ./icepack/icepack/
+        make notebooks
     - name: Publish
       run: |
         nikola build
