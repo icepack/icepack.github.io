@@ -10,9 +10,9 @@ ARG token
 
 RUN mkdir actions-runner && \
     cd actions-runner && \
-    curl -o actions-runner-linux-x64-2.284.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.284.0/actions-runner-linux-x64-2.284.0.tar.gz && \
-    echo "1ddfd7bbd3f2b8f5684a7d88d6ecb6de3cb2281a2a359543a018cc6e177067fc  actions-runner-linux-x64-2.284.0.tar.gz" | shasum -a 256 -c && \
-    tar xzf ./actions-runner-linux-x64-2.284.0.tar.gz && \
+    curl -o actions-runner-linux-x64-2.285.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.285.1/actions-runner-linux-x64-2.285.1.tar.gz && \
+    echo "5fd98e1009ed13783d17cc73f13ea9a55f21b45ced915ed610d00668b165d3b2  actions-runner-linux-x64-2.285.1.tar.gz" | shasum -a 256 -c && \
+    tar xzf ./actions-runner-linux-x64-2.285.1.tar.gz && \
     ./config.sh --url https://github.com/icepack/icepack.github.io --token ${token} --unattended
 
 ENTRYPOINT actions-runner/run.sh
