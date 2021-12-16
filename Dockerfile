@@ -2,7 +2,7 @@ FROM icepack/firedrake-python3.8:0.5.5
 
 MAINTAINER shapero.daniel@gmail.com
 
-RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get -yq install \
+RUN sudo apt-get update && DEBIAN_FRONTEND="noninteractive" sudo apt-get -yq install \
     moreutils \
     jq
 
