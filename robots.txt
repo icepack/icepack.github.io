@@ -1,4 +1,0 @@
-Sitemap: https://icepack.github.io/sitemapindex.xml
-
-User-Agent: *
-Host: icepack.github.io
