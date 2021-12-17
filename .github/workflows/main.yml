@@ -13,6 +13,8 @@ jobs:
       with:
         repository: icepack/icepack
         path: icepack
+    - name: Install icepack
+      run: pip3 install ./icepack
     - name: Checkout website source
       uses: actions/checkout@v2
       with:
