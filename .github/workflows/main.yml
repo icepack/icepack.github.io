@@ -6,15 +6,17 @@ jobs:
     runs-on: self-hosted
     name: "Deploy Nikola to GitHub Pages"
     env:
-      ICEPACK: ./icepack
+      ICEPACK: icepack
     steps:
     - name: Checkout icepack source
       uses: actions/checkout@v2
       with:
         repository: icepack/icepack
-        path: ./icepack
+        path: icepack
     - name: Checkout website source
       uses: actions/checkout@v2
+      with:
+        path: main
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
@@ -31,7 +33,7 @@ jobs:
         printf '\n\nGITHUB_REMOTE_NAME = "ghpages"\nGITHUB_COMMIT_SOURCE = False\n' >> conf.py
     - name: Execute notebooks
       run: |
-        cp ~/registry-nsidc.txt ./icepack/icepack/
+        cp ~/registry-nsidc.txt icepack/icepack/
         make notebooks
     - name: Publish
       run: |
