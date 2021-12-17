@@ -5,8 +5,6 @@ jobs:
   nikola_build:
     runs-on: self-hosted
     name: "Deploy Nikola to GitHub Pages"
-    env:
-      ICEPACK: icepack
     steps:
     - name: Checkout icepack source
       uses: actions/checkout@v2
