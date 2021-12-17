@@ -17,8 +17,6 @@ jobs:
       run: pip3 install ./icepack
     - name: Checkout website source
       uses: actions/checkout@v2
-      with:
-        path: main
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
