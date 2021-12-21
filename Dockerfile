@@ -3,6 +3,7 @@ FROM icepack/firedrake-python3.8:0.5.5
 MAINTAINER shapero.daniel@gmail.com
 
 RUN sudo apt-get update && DEBIAN_FRONTEND="noninteractive" sudo apt-get -yq install \
+    graphviz \
     moreutils \
     jq
 
