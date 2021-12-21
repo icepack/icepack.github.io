@@ -33,7 +33,10 @@ pages/notebooks/%.ipynb: executed-notebooks/%.ipynb
 	    $@
 	jq '.metadata.nikola += {hidetitle: "True"}' $@ | sponge $@
 
-all: notebooks
+plugins/graphviz/graphviz.plugin:
+	nikola plugin --install graphviz
+
+all: plugins/graphviz/graphviz.plugin notebooks
 	nikola build
 
 clean:
