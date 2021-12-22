@@ -7,98 +7,98 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://icepack.github.io/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/archive.html</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/blog/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/categories/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/contact/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/developers/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/install/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/issues/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/maintenance/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/how-to/01-performance/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/how-to/02-checkpointing/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/how-to/03-adaptivity/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/00-meshes-functions/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/01-synthetic-ice-sheet/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/02-synthetic-ice-shelf/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/03-larsen-ice-shelf/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/04-synthetic-ice-stream/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/05-ice-shelf-inverse/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/physics/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/pull-requests/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/style/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/testing/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
  <url>
   <loc>https://icepack.github.io/tutorials/</loc>
-  <lastmod>2021-12-18T02:02:00Z</lastmod>
+  <lastmod>2021-12-22T00:36:00Z</lastmod>
  </url>
 </urlset>
