@@ -34,9 +34,8 @@ jobs:
         printf '\n\nGITHUB_REMOTE_NAME = "ghpages"\nGITHUB_COMMIT_SOURCE = False\n' >> conf.py
     - name: Execute notebooks
       working-directory: ./website
-      run: make notebooks
+      run: make all
     - name: Publish
       working-directory: ./website
       run: |
-        nikola build
         nikola github_deploy
