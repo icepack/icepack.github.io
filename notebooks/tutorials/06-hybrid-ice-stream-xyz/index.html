@@ -9,16 +9,16 @@
 <link href="../../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="canonical" href="https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream/">
+<link rel="canonical" href="https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream-xyz/">
 <!--[if lt IE 9]><script src="../../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
 <meta property="og:site_name" content="icepack">
 <meta property="og:title" content="Ice streams, once more">
-<meta property="og:url" content="https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream/">
+<meta property="og:url" content="https://icepack.github.io/notebooks/tutorials/06-hybrid-ice-stream-xyz/">
 <meta property="og:description" content="Ice streams, once more¶In this demo, we'll revisit the ice stream demo but with a different model.
 The hybrid flow model that we'll use here can resolve both plug flow and shear flow.
 The velocity fie">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-01-03T09:12:38-08:00">
+<meta property="article:published_time" content="2022-01-05T08:54:16-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -410,7 +410,7 @@ Plotting 3D fields is expensive, so as a default, this function will depth-avera
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 500/500 [29:40&lt;00:00,  3.56s/it]
+<pre>100%|██████████| 500/500 [29:34&lt;00:00,  3.55s/it]
 </pre>
 </div>
 </div>
@@ -883,9 +883,9 @@ The solver changes because the solution we're looking for has more degrees of fr
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A mismatch of only 3% is not bad at all!
 However, if we used a synthetic glacier that were closer to the idealized shallow ice approximation then the error would be larger.
-The accuracy of the degree-1 solution in this particular case should not be extrapolated to all scenarios.</p>
-<p>When we initialize the glacier from a rough initial guess as we did for the degree-1, we have to expect that it will take the entire residence time for any initial transients to propagate out, which in our case is in excess of 100 years.
-If we initialize a degree-4 solution from the steady state degree-1 solution we may be able to get away with a much shorter spin-up period.</p>
+The accuracy of the degree-2 solution in this particular case should not be extrapolated to all scenarios.</p>
+<p>When we initialize the glacier from a rough initial guess as we did for the degree-2, we have to expect that it will take the entire residence time for any initial transients to propagate out, which in our case is in excess of 100 years.
+If we initialize a degree-4 solution from the steady state degree-2 solution we may be able to get away with a much shorter spin-up period.</p>
 
 </div>
 </div>

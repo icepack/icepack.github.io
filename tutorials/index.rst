@@ -18,7 +18,7 @@ You can find them under the directory `notebooks/`.
 .. graphviz::
 
     digraph tutorials {
-        node [fontname="helvetica", shape="plaintext", fontcolor="#007bff"];
+        node [fontname="helvetica", shape="plaintext", fontcolor="#007bff", fontsize="12"];
         edge [arrowsize=0.25, color="#4F5151"];
         ranksep=0.15;
         rankdir="LR";
@@ -31,31 +31,39 @@ You can find them under the directory `notebooks/`.
         synthetic_ice_sheet [label="Synthetic\nice sheet", href="/notebooks/tutorials/01-synthetic-ice-sheet/"];
         synthetic_ice_shelf [label="Synthetic\nice shelf", href="/notebooks/tutorials/02-synthetic-ice-shelf/"];
         larsen_ice_shelf [label="Larsen\nice shelf", href="/notebooks/tutorials/03-larsen-ice-shelf/"];
-        synthetic_ice_stream [label="Synthetic\nice stream", href="/notebooks/tutorials/04-synthetic-ice-stream/"];
+        synthetic_ice_stream_x [label="Synthetic ice\nstream (x)", href="/notebooks/tutorials/04-synthetic-ice-stream-x/"];
+        synthetic_ice_stream_xy [label="Synthetic ice\nstream (xy)", href="/notebooks/tutorials/04-synthetic-ice-stream-xy/"];
         ice_shelf_inverse [label="Ice shelf\ninverse", href="/notebooks/tutorials/05-ice-shelf-inverse/"];
-        hybrid_ice_stream [label="Hybrid\nice stream", href="/notebooks/tutorials/06-hybrid-ice-stream/"];
+        hybrid_ice_stream_xz [label="Hybrid ice\nstream (xz)", href="/notebooks/tutorials/06-hybrid-ice-stream-xz/"];
+        hybrid_ice_stream_xyz [label="Hybrid ice\nstream (xyz)", href="/notebooks/tutorials/06-hybrid-ice-stream-xyz/"];
 
         performance [label="Performance\noptimization", href="/notebooks/how-to/01-performance/"];
         checkpointing [label="Checkpointing", href="/notebooks/how-to/02-checkpointing/"];
         adaptivity [label="Adaptivity", href="/notebooks/how-to/03-adaptivity/"];
 
-        subgraph cluster_0 {
+        subgraph cluster_planview_tutorials {
             penwidth=0;
             fontcolor="#4F5151"
             fontname="helvetica";
             label="Tutorials";
             meshes_functions -> synthetic_ice_sheet;
             meshes_functions -> synthetic_ice_shelf -> larsen_ice_shelf -> ice_shelf_inverse;
-            //synthetic_ice_shelf -> larsen_ice_shelf;
-            //larsen_ice_shelf -> ice_shelf_inverse;
-            synthetic_ice_shelf -> synthetic_ice_stream;
-            synthetic_ice_sheet -> synthetic_ice_stream;
-            synthetic_ice_stream -> hybrid_ice_stream;
+            synthetic_ice_shelf -> synthetic_ice_stream_xy;
+            synthetic_ice_sheet -> synthetic_ice_stream_xy;
+            synthetic_ice_stream_xy -> hybrid_ice_stream_xyz;
         }
 
-        synthetic_ice_stream -> performance; // [constraint=false];
+        subgraph cluster_flowband_tutorials {
+            penwidth=0;
+            fontcolor="#4F5151"
+            fontname="helvetica";
+            label="Flowband\ntutorials";
+            meshes_functions -> synthetic_ice_stream_x -> hybrid_ice_stream_xz;
+        }
 
-        subgraph cluster_1 {
+        synthetic_ice_stream_xy -> performance; // [constraint=false];
+
+        subgraph cluster_how_to {
             penwidth=0;
             fontcolor="#4F5151"
             fontname="helvetica";
