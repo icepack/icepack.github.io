@@ -112,7 +112,7 @@ To get all the notation out of the way, here's a table of all the symbols that w
 <p>These fields are all reported in units of megapascals - meters - years.
 This unit system is a little unusual; we borrowed it from the package <a href="https://elmerice.elmerfem.org/">Elmer/ICE</a>.
 It has the advantage of making certain physical constants, like the Glen flow law rate factor, live in a fairly sensible numerical range, whereas the values are often either gigantic or tiny in MKS units.</p>
-<h4>Momentum conservation</h4>
+<h4 id="momentum-conservation">Momentum conservation</h4>
 <p>J.D. Forbes in 1848 was the first Western scientist to correctly identify viscous deformation as the reason why glaciers flow.
 In his original paper on the subject, Forbes has a wonderful quote about this realization:</p>
 <blockquote>
@@ -161,7 +161,7 @@ The action for the Stokes equations with the Weertman sliding law is</p>
 <p>$$J = \int_\Omega\left(\frac{n}{n + 1}A^{-1/n}|\dot\varepsilon|^{1/n + 1} - p\nabla\cdot u - f\cdot u\right)dx + \frac{m}{m + 1}\int_{\Gamma_b}C|u|^{1/m + 1}ds.$$</p>
 <p>We've found that expressing the diagnostic model through an action principle is advantageous because there are more and better numerical methods for solving constrained convex optimization problems than there are for general nonlinear systems of equations.
 On top of that, an action principle is shorter to write down.</p>
-<h4>Simplification</h4>
+<h4 id="simplification">Simplification</h4>
 <p>Nearly all terrestrial glacier flows have much wider horizontal than vertical extents.
 By expanding the equations of motion in the aspect ratio $\delta = H/L$, it's possible to derive PDE systems that are much simpler than the Stokes equations.
 Eliminating terms that scale like $\delta$, the vertical component of the momentum balance becomes</p>
@@ -183,7 +183,7 @@ The action functional then becomes</p>
 The optimality conditions for this functional also result in a nonlinear elliptic system of partial differential equations.
 But the action is purely convex instead of having a saddle point structure like the Stokes equations.
 Consequently, they're easier to solve numerically, as well as having fewer unknowns and being posed over a lower-dimensional domain.</p>
-<h4>Mass conservation</h4>
+<h4 id="mass-conservation">Mass conservation</h4>
 <p>The other piece of the puzzle that we've left out is the mass conservation equation.
 Ice is roughly incompressible -- we're ignoring snow and firn here -- so this can succinctly be expressed as</p>
 <p>$$\nabla\cdot u = 0.$$</p>
@@ -201,7 +201,7 @@ Most applications use explicit timestepping schemes for hyperbolic problems.
 These methods require some care in choosing both the spatial and temporal discretization in order to guarantee stability.
 We've opted to instead use a more expensive implicit timestepping scheme because these are usually unconditionally stable.
 The additional expense of an implicit scheme is minute compared to the overall cost of solving the diagnostic equations.</p>
-<h4>Everything else</h4>
+<h4 id="everything-else">Everything else</h4>
 <p>The momentum and mass conservation equations are the two main components of an ice flow model, but there are several other processes at work with their own governing equations.</p>
 <ul>
 <li>
@@ -224,7 +224,7 @@ There is at present no widely-accepted physical model that predicts the rate of 
 <p>The discussion above assumes that the inputs from the oceans and atmosphere are known and prescribed.
 We've adopted this limited viewpoint in order to keep the scope of the project small, but the cryosphere has non-trivial feedbacks with the atmosphere, the oceans, and the landscape.
 We welcome any contributions of new code to model other unresolved physical processes in glaciology or to couple glaciers to other parts of the earth system.</p>
-<h4>References</h4>
+<h4 id="references">References</h4>
 <p>We've omitted a lot of details above we also haven't even attempted to describe other areas of glaciology, such as the interpretation of ice cores and climate records.
 <a href="https://www.elsevier.com/books/the-physics-of-glaciers/cuffey/978-0-12-369461-4">The Physics of Glaciers</a> by Cuffey and Paterson is a great reference for getting a broader picture of the field.
 For a focus on ice dynamics from a more mathematical perspective, <a href="https://link.springer.com/book/10.1007/978-3-642-03415-2">Dynamics of Ice Sheets and Glaciers</a> by Greve and Blatter is a must-read.
