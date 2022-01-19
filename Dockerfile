@@ -8,6 +8,12 @@ RUN sudo apt-get update && DEBIAN_FRONTEND="noninteractive" sudo apt-get -yq ins
     moreutils \
     jq
 
+# Disable the IPython history when running as a Jupyter kernel. This prevents
+# all sorts of annoying warnings associated to the history db getting locked.
+RUN mkdir -p /home/sermilik/.ipython/profile_default/ && \
+    echo "c = get_config(); c.HistoryManager.enabled = False" >> /home/sermilik/.ipython/profile_default/ipython_kernel_config.py
+
+# Install the github actions runner.
 ARG token
 
 RUN mkdir actions-runner && \
