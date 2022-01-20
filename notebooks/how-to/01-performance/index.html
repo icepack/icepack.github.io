@@ -17,7 +17,7 @@
 <meta property="og:description" content="Performance optimization¶In this notebook, we'll show you how to make icepack run faster if you're finding that simulation speed is becoming a barrier for you.
 The solvers in icepack have been designe">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-01-19T14:41:43-08:00">
+<meta property="article:published_time" content="2022-01-20T14:40:39-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -42,8 +42,7 @@ The solvers in icepack have been designe">
     
     
     </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
+    <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Performance-optimization">Performance optimization<a class="anchor-link" href="#Performance-optimization">¶</a>
@@ -440,7 +439,7 @@ Here we're passing some extra keyword arguments: <code>'diagnostic_solver_type</
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [01:51&lt;00:00,  2.68it/s]
+<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [01:53&lt;00:00,  2.65it/s]
 </pre>
 </div>
 </div>
@@ -485,20 +484,6 @@ We'll show how to increase the resolution in the demos that follow.</p>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The history saving thread hit an unexpected error (OperationalError('attempt to write a readonly database')).History will not be written to the database.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
@@ -531,7 +516,7 @@ We'll then try to beat this time by choosing better solvers from PETSc.</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:43&lt;00:00,  5.23it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:44&lt;00:00,  5.18it/s]
 </pre>
 </div>
 </div>
@@ -656,7 +641,7 @@ Since the icepack solver is calling out to scipy to do a line search, this round
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:39&lt;00:00,  5.43it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [02:01&lt;00:00,  4.46it/s]
 </pre>
 </div>
 </div>
@@ -747,7 +732,7 @@ You might also be able to speed up the prognostic solver using a multigrid metho
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:17&lt;00:00,  6.96it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:18&lt;00:00,  6.91it/s]
 </pre>
 </div>
 </div>
@@ -825,7 +810,7 @@ To select a trust region method, add the key-value pair <code>'snes_type': 'newt
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:17&lt;00:00,  6.95it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:18&lt;00:00,  6.88it/s]
 </pre>
 </div>
 </div>
@@ -862,7 +847,6 @@ If you are interested in tuning performance, <strong>you should expect to use mu
 Things get much more interesting when we need to get an accurate result and are free to increase the resolution as need be.
 For these types of problems, a lot of the work can be done at coarser resolution and knowing exactly how much is both an art and a science.</p>
 
-</div>
 </div>
 </div>
 </div>

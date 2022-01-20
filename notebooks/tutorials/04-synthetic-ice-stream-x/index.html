@@ -17,7 +17,7 @@
 <meta property="og:description" content="Synthetic flowline ice stream¶In this demo, we'll simulate the evolution of 1D ice stream with both grounded and floating parts.
 Ice streams are substantially more complicated than a floating ice shel">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-01-19T14:34:09-08:00">
+<meta property="article:published_time" content="2022-01-20T14:32:31-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -42,8 +42,7 @@ Ice streams are substantially more complicated than a floating ice shel">
     
     
     </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
+    <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Synthetic-flowline-ice-stream">Synthetic flowline ice stream<a class="anchor-link" href="#Synthetic-flowline-ice-stream">¶</a>
@@ -500,7 +499,7 @@ I've tuned the accumulation rate so that it roughly balances out the ice flux at
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 500/500 [00:12&lt;00:00, 41.20it/s]
+<pre>100%|██████████| 500/500 [00:17&lt;00:00, 27.96it/s]
 </pre>
 </div>
 </div>
@@ -1085,8 +1084,8 @@ This saves a bit of repetition and makes it easier to parallelize later.</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 200/200 [00:04&lt;00:00, 41.44it/s]
-100%|██████████| 200/200 [00:04&lt;00:00, 40.73it/s]
+<pre>100%|██████████| 200/200 [00:04&lt;00:00, 40.82it/s]
+100%|██████████| 200/200 [00:04&lt;00:00, 41.13it/s]
 </pre>
 </div>
 </div>
@@ -1153,7 +1152,6 @@ By passing in all the input fields to the <code>diagnostic_solve</code> method a
 These additional fields could themselves be computed by solving other PDEs.
 For example, we could define the basal shear stress to be a function of the effective water pressure, which would then solve for using some model of subglacial hydrology.</p>
 
-</div>
 </div>
 </div>
 </div>

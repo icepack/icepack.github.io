@@ -18,7 +18,7 @@
 The example that we'll show is an example of a model spin-up.
 In a spin-up experiment, the objective">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-01-19T14:40:18-08:00">
+<meta property="article:published_time" content="2022-01-20T14:39:26-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -43,8 +43,7 @@ In a spin-up experiment, the objective">
     
     
     </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
+    <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Synthetic-ice-shelf">Synthetic ice shelf<a class="anchor-link" href="#Synthetic-ice-shelf">¶</a>
@@ -230,20 +229,20 @@ We'll call <code>gmsh</code> from the command line with the following arguments:
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Info    : Running 'gmsh -2 -format msh2 -o ice-shelf.msh ice-shelf.geo' [Gmsh 4.5.6, 1 node, max. 1 thread]
-Info    : Started on Wed Jan 19 22:33:38 2022
+Info    : Started on Thu Jan 20 22:31:34 2022
 Info    : Reading 'ice-shelf.geo'...
 Info    : Done reading 'ice-shelf.geo'
 Info    : Meshing 1D...
 Info    : [  0 %] Meshing curve 1 (Circle)
 Info    : [ 50 %] Meshing curve 2 (Circle)
-Info    : Done meshing 1D (0.000528 s)
+Info    : Done meshing 1D (0.000533 s)
 Info    : Meshing 2D...
 Info    : Meshing surface 4 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (0.107235 s)
+Info    : Done meshing 2D (0.099619 s)
 Info    : 3373 nodes 6744 elements
 Info    : Writing 'ice-shelf.msh'...
 Info    : Done writing 'ice-shelf.msh'
-Info    : Stopped on Wed Jan 19 22:33:38 2022
+Info    : Stopped on Thu Jan 20 22:31:34 2022
 </pre>
 </div>
 </div>
@@ -749,7 +748,7 @@ The following code runs the model forward for several years until the ice shelf 
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 200/200 [03:00&lt;00:00,  1.11it/s]
+<pre>100%|██████████| 200/200 [03:07&lt;00:00,  1.07it/s]
 </pre>
 </div>
 </div>
@@ -801,14 +800,6 @@ The initial thickness profile of each ice stream, which flattened out in the mid
 
 <div class="output_wrapper">
 <div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The history saving thread hit an unexpected error (OperationalError('attempt to write a readonly database')).History will not be written to the database.
-</pre>
-</div>
-</div>
 
 <div class="output_area">
 
@@ -1247,7 +1238,7 @@ Passing the degree explicitly silences the warning and makes the code run faster
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 200/200 [02:51&lt;00:00,  1.16it/s]
+<pre>100%|██████████| 200/200 [03:28&lt;00:00,  1.04s/it]
 </pre>
 </div>
 </div>
@@ -1317,7 +1308,6 @@ We could also include models describing things like the buoyant plume of meltwat
 The details are different in each case, but the essential procedure is the same: first decide how the addition of a new field will affect the flow, and then decide how this field will evolve in time.
 We used the continuum damage formulation of Albrecht and Levermann, but there are many other models we could have chosen.</p>
 
-</div>
 </div>
 </div>
 </div>

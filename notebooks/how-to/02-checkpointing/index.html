@@ -17,7 +17,7 @@
 <meta property="og:description" content="Checkpointing¶In the previous guide, we showed how to make simulations run faster by tuning how the linear and nonlinear solvers work under the hood.
 We'll revisit the MISMIP+ experiment of that demo ">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-01-19T14:51:56-08:00">
+<meta property="article:published_time" content="2022-01-20T14:50:43-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -42,8 +42,7 @@ We'll revisit the MISMIP+ experiment of that demo ">
     
     
     </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
-<div class="cell border-box-sizing text_cell rendered">
+    <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Checkpointing">Checkpointing<a class="anchor-link" href="#Checkpointing">¶</a>
@@ -462,7 +461,7 @@ The important thing to notice here is that we have to use the same names when we
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.03, 24.63: 100%|██████████| 720/720 [02:39&lt;00:00,  4.53it/s]
+<pre>avg, min h: 866.03, 24.63: 100%|██████████| 720/720 [02:48&lt;00:00,  4.28it/s]
 </pre>
 </div>
 </div>
@@ -506,20 +505,6 @@ Since the system is much closer to steady state than it was at initialization, t
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The history saving thread hit an unexpected error (OperationalError('attempt to write a readonly database')).History will not be written to the database.
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -585,7 +570,7 @@ To continue, we'll need to create and set up a fresh solver object that stores t
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 1042.94, 18.28: 100%|██████████| 900/900 [15:26&lt;00:00,  1.03s/it]
+<pre>avg, min h: 1042.94, 18.28: 100%|██████████| 900/900 [15:48&lt;00:00,  1.05s/it]
 </pre>
 </div>
 </div>
@@ -692,7 +677,6 @@ For that use case, it can be more conevenient for you to use one script for the 
 As we've shown here, you might understand one part of a multi-stage simulation but still be debugging the numerics for a latter stage, and checkpointing the earlier stage is useful for saving time as well.
 Tools like <a href="https://www.gnu.org/software/make/">Make</a> or <a href="https://snakemake.readthedocs.io/en/stable/">snakemake</a> can be really handy for orchestrating these kinds of processing pipelines.</p>
 
-</div>
 </div>
 </div>
 </div>
