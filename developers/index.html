@@ -163,10 +163,9 @@ Rebasing is a little hard the first time, so we're happy to walk you through it.
 <p>If you're modifying one of the demos or adding a new demo, we'll ask that you take some steps to make sure that only the essential content of the Jupyter notebook gets tracked in version control.
 We store only the un-executed form of the notebook with no outputs or plots in the icepack git repository, with the understanding that a user can always execute the notebook in order to see the results.
 To remove any outputs or plots and restore a notebook to its original state, you can use <a href="https://github.com/kynan/nbstripout"><code>nbstripout</code></a> command:</p>
-<pre class="code literal-block"><span></span><code>pip3 install nbstripout
+<pre class="code literal-block">pip3 install nbstripout
 nbstripout icepack/demo/&lt;name of demo&gt;.ipynb
-</code></pre>
-
+</pre>
 <p>Jupyter notebooks have lots other unnecessary metadata that this command can remove for us.</p>
 <h4 id="testing">Testing</h4>
 <p>All of the physics solvers in icepack are subject to a battery of tests.
@@ -221,9 +220,8 @@ Make it look like the math we all know and love, and it'll be that much easier t
 Black will do things like normalize all quotes, wrap long lines, and generally fix annoying stylistic issues that aren't worth the time you spend on them.
 The style that it enforces isn't perfect but it helps reduce entropy growth.
 To run it, first <code>pip3 install black</code> and then do:</p>
-<pre class="code literal-block"><span></span><code>black ./
-</code></pre>
-
+<pre class="code literal-block">black ./
+</pre>
 <p>This will edit any Python source files in the current directory in-place.
 Formatting is part of the test suite -- pull requests will fail if the code hasn't been formatted.</p>
 <p>We've also developed a few coding conventions outside of what black enforces:</p>
@@ -243,27 +241,24 @@ The following describes how you can work on code with other people and not drive
 If you're developing new code, you're going to have different needs.
 For example, you might be working on more than one feature at the same time, or you might be testing icepack against different installations of Firedrake that have been configured differently.</p>
 <p>The first thing you'll want to do is clone icepack into a separate directory and add your fork as a remote.</p>
-<pre class="code literal-block"><span></span><code>git clone git@github.com:icepack/icepack.git
+<pre class="code literal-block">git clone git@github.com:icepack/icepack.git
 <span class="nb">cd</span> icepack
 git remote add <span class="se">\</span>
     &lt;your name&gt; <span class="se">\</span>
     git@github.com:&lt;your GitHub username&gt;/icepack.git
-</code></pre>
-
+</pre>
 <p>Next, you'll want to activate the virtual environment and install both icepack and the dependencies for building the documentation in editable mode:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;/path/to/firedrake&gt;/bin/activate
+<pre class="code literal-block"><span class="nb">source</span> &lt;/path/to/firedrake&gt;/bin/activate
 pip3 install --editable &lt;/path/to/icepack&gt;<span class="s2">"[doc]"</span>
-</code></pre>
-
+</pre>
 <p>The <code>--editable</code> flag guarantees that changes you make to the source code get seen automatically whenever you import icepack.
 Without this flag, you'd have to reinstall again every time you made changes.
 The flag <code>"[doc]"</code> at the end tells pip to also install the dependencies you'll need to build the icepack documentation.
 This is part of a <a href="https://setuptools.readthedocs.io/en/latest/references/keywords.html">general mechanism</a> of Python's setuptools for specifying optional dependencies.</p>
 <p>As icepack is updated, you may find that you need to check for and install any missing dependencies.
 To do this, navigate to the icepack directory and run:</p>
-<pre class="code literal-block"><span></span><code>pip3 install -e .
-</code></pre>
-
+<pre class="code literal-block">pip3 install -e .
+</pre>
 <p>In the unfortunate event that your Firedrake installation becomes unusable, for example because your operating system decided to upgrade Python out from under you, you can delete the entire Firedrake virtual environment and reinstall a fresh one without losing any changes you made to your branch of icepack.</p>
 <h5 id="editors-and-ides">Editors and IDEs</h5>
 <p>Nearly every editor nowadays offers syntax highlighting for Python.
@@ -277,18 +272,16 @@ If you're using emacs and the <a href="https://jedi.readthedocs.io/en/latest/">j
 If you're working on a new feature, you might find that the master branch has been updated.
 Sometimes the changes to the master branch might even include bug fixes that are useful or relevant to the feature you're working on.
 In order to pull the latest changes into your branch, you can run the following commands:</p>
-<pre class="code literal-block"><span></span><code>git fetch origin master
+<pre class="code literal-block">git fetch origin master
 git rebase origin/master
-</code></pre>
-
+</pre>
 <p>The git <code>rebase</code> command is a really powerful tool which you should read more about.
 What it does is effectively rewrite the commit history to put the changes in your branch on top of any changes from the master branch.
 The nice part about <code>rebase</code> as opposed to <code>merge</code> is that it won't create an unnecessary merge commit, unless there are conflicts to deal with.</p>
 <p>The other important use of the rebase command is to clean up or otherwise alter the commit history of a branch you're working on.
 This is best done through an <em>interactive</em> rebase:</p>
-<pre class="code literal-block"><span></span><code>git rebase --interactive HEAD~&lt;number of commits&gt;
-</code></pre>
-
+<pre class="code literal-block">git rebase --interactive HEAD~&lt;number of commits&gt;
+</pre>
 <p>Git will then fire up the text editor of your choice and present you with a list of the number of commits you selected.
 You can then choose to <code>pick</code> those commits, <code>edit</code> the changes in that commit, <code>squash</code> two commits into each other, or change the order in which those commits were applied.
 A typical use case might be to take a feature branch and squash any intermediate bug fixes onto the original commits that introduced that code in the first place.

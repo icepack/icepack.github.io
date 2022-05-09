@@ -22,7 +22,7 @@ Install Firedrake, building PETSc along the way:
 
 ```shell
 curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python3 firedrake-install --install icepack
+python firedrake-install --install icepack
 ```
 
 Activate the Firedrake virtual environment:
@@ -39,6 +39,15 @@ pytest -s test/ice_shelf_test.py
 ```
 
 Your icepack installation lives in the directory `$VIRTUAL_ENV/src/icepack`.
+
+If you want to use the data assimilation features of icepack, you'll need to also install the [Rapid Optimization Library](https://trilinos.github.io/rol.html) or ROL for short.
+First, you need to have the `patchelf` program installed; this is a very common Unix utility that should be available through your system package manager if it isn't installed already.
+You can then do
+```shell
+pip install roltrilinos==0.0.9 ROL==0.0.16
+```
+to build both a pre-built binary of ROL and the Python wrappers for it.
+
 
 ### Run the demos
 
@@ -59,8 +68,8 @@ sudo apt-get install gmsh
 Now make a Jupyter kernel for firedrake:
 
 ```shell
-pip3 install ipykernel
-python3 -m ipykernel install --user --name=firedrake
+pip install ipykernel
+python -m ipykernel install --user --name=firedrake
 ```
 
 Run the demo notebooks:
@@ -121,36 +130,27 @@ You'll first need to install Firedrake by itself, without icepack (for now), and
 
 ```shell
 curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python3 firedrake-install
+python firedrake-install
 source firedrake/bin/activate
 ```
 
 Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:
 
 ```shell
-OPENBLAS="$(brew --prefix openblas)" pip3 install scipy
-HDF5_DIR=$VIRTUAL_ENV/src/petsc/default pip3 install netCDF4
+OPENBLAS="$(brew --prefix openblas)" pip install scipy
+HDF5_DIR=$VIRTUAL_ENV/src/petsc/default pip install netCDF4
 export SHAPELY_HASH=c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
-pip3 install git+https://github.com/Toblerity/Shapely.git@$SHAPELY_HASH
+pip install git+https://github.com/Toblerity/Shapely.git@$SHAPELY_HASH
+pip install rasterio==1.3a4
 ```
 
-These commands will (1) install scipy with some extra information about where to find OpenBLAS, (2) install the netCDF4 Python bindings with extra info about where to find the HDF5 library that PETSc installed, and (3) install a newer version of Shapely that includes some extra hackery around the paths where Homebrew puts things now.
+These commands will install the right versions of several dependencies with a bit of extra hackery to deal with where Homebrew has moved things.
 Finally, you can clone icepack and install it:
 
 ```shell
 git clone https://github.com/icepack/icepack
-pip3 install --editable icepack/
+pip install --editable icepack/
 ```
 
-Additionally, if you're using pyenv to manage Python installations and virtual environments, there are some more hurdles to jump through when first installing a particular version of Python:
-
-```shell
-export LDFLAGS="-L$(brew --prefix xz)/lib"
-export CPPFLAGS="-I$(brew --prefix xz)/include"
-export PKG_CONFIG_PATH="$(brew --prefix xz)/lib/pkgconfig"
-PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.7
-```
-
-(See [this SO answer](https://stackoverflow.com/a/66937351).)
 If you have an M1 and find other install problems, please report them to us using the contact page linked above.
 These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.

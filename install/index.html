@@ -50,41 +50,40 @@ For other problems, you can always <a href="../contact/">get in touch</a> for mo
 For more explanation, see below.</p>
 <h4 id="quick-start">Quick start</h4>
 <p>Install Firedrake, building PETSc along the way:</p>
-<pre class="code literal-block"><span></span><code>curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python3 firedrake-install --install icepack
-</code></pre>
-
+<pre class="code literal-block">curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python firedrake-install --install icepack
+</pre>
 <p>Activate the Firedrake virtual environment:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
-</code></pre>
-
+<pre class="code literal-block"><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
+</pre>
 <p>Run one of the icepack unit tests to make sure it works:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
+<pre class="code literal-block"><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
 pytest -s test/ice_shelf_test.py
-</code></pre>
-
+</pre>
 <p>Your icepack installation lives in the directory <code>$VIRTUAL_ENV/src/icepack</code>.</p>
+<p>If you want to use the data assimilation features of icepack, you'll need to also install the <a href="https://trilinos.github.io/rol.html">Rapid Optimization Library</a> or ROL for short.
+First, you need to have the <code>patchelf</code> program installed; this is a very common Unix utility that should be available through your system package manager if it isn't installed already.
+You can then do</p>
+<pre class="code literal-block">pip install <span class="nv">roltrilinos</span><span class="o">==</span><span class="m">0</span>.0.9 <span class="nv">ROL</span><span class="o">==</span><span class="m">0</span>.0.16
+</pre>
+<p>to build both a pre-built binary of ROL and the Python wrappers for it.</p>
 <h4 id="run-the-demos">Run the demos</h4>
 <p>Install the mesh generator <a href="http://gmsh.info/">gmsh</a>.
 Binaries are available on their website, or you can use your system package manager.
 On MacOS,</p>
-<pre class="code literal-block"><span></span><code>brew install gmsh
-</code></pre>
-
+<pre class="code literal-block">brew install gmsh
+</pre>
 <p>On Debian, Mint, or Ubuntu:</p>
-<pre class="code literal-block"><span></span><code>sudo apt-get install gmsh
-</code></pre>
-
+<pre class="code literal-block">sudo apt-get install gmsh
+</pre>
 <p>Now make a Jupyter kernel for firedrake:</p>
-<pre class="code literal-block"><span></span><code>pip3 install ipykernel
-python3 -m ipykernel install --user --name<span class="o">=</span>firedrake
-</code></pre>
-
+<pre class="code literal-block">pip install ipykernel
+python -m ipykernel install --user --name<span class="o">=</span>firedrake
+</pre>
 <p>Run the demo notebooks:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/notebooks
+<pre class="code literal-block"><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/notebooks
 jupyter notebook
-</code></pre>
-
+</pre>
 <h4 id="comments">Comments</h4>
 <p>Most python projects use the simple <code>python setup.py install</code> formula to build and install everything.
 Firedrake is appreciably more complex -- it consists of several dependent sub-packages along with a complete PETSc installation -- and thus has its own custom build process.
@@ -95,16 +94,14 @@ This environment includes a Python executable and all of the package's dependenc
 Virtual environments can be activated and deactivated for a particular shell session.
 The added layer of isolation keeps one package from breaking other packages on the system or doing anything that's both undesirable and hard to roll back.</p>
 <p>However, it does introduce an annoying layer of bureaucracy -- you have to manually activate the virtual environment every time you want to use it by invoking:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
-</code></pre>
-
+<pre class="code literal-block"><span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
+</pre>
 <p>Again, activating a virtual environment affects only the current shell session and doesn't do anything permanent.</p>
 <p>You can save yourself the trouble of remembering where the activate script lives by adding a function like this to your <code>.bashrc</code> or <code>.bash_profile</code>:</p>
-<pre class="code literal-block"><span></span><code>firedrake-env<span class="o">()</span> <span class="o">{</span>
+<pre class="code literal-block">firedrake-env<span class="o">()</span> <span class="o">{</span>
     <span class="nb">source</span> &lt;/absolute/path/to/virtual/environment&gt;/bin/activate
 <span class="o">}</span>
-</code></pre>
-
+</pre>
 <p>When you type <code>firedrake-env</code> at the terminal, the firedrake virtual environment will be activated.
 If you find yourself using lots of different virtual environments, you might also like <a href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>
 <p>Firedrake uses the library <a href="https://www.mcs.anl.gov/petsc/">PETSc</a> for many of its internal data structures (meshes, vectors, matrices).
@@ -122,33 +119,23 @@ Gmsh is available through the package managers of most operating systems or as a
 <p>The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, so many packages don't have binary releases yet.
 On top of that, Homebrew has decided to move everything around once again because reasons.
 You'll first need to install Firedrake by itself, without icepack (for now), and activate the virtual environment:</p>
-<pre class="code literal-block"><span></span><code>curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python3 firedrake-install
+<pre class="code literal-block">curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python firedrake-install
 <span class="nb">source</span> firedrake/bin/activate
-</code></pre>
-
+</pre>
 <p>Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:</p>
-<pre class="code literal-block"><span></span><code><span class="nv">OPENBLAS</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix openblas<span class="k">)</span><span class="s2">"</span> pip3 install scipy
-<span class="nv">HDF5_DIR</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span>/src/petsc/default pip3 install netCDF4
+<pre class="code literal-block"><span class="nv">OPENBLAS</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix openblas<span class="k">)</span><span class="s2">"</span> pip install scipy
+<span class="nv">HDF5_DIR</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span>/src/petsc/default pip install netCDF4
 <span class="nb">export</span> <span class="nv">SHAPELY_HASH</span><span class="o">=</span>c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
-pip3 install git+https://github.com/Toblerity/Shapely.git@<span class="nv">$SHAPELY_HASH</span>
-</code></pre>
-
-<p>These commands will (1) install scipy with some extra information about where to find OpenBLAS, (2) install the netCDF4 Python bindings with extra info about where to find the HDF5 library that PETSc installed, and (3) install a newer version of Shapely that includes some extra hackery around the paths where Homebrew puts things now.
+pip install git+https://github.com/Toblerity/Shapely.git@<span class="nv">$SHAPELY_HASH</span>
+pip install <span class="nv">rasterio</span><span class="o">==</span><span class="m">1</span>.3a4
+</pre>
+<p>These commands will install the right versions of several dependencies with a bit of extra hackery to deal with where Homebrew has moved things.
 Finally, you can clone icepack and install it:</p>
-<pre class="code literal-block"><span></span><code>git clone https://github.com/icepack/icepack
-pip3 install --editable icepack/
-</code></pre>
-
-<p>Additionally, if you're using pyenv to manage Python installations and virtual environments, there are some more hurdles to jump through when first installing a particular version of Python:</p>
-<pre class="code literal-block"><span></span><code><span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/lib"</span>
-<span class="nb">export</span> <span class="nv">CPPFLAGS</span><span class="o">=</span><span class="s2">"-I</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/include"</span>
-<span class="nb">export</span> <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix xz<span class="k">)</span><span class="s2">/lib/pkgconfig"</span>
-<span class="nv">PYTHON_CONFIGURE_OPTS</span><span class="o">=</span><span class="s2">"--enable-shared"</span> pyenv install <span class="m">3</span>.9.7
-</code></pre>
-
-<p>(See <a href="https://stackoverflow.com/a/66937351">this SO answer</a>.)
-If you have an M1 and find other install problems, please report them to us using the contact page linked above.
+<pre class="code literal-block">git clone https://github.com/icepack/icepack
+pip install --editable icepack/
+</pre>
+<p>If you have an M1 and find other install problems, please report them to us using the contact page linked above.
 These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.</p>
     </div>
     

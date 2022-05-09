@@ -18,7 +18,7 @@
 The model that we'll use here can resolve both plug flow and shear flow.
 The velocity">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2022-02-28T13:28:03-08:00">
+<meta property="article:published_time" content="2022-05-09T11:46:06-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -108,8 +108,7 @@ The surface and bed elevation only have to be defined on the footprint mesh, so 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">vfamily</span><span class="o">=</span><span class="s1">'R'</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s2">"R"</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">0</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -135,8 +134,7 @@ The Legendre polynomials are advantageous because they are mutually orthogonal.<
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">vfamily</span><span class="o">=</span><span class="s1">'GL'</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">2</span>
+    <span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s2">"GL"</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">2</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -272,17 +270,17 @@ The <code>SpatialCoordinate</code> function now returns an additional symbol rep
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">icepack.models.hybrid</span>
 
 <span class="k">def</span> <span class="nf">friction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'velocity'</span><span class="p">]</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'thickness'</span><span class="p">]</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'surface'</span><span class="p">]</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'friction'</span><span class="p">]</span>
-    
+    <span class="n">u</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"velocity"</span><span class="p">]</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"thickness"</span><span class="p">]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"surface"</span><span class="p">]</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"friction"</span><span class="p">]</span>
+
     <span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span>
     <span class="n">p_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span>
     <span class="n">ϕ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p_W</span> <span class="o">/</span> <span class="n">p_I</span>
     <span class="k">return</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">hybrid</span><span class="o">.</span><span class="n">bed_friction</span><span class="p">(</span>
-        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> 
-        <span class="n">friction</span><span class="o">=</span><span class="n">C</span> <span class="o">*</span> <span class="n">ϕ</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">C</span> <span class="o">*</span> <span class="n">ϕ</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 
@@ -318,7 +316,7 @@ Creating a <code>FlowSolver</code> works exactly the same as it did before no ma
     <span class="n">thickness</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span>
     <span class="n">surface</span><span class="o">=</span><span class="n">s0</span><span class="p">,</span>
     <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
-    <span class="n">friction</span><span class="o">=</span><span class="n">C</span>
+    <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -405,7 +403,7 @@ The function <code>depth_average</code> will integrate a flowband field with res
         <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
         <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
         <span class="n">accumulation</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
-        <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h0</span>
+        <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h0</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
     
@@ -414,7 +412,7 @@ The function <code>depth_average</code> will integrate a flowband field with res
         <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
         <span class="n">surface</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
         <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
-        <span class="n">friction</span><span class="o">=</span><span class="n">C</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 
@@ -428,7 +426,7 @@ The function <code>depth_average</code> will integrate a flowband field with res
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 500/500 [00:15&lt;00:00, 31.94it/s]
+<pre>100%|██████████| 500/500 [00:27&lt;00:00, 18.22it/s]
 </pre>
 </div>
 </div>
@@ -578,12 +576,18 @@ The results are again very similar to that of the ice stream case.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'distance along centerline (m)'</span><span class="p">)</span>
-<span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'elevation (m)'</span><span class="p">);</span>
-<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">'tab:brown'</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance along centerline (m)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"elevation (m)"</span><span class="p">)</span>
+<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"tab:brown"</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
 <span class="n">z_b</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">h</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
-<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">z_b</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">'tab:blue'</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
-<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">'tab:blue'</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">);</span>
+<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">z_b</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
+<span class="n">firedrake</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">icepack</span><span class="o">.</span><span class="n">depth_average</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">);</span>
 </pre></div>
 
     </div>
@@ -786,14 +790,12 @@ Instead, we can run the degree-1 velocity and thickness to steady state and use 
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">V_2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">vfamily</span><span class="o">=</span><span class="s1">'GL'</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">2</span>
+    <span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s2">"GL"</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">2</span>
 <span class="p">)</span>
 <span class="n">u_2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">V_2</span><span class="p">)</span>
 
 <span class="n">V_4</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span>
-    <span class="n">mesh</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s1">'CG'</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">vfamily</span><span class="o">=</span><span class="s1">'GL'</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">4</span>
+    <span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">vfamily</span><span class="o">=</span><span class="s2">"GL"</span><span class="p">,</span> <span class="n">vdegree</span><span class="o">=</span><span class="mi">4</span>
 <span class="p">)</span>
 <span class="n">u_4</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">V_4</span><span class="p">)</span>
 
