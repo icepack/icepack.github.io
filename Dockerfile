@@ -1,4 +1,4 @@
-FROM icepack/firedrake-python3.8:0.5.7
+FROM icepack/firedrake-python3.8:0.6.0
 
 MAINTAINER shapero.daniel@gmail.com
 
@@ -18,9 +18,9 @@ ARG token
 
 RUN mkdir actions-runner && \
     cd actions-runner && \
-    curl -o actions-runner-linux-x64-2.287.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.287.1/actions-runner-linux-x64-2.287.1.tar.gz && \
-    echo "8fa64384d6fdb764797503cf9885e01273179079cf837bfc2b298b1a8fd01d52  actions-runner-linux-x64-2.287.1.tar.gz" | shasum -a 256 -c && \
-    tar xzf ./actions-runner-linux-x64-2.287.1.tar.gz && \
+    curl -o actions-runner-linux-x64-2.296.2.tar.gz -L https://github.com/actions/runner/releases/download/v2.296.2/actions-runner-linux-x64-2.296.2.tar.gz && \
+    echo "34a8f34956cdacd2156d4c658cce8dd54c5aef316a16bbbc95eb3ca4fd76429a  actions-runner-linux-x64-2.296.2.tar.gz" | shasum -a 256 -c && \
+    tar xzf ./actions-runner-linux-x64-2.296.2.tar.gz && \
     ./config.sh --url https://github.com/icepack/icepack.github.io --token ${token} --unattended
 
 WORKDIR /home/sermilik/actions-runner
