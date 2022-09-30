@@ -31,10 +31,16 @@ Activate the Firedrake virtual environment:
 source <path/to/firedrake>/bin/activate
 ```
 
-Run one of the icepack unit tests to make sure it works:
+Install some additional dependencies for icepack:
 
 ```shell
 cd $VIRTUAL_ENV/src/icepack
+pip install -r requirements.txt
+```
+
+Run one of the icepack unit tests to make sure it works:
+
+```shell
 pytest -s test/ice_shelf_test.py
 ```
 
@@ -124,33 +130,7 @@ Gmsh is available through the package managers of most operating systems or as a
 
 ### M1 Macs
 
-The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, so many packages don't have binary releases yet.
+The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, and some packages don't have binary releases for ARM yet.
 On top of that, Homebrew has decided to move everything around once again because reasons.
-You'll first need to install Firedrake by itself, without icepack (for now), and activate the virtual environment:
-
-```shell
-curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python firedrake-install
-source firedrake/bin/activate
-```
-
-Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:
-
-```shell
-OPENBLAS="$(brew --prefix openblas)" pip install scipy
-HDF5_DIR=$VIRTUAL_ENV/src/petsc/default pip install netCDF4
-export SHAPELY_HASH=c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
-pip install git+https://github.com/Toblerity/Shapely.git@$SHAPELY_HASH
-pip install rasterio==1.3a4
-```
-
-These commands will install the right versions of several dependencies with a bit of extra hackery to deal with where Homebrew has moved things.
-Finally, you can clone icepack and install it:
-
-```shell
-git clone https://github.com/icepack/icepack
-pip install --editable icepack/
-```
-
-If you have an M1 and find other install problems, please report them to us using the contact page linked above.
-These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.
+Installing on M1 used to require a few special hacks but these are mostly no longer necessary.
+If you have an M1 and you do find other install problems, please report them to us using the contact page linked above.

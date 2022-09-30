@@ -58,9 +58,13 @@ python firedrake-install --install icepack
 <div class="code"><pre class="code literal-block"><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
 </pre></div>
 
-<p>Run one of the icepack unit tests to make sure it works:</p>
+<p>Install some additional dependencies for icepack:</p>
 <div class="code"><pre class="code literal-block"><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
-pytest -s test/ice_shelf_test.py
+pip install -r requirements.txt
+</pre></div>
+
+<p>Run one of the icepack unit tests to make sure it works:</p>
+<div class="code"><pre class="code literal-block">pytest -s test/ice_shelf_test.py
 </pre></div>
 
 <p>Your icepack installation lives in the directory <code>$VIRTUAL_ENV/src/icepack</code>.</p>
@@ -126,30 +130,10 @@ Gmsh will take a description of the outline of some domain in 2D and calculate a
 Since the shape of most real glaciers is very irregular and thus can't easily be represented by a rectilinear grid, a tool like gmsh is indispensible.
 Gmsh is available through the package managers of most operating systems or as a binary executable from the project website.</p>
 <h4 id="m1-macs">M1 Macs</h4>
-<p>The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, so many packages don't have binary releases yet.
+<p>The new Mac machines have have transitioned from the X86-64 CPU architecture to ARM, and some packages don't have binary releases for ARM yet.
 On top of that, Homebrew has decided to move everything around once again because reasons.
-You'll first need to install Firedrake by itself, without icepack (for now), and activate the virtual environment:</p>
-<div class="code"><pre class="code literal-block">curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python firedrake-install
-<span class="nb">source</span> firedrake/bin/activate
-</pre></div>
-
-<p>Next we'll run some more commands to get a few of the packages that icepack depends on and which need special handling on M1 Macs:</p>
-<div class="code"><pre class="code literal-block"><span class="nv">OPENBLAS</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>brew --prefix openblas<span class="k">)</span><span class="s2">"</span> pip install scipy
-<span class="nv">HDF5_DIR</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span>/src/petsc/default pip install netCDF4
-<span class="nb">export</span> <span class="nv">SHAPELY_HASH</span><span class="o">=</span>c0c7d6c6c724fb295845c0583d0c7b3de870e0d5
-pip install git+https://github.com/Toblerity/Shapely.git@<span class="nv">$SHAPELY_HASH</span>
-pip install <span class="nv">rasterio</span><span class="o">==</span><span class="m">1</span>.3a4
-</pre></div>
-
-<p>These commands will install the right versions of several dependencies with a bit of extra hackery to deal with where Homebrew has moved things.
-Finally, you can clone icepack and install it:</p>
-<div class="code"><pre class="code literal-block">git clone https://github.com/icepack/icepack
-pip install --editable icepack/
-</pre></div>
-
-<p>If you have an M1 and find other install problems, please report them to us using the contact page linked above.
-These workarounds are annoying, but they're likely to become unnecessary as more projects start testing on M1.</p>
+Installing on M1 used to require a few special hacks but these are mostly no longer necessary.
+If you have an M1 and you do find other install problems, please report them to us using the contact page linked above.</p>
     </div>
     
 
