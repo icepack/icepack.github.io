@@ -21,7 +21,7 @@ You can find them under the directory `notebooks/`.
         node [fontname="helvetica", shape="plaintext", fontcolor="#007bff", fontsize="12"];
         edge [arrowsize=0.25, color="#4F5151"];
         ranksep=0.15;
-        rankdir="LR";
+        rankdir="TB";
         splines="false";
         mode="hier";
         layout="dot";
@@ -70,6 +70,7 @@ You can find them under the directory `notebooks/`.
             fontcolor="#4F5151"
             fontname="helvetica";
             label="How-to\nguides";
+            labeljust="r";
             performance -> checkpointing;
             performance -> adaptivity;
             ice_shelf_inverse -> sparse_data;
