@@ -1,4 +1,3 @@
-
 on:
   push:
     branches:
@@ -7,24 +6,33 @@ on:
 
 jobs:
   nikola_build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/firedrakeproject/firedrake-vanilla:2023-10
+      options: --user root
     name: "Deploy Nikola to GitHub Pages"
     steps:
+    - name: Activate Firedrake virtual environment
+      run: |
+        . /home/firedrake/firedrake/bin/activate
+        echo PATH=$PATH >> $GITHUB_ENV
     - name: Checkout icepack source
       uses: actions/checkout@v2
       with:
         repository: icepack/icepack
         path: icepack
-    - name: Install icepack
-      run: pip3 install --editable ./icepack
+    - name: Install icepack and dependencies
+      run: |
+        apt update && apt install -yq patchelf graphviz moreutils jq
+        pip install git+https://github.com/icepack/Trilinos.git
+        pip install git+https://github.com/icepack/pyrol.git
+        pip install nbconvert
+        pip install "Nikola[extras]"
+        pip install --editable ./icepack
     - name: Checkout website source
       uses: actions/checkout@v2
       with:
         path: website
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install numpy scipy jupyter nbconvert matplotlib tqdm "Nikola[extras]"
     - name: Preparing
       working-directory: ./website
       run: |
@@ -38,6 +46,9 @@ jobs:
         printf '\n\nGITHUB_REMOTE_NAME = "ghpages"\nGITHUB_COMMIT_SOURCE = False\n' >> conf.py
     - name: Execute notebooks
       working-directory: ./website
+      env:
+        EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
+        EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
       run: make all --jobs $(nproc --all)
     - name: Publish
       working-directory: ./website
