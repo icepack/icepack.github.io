@@ -2,7 +2,7 @@
 
 # Find all of the notebooks by searching the `notebooks` directory of icepack
 # for anything that ends with `.ipynb` and isn't a directory and sort them
-ICEPACK:=$(shell python3 -m pip show icepack | grep "Location:" | cut -d" " -f2)
+ICEPACK:=$(shell python3 -m pip show icepack | grep "Editable project location:" | cut -d" " -f4)
 NOTEBOOK_FILES:=$(shell find $(ICEPACK)/notebooks -not -path '*/\.*' -type f -name '*\.ipynb' | sort)
 
 # Make a target containing all of the imported, executed demos; to get any
