@@ -26,9 +26,11 @@ jobs:
         apt update && apt install -yq patchelf graphviz moreutils jq
         pip install git+https://github.com/icepack/Trilinos.git
         pip install git+https://github.com/icepack/pyrol.git
-        pip install nbconvert
+        pip install jupyter nbconvert
         pip install "Nikola[extras]"
         pip install --editable ./icepack
+    - name: Create jupyter kernel
+      run: python -m ipykernel install --user --name=firedrake
     - name: Checkout website source
       uses: actions/checkout@v2
       with:
