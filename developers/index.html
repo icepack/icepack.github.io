@@ -163,8 +163,8 @@ Rebasing is a little hard the first time, so we're happy to walk you through it.
 <p>If you're modifying one of the demos or adding a new demo, we'll ask that you take some steps to make sure that only the essential content of the Jupyter notebook gets tracked in version control.
 We store only the un-executed form of the notebook with no outputs or plots in the icepack git repository, with the understanding that a user can always execute the notebook in order to see the results.
 To remove any outputs or plots and restore a notebook to its original state, you can use <a href="https://github.com/kynan/nbstripout"><code>nbstripout</code></a> command:</p>
-<div class="code"><pre class="code literal-block">pip3 install nbstripout
-nbstripout icepack/demo/&lt;name of demo&gt;.ipynb
+<div class="code"><pre class="code literal-block">pip3<span class="w"> </span>install<span class="w"> </span>nbstripout
+nbstripout<span class="w"> </span>icepack/demo/&lt;name<span class="w"> </span>of<span class="w"> </span>demo&gt;.ipynb
 </pre></div>
 
 <p>Jupyter notebooks have lots other unnecessary metadata that this command can remove for us.</p>
@@ -221,7 +221,7 @@ Make it look like the math we all know and love, and it'll be that much easier t
 Black will do things like normalize all quotes, wrap long lines, and generally fix annoying stylistic issues that aren't worth the time you spend on them.
 The style that it enforces isn't perfect but it helps reduce entropy growth.
 To run it, first <code>pip3 install black</code> and then do:</p>
-<div class="code"><pre class="code literal-block">black ./
+<div class="code"><pre class="code literal-block">black<span class="w"> </span>./
 </pre></div>
 
 <p>This will edit any Python source files in the current directory in-place.
@@ -243,16 +243,16 @@ The following describes how you can work on code with other people and not drive
 If you're developing new code, you're going to have different needs.
 For example, you might be working on more than one feature at the same time, or you might be testing icepack against different installations of Firedrake that have been configured differently.</p>
 <p>The first thing you'll want to do is clone icepack into a separate directory and add your fork as a remote.</p>
-<div class="code"><pre class="code literal-block">git clone git@github.com:icepack/icepack.git
-<span class="nb">cd</span> icepack
-git remote add <span class="se">\</span>
-    &lt;your name&gt; <span class="se">\</span>
-    git@github.com:&lt;your GitHub username&gt;/icepack.git
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>clone<span class="w"> </span>git@github.com:icepack/icepack.git
+<span class="nb">cd</span><span class="w"> </span>icepack
+git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>&lt;your<span class="w"> </span>name&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git@github.com:&lt;your<span class="w"> </span>GitHub<span class="w"> </span>username&gt;/icepack.git
 </pre></div>
 
 <p>Next, you'll want to activate the virtual environment and install both icepack and the dependencies for building the documentation in editable mode:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">source</span> &lt;/path/to/firedrake&gt;/bin/activate
-pip3 install --editable &lt;/path/to/icepack&gt;<span class="s2">"[doc]"</span>
+<div class="code"><pre class="code literal-block"><span class="nb">source</span><span class="w"> </span>&lt;/path/to/firedrake&gt;/bin/activate
+pip3<span class="w"> </span>install<span class="w"> </span>--editable<span class="w"> </span>&lt;/path/to/icepack&gt;<span class="s2">"[doc]"</span>
 </pre></div>
 
 <p>The <code>--editable</code> flag guarantees that changes you make to the source code get seen automatically whenever you import icepack.
@@ -261,7 +261,7 @@ The flag <code>"[doc]"</code> at the end tells pip to also install the dependenc
 This is part of a <a href="https://setuptools.readthedocs.io/en/latest/references/keywords.html">general mechanism</a> of Python's setuptools for specifying optional dependencies.</p>
 <p>As icepack is updated, you may find that you need to check for and install any missing dependencies.
 To do this, navigate to the icepack directory and run:</p>
-<div class="code"><pre class="code literal-block">pip3 install -e .
+<div class="code"><pre class="code literal-block">pip3<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 
 <p>In the unfortunate event that your Firedrake installation becomes unusable, for example because your operating system decided to upgrade Python out from under you, you can delete the entire Firedrake virtual environment and reinstall a fresh one without losing any changes you made to your branch of icepack.</p>
@@ -277,8 +277,8 @@ If you're using emacs and the <a href="https://jedi.readthedocs.io/en/latest/">j
 If you're working on a new feature, you might find that the master branch has been updated.
 Sometimes the changes to the master branch might even include bug fixes that are useful or relevant to the feature you're working on.
 In order to pull the latest changes into your branch, you can run the following commands:</p>
-<div class="code"><pre class="code literal-block">git fetch origin master
-git rebase origin/master
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>fetch<span class="w"> </span>origin<span class="w"> </span>master
+git<span class="w"> </span>rebase<span class="w"> </span>origin/master
 </pre></div>
 
 <p>The git <code>rebase</code> command is a really powerful tool which you should read more about.
@@ -286,7 +286,7 @@ What it does is effectively rewrite the commit history to put the changes in you
 The nice part about <code>rebase</code> as opposed to <code>merge</code> is that it won't create an unnecessary merge commit, unless there are conflicts to deal with.</p>
 <p>The other important use of the rebase command is to clean up or otherwise alter the commit history of a branch you're working on.
 This is best done through an <em>interactive</em> rebase:</p>
-<div class="code"><pre class="code literal-block">git rebase --interactive HEAD~&lt;number of commits&gt;
+<div class="code"><pre class="code literal-block">git<span class="w"> </span>rebase<span class="w"> </span>--interactive<span class="w"> </span>HEAD~&lt;number<span class="w"> </span>of<span class="w"> </span>commits&gt;
 </pre></div>
 
 <p>Git will then fire up the text editor of your choice and present you with a list of the number of commits you selected.

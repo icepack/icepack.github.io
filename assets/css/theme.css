@@ -410,3 +410,6 @@ pre.code, code {
 		padding: 0;
 	}
 }
+
+/* Center graphviz diagrams on the page */
+p.graphviz { text-align: center; }

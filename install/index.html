@@ -50,54 +50,50 @@ For other problems, you can always <a href="../contact/">get in touch</a> for mo
 For more explanation, see below.</p>
 <h4 id="quick-start">Quick start</h4>
 <p>Install Firedrake, building PETSc along the way:</p>
-<div class="code"><pre class="code literal-block">curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python firedrake-install --install icepack
+<div class="code"><pre class="code literal-block">curl<span class="w"> </span>-O<span class="w"> </span>https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+python<span class="w"> </span>firedrake-install<span class="w"> </span>--install<span class="w"> </span>icepack
 </pre></div>
 
 <p>Activate the Firedrake virtual environment:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">source</span> &lt;path/to/firedrake&gt;/bin/activate
-</pre></div>
-
-<p>Install some additional dependencies for icepack:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack
-pip install -r requirements.txt
+<div class="code"><pre class="code literal-block"><span class="nb">source</span><span class="w"> </span>&lt;path/to/firedrake&gt;/bin/activate
 </pre></div>
 
 <p>Run one of the icepack unit tests to make sure it works:</p>
-<div class="code"><pre class="code literal-block">pytest -s test/ice_shelf_test.py
+<div class="code"><pre class="code literal-block">pytest<span class="w"> </span>-s<span class="w"> </span>test/ice_shelf_test.py
 </pre></div>
 
 <p>Your icepack installation lives in the directory <code>$VIRTUAL_ENV/src/icepack</code>.</p>
 <p>If you want to use the data assimilation features of icepack, you'll need to also install the <a href="https://trilinos.github.io/rol.html">Rapid Optimization Library</a> or ROL for short.
 First, you need to have the <code>patchelf</code> program installed; this is a very common Unix utility that should be available through your system package manager if it isn't installed already.
 You can then do</p>
-<div class="code"><pre class="code literal-block">pip install <span class="nv">roltrilinos</span><span class="o">==</span><span class="m">0</span>.0.9 <span class="nv">ROL</span><span class="o">==</span><span class="m">0</span>.0.16
+<div class="code"><pre class="code literal-block">pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/icepack/Trilinos.git
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/icepack/pyrol.git
 </pre></div>
 
-<p>to build both a pre-built binary of ROL and the Python wrappers for it.</p>
+<p>to build both a binary of ROL and the Python wrappers for it.</p>
 <h4 id="run-the-demos">Run the demos</h4>
 <p>Install the mesh generator <a href="http://gmsh.info/">gmsh</a>.
 Binaries are available on their website, or you can use your system package manager.
 On MacOS,</p>
-<div class="code"><pre class="code literal-block">brew install gmsh
+<div class="code"><pre class="code literal-block">brew<span class="w"> </span>install<span class="w"> </span>gmsh
 </pre></div>
 
 <p>On Debian, Mint, or Ubuntu:</p>
-<div class="code"><pre class="code literal-block">sudo apt-get install gmsh
+<div class="code"><pre class="code literal-block">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gmsh
 </pre></div>
 
 <p>Now make a Jupyter kernel for firedrake:</p>
-<div class="code"><pre class="code literal-block">pip install ipykernel
-python -m ipykernel install --user --name<span class="o">=</span>firedrake
+<div class="code"><pre class="code literal-block">pip<span class="w"> </span>install<span class="w"> </span>ipykernel
+python<span class="w"> </span>-m<span class="w"> </span>ipykernel<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--name<span class="o">=</span>firedrake
 </pre></div>
 
 <p>Run the demo notebooks:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">cd</span> <span class="nv">$VIRTUAL_ENV</span>/src/icepack/notebooks
-jupyter notebook
+<div class="code"><pre class="code literal-block"><span class="nb">cd</span><span class="w"> </span><span class="nv">$VIRTUAL_ENV</span>/src/icepack/notebooks
+jupyter<span class="w"> </span>notebook
 </pre></div>
 
 <h4 id="comments">Comments</h4>
-<p>Most python projects use the simple <code>python setup.py install</code> formula to build and install everything.
+<p>Most python projects use the simple <code>pip install .</code> formula to build and install everything.
 Firedrake is appreciably more complex -- it consists of several dependent sub-packages along with a complete PETSc installation -- and thus has its own custom build process.
 Rather than install the project in your system python package directory, Firedrake's install script builds it inside an isolated <a href="https://docs.python.org/3/tutorial/venv.html"><em>virtual environment</em></a>.
 Python virtual environments were created to solve problems of conflicting package versions possibly breaking installed libraries.
@@ -106,13 +102,13 @@ This environment includes a Python executable and all of the package's dependenc
 Virtual environments can be activated and deactivated for a particular shell session.
 The added layer of isolation keeps one package from breaking other packages on the system or doing anything that's both undesirable and hard to roll back.</p>
 <p>However, it does introduce an annoying layer of bureaucracy -- you have to manually activate the virtual environment every time you want to use it by invoking:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">source</span> &lt;path/to/virtual/environment&gt;/bin/activate
+<div class="code"><pre class="code literal-block"><span class="nb">source</span><span class="w"> </span>&lt;path/to/virtual/environment&gt;/bin/activate
 </pre></div>
 
 <p>Again, activating a virtual environment affects only the current shell session and doesn't do anything permanent.</p>
 <p>You can save yourself the trouble of remembering where the activate script lives by adding a function like this to your <code>.bashrc</code> or <code>.bash_profile</code>:</p>
-<div class="code"><pre class="code literal-block">firedrake-env<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">source</span> &lt;/absolute/path/to/virtual/environment&gt;/bin/activate
+<div class="code"><pre class="code literal-block">firedrake-env<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">source</span><span class="w"> </span>&lt;/absolute/path/to/virtual/environment&gt;/bin/activate
 <span class="o">}</span>
 </pre></div>
 

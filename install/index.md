@@ -31,13 +31,6 @@ Activate the Firedrake virtual environment:
 source <path/to/firedrake>/bin/activate
 ```
 
-Install some additional dependencies for icepack:
-
-```shell
-cd $VIRTUAL_ENV/src/icepack
-pip install -r requirements.txt
-```
-
 Run one of the icepack unit tests to make sure it works:
 
 ```shell
@@ -50,9 +43,10 @@ If you want to use the data assimilation features of icepack, you'll need to als
 First, you need to have the `patchelf` program installed; this is a very common Unix utility that should be available through your system package manager if it isn't installed already.
 You can then do
 ```shell
-pip install roltrilinos==0.0.9 ROL==0.0.16
+pip install git+https://github.com/icepack/Trilinos.git
+pip install git+https://github.com/icepack/pyrol.git
 ```
-to build both a pre-built binary of ROL and the Python wrappers for it.
+to build both a binary of ROL and the Python wrappers for it.
 
 
 ### Run the demos
@@ -87,7 +81,7 @@ jupyter notebook
 
 ### Comments
 
-Most python projects use the simple `python setup.py install` formula to build and install everything.
+Most python projects use the simple `pip install .` formula to build and install everything.
 Firedrake is appreciably more complex -- it consists of several dependent sub-packages along with a complete PETSc installation -- and thus has its own custom build process.
 Rather than install the project in your system python package directory, Firedrake's install script builds it inside an isolated [*virtual environment*](https://docs.python.org/3/tutorial/venv.html).
 Python virtual environments were created to solve problems of conflicting package versions possibly breaking installed libraries.
