@@ -26,7 +26,7 @@ jobs:
         apt update && apt install -yq patchelf graphviz moreutils jq
         pip install git+https://github.com/icepack/Trilinos.git
         pip install git+https://github.com/icepack/pyrol.git
-        pip install jupyter nbconvert
+        pip install jupyter nbconvert netCDF4
         pip install "Nikola[extras]"
         pip install --editable ./icepack
     - name: Create jupyter kernel
