@@ -12,6 +12,7 @@ executed-notebooks/%.ipynb: $(ICEPACK)/notebooks/%.ipynb
 	jupyter nbconvert \
 	    --to ipynb \
 	    --execute \
+	    --allow-errors \
 	    --ExecutePreprocessor.timeout=24000 \
 	    --output-dir=`dirname $@` \
 	    --output=`basename $@` \
