@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Time-dependent data assimilation | icepack</title>
+<link href="../../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="canonical" href="https://icepack.github.io/notebooks/how-to/05-time-dependent-inverse/">
+<!--[if lt IE 9]><script src="../../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="Daniel Shapero">
+<meta property="og:site_name" content="icepack">
+<meta property="og:title" content="Time-dependent data assimilation">
+<meta property="og:url" content="https://icepack.github.io/notebooks/how-to/05-time-dependent-inverse/">
+<meta property="og:description" content="Time-dependent data assimilation¶Warning: the code demonstrated in this notebook is experimental.
+Use it at your own risk.
+We had to tweak solver choices and settings in order to make it work.
+If you ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2023-11-06T16:42:31-08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../../../" title="icepack" rel="home">
+        <img src="../../../images/logo.svg" alt="icepack" id="logo"></a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../../">Home</a></li>
+                <li><a href="../../../install/">Install</a></li>
+                <li><a href="../../../tutorials/">Tutorials</a></li>
+                <li><a href="../../../developers/">Development</a></li>
+                <li><a href="../../../physics/">Physics</a></li>
+                <li><a href="../../../contact/">Contact</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header></header><div class="e-content entry-content" itemprop="articleBody text">
+    <div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Time-dependent-data-assimilation">Time-dependent data assimilation<a class="anchor-link" href="#Time-dependent-data-assimilation">¶</a>
+</h2>
+<p><strong>Warning:</strong> the code demonstrated in this notebook is experimental.
+Use it at your own risk.
+We had to tweak solver choices and settings in order to make it work.
+If you try to build off of it and something breaks, please <a href="https://icepack.github.io/contact/">get in touch</a>.</p>
+<p>This notebook will demonstrate some more of the capabilities that icepack has for assimilating observational data.
+In a previous demo, we showed how to estimate a parameter in an ice model (the fluidity) from remote sensing observations.
+To do so, we had to specify:</p>
+<ol>
+<li>the loss functional, or how we measure the agreement of our computed state with observations</li>
+<li>the regularization functional, or how unusual or complex our guess for these parameters were, and</li>
+<li>the simulation, or what the physics is that relates the parameters and the observable fields.</li>
+</ol>
+<p>In the previous demo, the governing physics was the momentum conservation equation of ice flow, which is time-independent.
+Here we'll look at how to use more involved simulations, including both mass and momentum conservation, that relate the unknown and the observable fields.
+The resulting simulation now depends on time.
+This is possible thanks to the adjoint capabilities in Firedrake and it looks pretty similar to the simpler time-dependent case.</p>
+<p>Rather than try to estimate an unobservable parameter as we did in the previous demo, we'll focus here on estimating the value of an initial condition from measurements of the glacier at a later time.
+In principle, you can do joint estimation of both state and parameters at once; as far as the code is concerned, there's no distinction between the two.
+We've stuck to a pure state estimation problem here just to keep things simple.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Setup">Setup<a class="anchor-link" href="#Setup">¶</a>
+</h4>
+<p>We'll start from the MISMIP+ geometry and steady state from the previous notebooks.
+Computing the steady state of the MISMIP+ test case is expensive.
+Rather than do a cold start every time, we'll instead load up a previously-computed steady state from checkpoint files if they're available.
+(See the <a href="https://icepack.github.io/notebooks/how-to/02-checkpointing/">how-to guide</a> on checkpointing.)
+If not, we'll do an initial spin-up for 3600 years using a cheaper degree-1 finite element basis and then a final spin-up using a degree-2 basis.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">firedrake</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">exp</span><span class="p">,</span>
+    <span class="n">sqrt</span><span class="p">,</span>
+    <span class="n">inner</span><span class="p">,</span>
+    <span class="n">as_vector</span><span class="p">,</span>
+    <span class="n">grad</span><span class="p">,</span>
+    <span class="n">max_value</span><span class="p">,</span>
+    <span class="n">Constant</span><span class="p">,</span>
+    <span class="n">interpolate</span><span class="p">,</span>
+    <span class="n">dx</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mf">640e3</span><span class="p">,</span> <span class="mf">80e3</span>
+<span class="n">ny</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Lx</span> <span class="o">/</span> <span class="n">Ly</span><span class="p">)</span> <span class="o">*</span> <span class="n">ny</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">Lx</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">)</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"mesh"</span><span class="p">)</span>
+
+<span class="n">Q2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">V2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/home/firedrake/firedrake/lib/python3.10/site-packages/pytools/__init__.py:2484: UserWarning: unable to find git revision
+  warn("unable to find git revision")
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">mismip_bed</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+
+    <span class="n">x_c</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">300e3</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">x_c</span>
+
+    <span class="n">B_0</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">B_2</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mf">728.8</span><span class="p">)</span>
+    <span class="n">B_4</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">343.91</span><span class="p">)</span>
+    <span class="n">B_6</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mf">50.57</span><span class="p">)</span>
+    <span class="n">B_x</span> <span class="o">=</span> <span class="n">B_0</span> <span class="o">+</span> <span class="n">B_2</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">B_4</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">B_6</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">6</span>
+
+    <span class="n">f_c</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">4e3</span><span class="p">)</span>
+    <span class="n">d_c</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+    <span class="n">w_c</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">24e3</span><span class="p">)</span>
+
+    <span class="n">B_y</span> <span class="o">=</span> <span class="n">d_c</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">Ly</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">w_c</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_c</span><span class="p">))</span> <span class="o">+</span>
+        <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">+</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">Ly</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">w_c</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_c</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">z_deep</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="o">-</span><span class="mi">720</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">max_value</span><span class="p">(</span><span class="n">B_x</span> <span class="o">+</span> <span class="n">B_y</span><span class="p">,</span> <span class="n">z_deep</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll use the Schoof-type friction law from before rather than the Weertman sliding law.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ice_density</span> <span class="k">as</span> <span class="n">ρ_I</span><span class="p">,</span>
+    <span class="n">water_density</span> <span class="k">as</span> <span class="n">ρ_W</span><span class="p">,</span>
+    <span class="n">gravity</span> <span class="k">as</span> <span class="n">g</span><span class="p">,</span>
+    <span class="n">weertman_sliding_law</span> <span class="k">as</span> <span class="n">m</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">friction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"velocity"</span><span class="p">,</span> <span class="s2">"thickness"</span><span class="p">,</span> <span class="s2">"surface"</span><span class="p">,</span> <span class="s2">"friction"</span><span class="p">)</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
+
+    <span class="n">p_W</span> <span class="o">=</span> <span class="n">ρ_W</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">h</span><span class="p">))</span>
+    <span class="n">p_I</span> <span class="o">=</span> <span class="n">ρ_I</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">max_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p_I</span> <span class="o">-</span> <span class="n">p_W</span><span class="p">)</span>
+    <span class="n">τ_c</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">u_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">τ_c</span> <span class="o">/</span> <span class="n">C</span><span class="p">)</span> <span class="o">**</span> <span class="n">m</span>
+    <span class="n">u_b</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">τ_c</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">u_c</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">u_b</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="n">u_c</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">a_0</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">icepack</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">IceStream</span><span class="p">(</span><span class="n">friction</span><span class="o">=</span><span class="n">friction</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tqdm</span>
+
+
+<span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">z_b</span><span class="p">,</span> <span class="n">final_time</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="n">h_in</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">a_0</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">())</span>
+
+    <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">final_time</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span>
+            <span class="n">dt</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+            <span class="n">accumulation</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h_in</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">z_b</span><span class="p">)</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+            <span class="n">surface</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+            <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+            <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">u</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"dirichlet_ids"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="s2">"side_wall_ids"</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="s2">"diagnostic_solver_type"</span><span class="p">:</span> <span class="s2">"petsc"</span><span class="p">,</span>
+    <span class="s2">"diagnostic_solver_parameters"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"snes_type"</span><span class="p">:</span> <span class="s2">"newtontr"</span><span class="p">,</span>
+        <span class="s2">"ksp_type"</span><span class="p">:</span> <span class="s2">"preonly"</span><span class="p">,</span>
+        <span class="s2">"pc_type"</span><span class="p">:</span> <span class="s2">"lu"</span><span class="p">,</span>
+        <span class="s2">"pc_factor_mat_solver_type"</span><span class="p">:</span> <span class="s2">"mumps"</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">"prognostic_solver_parameters"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"ksp_type"</span><span class="p">:</span> <span class="s2">"gmres"</span><span class="p">,</span>
+        <span class="s2">"pc_type"</span><span class="p">:</span> <span class="s2">"ilu"</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Load in the steady state of the system, computed with degree-1 elements, from checkpoint files if it exists.
+Recreate the steady state from a cold start if not.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">"mismip-degree1.h5"</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">CheckpointFile</span><span class="p">(</span><span class="s2">"mismip-degree1.h5"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">chk</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"mesh"</span><span class="p">)</span>
+
+        <span class="n">h_1</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"thickness"</span><span class="p">)</span>
+        <span class="n">s_1</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"surface"</span><span class="p">)</span>
+        <span class="n">u_1</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"velocity"</span><span class="p">)</span>
+        
+        <span class="n">Q1</span> <span class="o">=</span> <span class="n">h_1</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="n">u_1</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">RectangleMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"mesh"</span><span class="p">)</span>
+    <span class="n">Q1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">V1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">z_b</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">mismip_bed</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="n">Q1</span><span class="p">)</span>
+    <span class="n">h_0</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">Constant</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">Q1</span><span class="p">)</span>
+    <span class="n">s_0</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h_0</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">z_b</span><span class="p">)</span>
+
+    <span class="n">flow_solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">FlowSolver</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">u_0</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">interpolate</span><span class="p">(</span><span class="n">as_vector</span><span class="p">((</span><span class="mi">90</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">V1</span><span class="p">),</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h_0</span><span class="p">,</span>
+        <span class="n">surface</span><span class="o">=</span><span class="n">s_0</span><span class="p">,</span>
+        <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">5.0</span>
+    <span class="n">final_time</span> <span class="o">=</span> <span class="mi">3600</span>
+
+    <span class="n">h_1</span><span class="p">,</span> <span class="n">s_1</span><span class="p">,</span> <span class="n">u_1</span> <span class="o">=</span> <span class="n">run_simulation</span><span class="p">(</span>
+        <span class="n">flow_solver</span><span class="p">,</span> <span class="n">h_0</span><span class="p">,</span> <span class="n">s_0</span><span class="p">,</span> <span class="n">u_0</span><span class="p">,</span> <span class="n">z_b</span><span class="p">,</span> <span class="n">final_time</span><span class="p">,</span> <span class="n">dt</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">CheckpointFile</span><span class="p">(</span><span class="s2">"mismip-degree1.h5"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">chk</span><span class="p">:</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">h_1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"thickness"</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"surface"</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">u_1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"velocity"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Load in the steady state computed with degree-2 elements from a file if it exists, or spin it up from the degree-1 solution if not.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">flow_solver</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">FlowSolver</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">"mismip-degree2.h5"</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">CheckpointFile</span><span class="p">(</span><span class="s2">"mismip-degree2.h5"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">chk</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"mesh"</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"thickness"</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"surface"</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">chk</span><span class="o">.</span><span class="n">load_function</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"velocity"</span><span class="p">)</span>
+        
+        <span class="n">Q2</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+        <span class="n">V2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">function_space</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">Q2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">V2</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">h_1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">u_1</span><span class="p">,</span> <span class="n">V2</span><span class="p">)</span>
+
+    <span class="n">final_time</span> <span class="o">=</span> <span class="mi">3600</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">4.0</span>
+
+    <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">run_simulation</span><span class="p">(</span>
+        <span class="n">flow_solver</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">z_b</span><span class="p">,</span> <span class="n">final_time</span><span class="p">,</span> <span class="n">dt</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">CheckpointFile</span><span class="p">(</span><span class="s2">"mismip-degree2.h5"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">chk</span><span class="p">:</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"thickness"</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"surface"</span><span class="p">)</span>
+        <span class="n">chk</span><span class="o">.</span><span class="n">save_function</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"velocity"</span><span class="p">)</span>
+        
+<span class="n">z_b</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">mismip_bed</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span> <span class="n">Q2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[10], line 24</span>
+<span class="ansi-green-intense-fg ansi-bold">     20</span> final_time <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">3600</span>
+<span class="ansi-green-intense-fg ansi-bold">     21</span> dt <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(98,98,98)">4.0</span>
+<span class="ansi-green-intense-fg ansi-bold">     23</span> h, s, u <span style="color: rgb(98,98,98)">=</span> run_simulation(
+<span class="ansi-green-fg">---&gt; 24</span>     flow_solver, h, s, u, <span class="ansi-yellow-bg">z_b</span>, final_time, dt
+<span class="ansi-green-intense-fg ansi-bold">     25</span> )
+<span class="ansi-green-intense-fg ansi-bold">     27</span> <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> firedrake<span style="color: rgb(98,98,98)">.</span>CheckpointFile(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">mismip-degree2.h5</span><span style="color: rgb(175,0,0)">"</span>, <span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">w</span><span style="color: rgb(175,0,0)">"</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">as</span> chk:
+<span class="ansi-green-intense-fg ansi-bold">     28</span>     chk<span style="color: rgb(98,98,98)">.</span>save_mesh(mesh)
+
+<span class="ansi-red-fg">NameError</span>: name 'z_b' is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">¶</a>
+</h4>
+<p>For the inversion scenario, we'd like to make the system do something a little more interesting than just relax to steady state.
+To achieve that, we'll add a 1-year periodic oscillation to the accumulation rate.
+The only change in the core simulation loop is that now we're interpolating a new value to the accumulation rate at every step.
+Additionally, we're keeping the full time history of the system state in a list instead of just storing the final state.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">π</span>
+
+<span class="n">final_time</span> <span class="o">=</span> <span class="mf">25.0</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">24</span>
+
+<span class="n">hs</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+<span class="n">us</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
+<span class="n">h_in</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q2</span><span class="p">)</span>
+<span class="n">δa</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">final_time</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="n">dt</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">δa</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">π</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+    
+    <span class="n">h</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span>
+        <span class="n">dt</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+        <span class="n">accumulation</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+        <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h_in</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">z_b</span><span class="p">)</span>
+
+    <span class="n">u</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">surface</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+        <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">hs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">ss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">us</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>  0%|          | 0/600 [00:02&lt;?, ?it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[11], line 27</span>
+<span class="ansi-green-intense-fg ansi-bold">     18</span> a<span style="color: rgb(98,98,98)">.</span>interpolate(a_0 <span style="color: rgb(98,98,98)">+</span> δa <span style="color: rgb(98,98,98)">*</span> firedrake<span style="color: rgb(98,98,98)">.</span>sin(<span style="color: rgb(98,98,98)">2</span> <span style="color: rgb(98,98,98)">*</span> π <span style="color: rgb(98,98,98)">*</span> t))
+<span class="ansi-green-intense-fg ansi-bold">     20</span> h <span style="color: rgb(98,98,98)">=</span> flow_solver<span style="color: rgb(98,98,98)">.</span>prognostic_solve(
+<span class="ansi-green-intense-fg ansi-bold">     21</span>     dt,
+<span class="ansi-green-intense-fg ansi-bold">     22</span>     thickness<span style="color: rgb(98,98,98)">=</span>h,
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span>     thickness_inflow<span style="color: rgb(98,98,98)">=</span>h_in,
+<span class="ansi-green-intense-fg ansi-bold">     26</span> )
+<span class="ansi-green-fg">---&gt; 27</span> s <span style="color: rgb(98,98,98)">=</span> icepack<span style="color: rgb(98,98,98)">.</span>compute_surface(thickness<span style="color: rgb(98,98,98)">=</span>h, bed<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">z_b</span>)
+<span class="ansi-green-intense-fg ansi-bold">     29</span> u <span style="color: rgb(98,98,98)">=</span> flow_solver<span style="color: rgb(98,98,98)">.</span>diagnostic_solve(
+<span class="ansi-green-intense-fg ansi-bold">     30</span>     velocity<span style="color: rgb(98,98,98)">=</span>u,
+<span class="ansi-green-intense-fg ansi-bold">     31</span>     thickness<span style="color: rgb(98,98,98)">=</span>h,
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>     friction<span style="color: rgb(98,98,98)">=</span>C,
+<span class="ansi-green-intense-fg ansi-bold">     35</span> )
+<span class="ansi-green-intense-fg ansi-bold">     37</span> hs<span style="color: rgb(98,98,98)">.</span>append(h<span style="color: rgb(98,98,98)">.</span>copy(deepcopy<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>))
+
+<span class="ansi-red-fg">NameError</span>: name 'z_b' is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The plot below shows the average thickness of the glacier over time.
+By the end of the interval the system has migrated towards a reasonably stable limit cycle.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">average_thicknesses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">firedrake</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Lx</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hs</span><span class="p">])</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">final_time</span><span class="p">,</span> <span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"time (years)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"average thickness (meters)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">average_thicknesses</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[12], line 9</span>
+<span class="ansi-green-intense-fg ansi-bold">      7</span> ax<span style="color: rgb(98,98,98)">.</span>set_xlabel(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">time (years)</span><span style="color: rgb(175,0,0)">"</span>)
+<span class="ansi-green-intense-fg ansi-bold">      8</span> ax<span style="color: rgb(98,98,98)">.</span>set_ylabel(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">average thickness (meters)</span><span style="color: rgb(175,0,0)">"</span>)
+<span class="ansi-green-fg">----&gt; 9</span> <span class="ansi-yellow-bg">ax</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">plot</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">times</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">average_thicknesses</span><span class="ansi-yellow-bg">)</span>;
+
+File <span class="ansi-green-fg">/home/firedrake/firedrake/lib/python3.10/site-packages/matplotlib/axes/_axes.py:1721</span>, in <span class="ansi-cyan-fg">Axes.plot</span><span class="ansi-blue-fg">(self, scalex, scaley, data, *args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1478</span> <span style="color: rgb(175,0,0)">"""</span>
+<span class="ansi-green-intense-fg ansi-bold">   1479</span> <span style="color: rgb(175,0,0)">Plot y versus x as lines and/or markers.</span>
+<span class="ansi-green-intense-fg ansi-bold">   1480</span> 
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1718</span> <span style="color: rgb(175,0,0)">(``'green'``) or hex strings (``'#008000'``).</span>
+<span class="ansi-green-intense-fg ansi-bold">   1719</span> <span style="color: rgb(175,0,0)">"""</span>
+<span class="ansi-green-intense-fg ansi-bold">   1720</span> kwargs <span style="color: rgb(98,98,98)">=</span> cbook<span style="color: rgb(98,98,98)">.</span>normalize_kwargs(kwargs, mlines<span style="color: rgb(98,98,98)">.</span>Line2D)
+<span class="ansi-green-fg">-&gt; 1721</span> lines <span style="color: rgb(98,98,98)">=</span> [<span style="color: rgb(98,98,98)">*</span><span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_get_lines(<span style="color: rgb(0,135,0)">self</span>, <span style="color: rgb(98,98,98)">*</span>args, data<span style="color: rgb(98,98,98)">=</span>data, <span style="color: rgb(98,98,98)">*</span><span style="color: rgb(98,98,98)">*</span>kwargs)]
+<span class="ansi-green-intense-fg ansi-bold">   1722</span> <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> line <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> lines:
+<span class="ansi-green-intense-fg ansi-bold">   1723</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>add_line(line)
+
+File <span class="ansi-green-fg">/home/firedrake/firedrake/lib/python3.10/site-packages/matplotlib/axes/_base.py:303</span>, in <span class="ansi-cyan-fg">_process_plot_var_args.__call__</span><span class="ansi-blue-fg">(self, axes, data, *args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    301</span>     this <span style="color: rgb(98,98,98)">+</span><span style="color: rgb(98,98,98)">=</span> args[<span style="color: rgb(98,98,98)">0</span>],
+<span class="ansi-green-intense-fg ansi-bold">    302</span>     args <span style="color: rgb(98,98,98)">=</span> args[<span style="color: rgb(98,98,98)">1</span>:]
+<span class="ansi-green-fg">--&gt; 303</span> <span class="ansi-bold" style="color: rgb(0,135,0)">yield from</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_plot_args</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    304</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">axes</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">this</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">ambiguous_fmt_datakey</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">ambiguous_fmt_datakey</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/home/firedrake/firedrake/lib/python3.10/site-packages/matplotlib/axes/_base.py:499</span>, in <span class="ansi-cyan-fg">_process_plot_var_args._plot_args</span><span class="ansi-blue-fg">(self, axes, tup, kwargs, return_kwargs, ambiguous_fmt_datakey)</span>
+<span class="ansi-green-intense-fg ansi-bold">    496</span>     axes<span style="color: rgb(98,98,98)">.</span>yaxis<span style="color: rgb(98,98,98)">.</span>update_units(y)
+<span class="ansi-green-intense-fg ansi-bold">    498</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> x<span style="color: rgb(98,98,98)">.</span>shape[<span style="color: rgb(98,98,98)">0</span>] <span style="color: rgb(98,98,98)">!=</span> y<span style="color: rgb(98,98,98)">.</span>shape[<span style="color: rgb(98,98,98)">0</span>]:
+<span class="ansi-green-fg">--&gt; 499</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">ValueError</span>(<span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">x and y must have same first dimension, but </span><span style="color: rgb(175,0,0)">"</span>
+<span class="ansi-green-intense-fg ansi-bold">    500</span>                      <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">have shapes </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>x<span style="color: rgb(98,98,98)">.</span>shape<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)"> and </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>y<span style="color: rgb(98,98,98)">.</span>shape<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>)
+<span class="ansi-green-intense-fg ansi-bold">    501</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> x<span style="color: rgb(98,98,98)">.</span>ndim <span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(98,98,98)">2</span> <span class="ansi-bold" style="color: rgb(175,0,255)">or</span> y<span style="color: rgb(98,98,98)">.</span>ndim <span style="color: rgb(98,98,98)">&gt;</span> <span style="color: rgb(98,98,98)">2</span>:
+<span class="ansi-green-intense-fg ansi-bold">    502</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">ValueError</span>(<span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">x and y can be no greater than 2D, but have </span><span style="color: rgb(175,0,0)">"</span>
+<span class="ansi-green-intense-fg ansi-bold">    503</span>                      <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">shapes </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>x<span style="color: rgb(98,98,98)">.</span>shape<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)"> and </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>y<span style="color: rgb(98,98,98)">.</span>shape<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>)
+
+<span class="ansi-red-fg">ValueError</span>: x and y must have same first dimension, but have shapes (601,) and (1,)</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_png output_subarea">
+<img alt="No description has been provided for this image" src="data:image/png;base64,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">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Hindcasting">Hindcasting<a class="anchor-link" href="#Hindcasting">¶</a>
+</h4>
+<p>We're now going to see if we can recover the state of the system at time $t = 23.5$ from knowledge of the system state at time $t = 25$.
+The biggest departure in this notebook from the previous demonstration of statistical estimation problems is that now our simulation includes a full loop over all timesteps, rather than a single diagnostic solve.
+The simulation has to take in the controls (the unknown initial thickness) and return the observables (the final thickness).
+There are a few extra variables, like the start and end times and the mean and fluctuations of the accumulation rate, that come in implicitly but aren't actual function arguments.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="mf">23.5</span>
+<span class="n">final_time</span> <span class="o">=</span> <span class="mf">25.0</span>
+
+<span class="k">def</span> <span class="nf">simulation</span><span class="p">(</span><span class="n">h_initial</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Q2</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">h_initial</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">z_b</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+        <span class="n">velocity</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">surface</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+        <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+        <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+
+    <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">final_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">δa</span> <span class="o">*</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">π</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">prognostic_solve</span><span class="p">(</span>
+            <span class="n">dt</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+            <span class="n">accumulation</span><span class="o">=</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">thickness_inflow</span><span class="o">=</span><span class="n">h_in</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">compute_surface</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="n">z_b</span><span class="p">)</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">flow_solver</span><span class="o">.</span><span class="n">diagnostic_solve</span><span class="p">(</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+            <span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+            <span class="n">surface</span><span class="o">=</span><span class="n">s</span><span class="p">,</span>
+            <span class="n">fluidity</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+            <span class="n">friction</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">h</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The loss functional calculates how well the final thickness and velocity from the simulation matches that from the actual time series.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">loss_functional</span><span class="p">(</span><span class="n">h_final</span><span class="p">):</span>
+    <span class="n">σ_h</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="n">area</span> <span class="o">*</span> <span class="p">((</span><span class="n">h_final</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">σ_h</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the previous demonstration of inverse methods, we used a prior that favored a smooth value of the fluidity:</p>
+<p>$$R(\theta) = \frac{\alpha^2}{2}\int_\Omega|\nabla\theta|^2dx.$$</p>
+<p>Here we have a little more knowledge; while the initial state might depart somewhat from the final state, we expect the difference between the two to be fairly smooth.
+So we'll instead use the prior</p>
+<p>$$R(h(t_0)) = \frac{\alpha^2}{2}\int_\Omega|\nabla(h(t_1) - h(t_0))|^2dx.$$</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">regularization</span><span class="p">(</span><span class="n">h_initial</span><span class="p">):</span>
+    <span class="n">α</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">δh</span> <span class="o">=</span> <span class="n">h_initial</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">α</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">area</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">δh</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">δh</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As our starting guess for the initial thickness, we'll assume that it's equal to the final thickness.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">h_initial</span> <span class="o">=</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've added a few extra options to pass to the optimizer in order to guarantee convergence to the right solution.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">icepack.statistics</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">StatisticsProblem</span><span class="p">,</span>
+    <span class="n">MaximumProbabilityEstimator</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">stats_problem</span> <span class="o">=</span> <span class="n">StatisticsProblem</span><span class="p">(</span>
+    <span class="n">simulation</span><span class="o">=</span><span class="n">simulation</span><span class="p">,</span>
+    <span class="n">loss_functional</span><span class="o">=</span><span class="n">loss_functional</span><span class="p">,</span>
+    <span class="n">regularization</span><span class="o">=</span><span class="n">regularization</span><span class="p">,</span>
+    <span class="n">controls</span><span class="o">=</span><span class="n">h_initial</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">MaximumProbabilityEstimator</span><span class="p">(</span>
+    <span class="n">stats_problem</span><span class="p">,</span>
+    <span class="n">algorithm</span><span class="o">=</span><span class="s2">"bfgs"</span><span class="p">,</span>
+    <span class="n">memory</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">gradient_tolerance</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
+    <span class="n">step_tolerance</span><span class="o">=</span><span class="mf">5e-14</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">h_min</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[18], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> h_min <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">estimator</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">solve</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/__w/icepack.github.io/icepack.github.io/icepack/src/icepack/statistics.py:167</span>, in <span class="ansi-cyan-fg">MaximumProbabilityEstimator.solve</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    164</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_controls <span style="color: rgb(98,98,98)">=</span> [field<span style="color: rgb(98,98,98)">.</span>copy(deepcopy<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> field <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> problem<span style="color: rgb(98,98,98)">.</span>controls]
+<span class="ansi-green-intense-fg ansi-bold">    166</span> <span style="color: rgb(95,135,135)"># Form the objective functional</span>
+<span class="ansi-green-fg">--&gt; 167</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_state <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">problem</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">simulation</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">controls</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    168</span> E <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">sum</span>(assemble(E(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>state)) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> E <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>problem<span style="color: rgb(98,98,98)">.</span>loss_functional)
+<span class="ansi-green-intense-fg ansi-bold">    169</span> R <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">sum</span>(assemble(R(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>controls)) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> R <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>problem<span style="color: rgb(98,98,98)">.</span>regularization)
+
+Cell <span class="ansi-green-fg">In[13], line 7</span>, in <span class="ansi-cyan-fg">simulation</span><span class="ansi-blue-fg">(h_initial)</span>
+<span class="ansi-green-intense-fg ansi-bold">      5</span> a <span style="color: rgb(98,98,98)">=</span> firedrake<span style="color: rgb(98,98,98)">.</span>Function(Q2)
+<span class="ansi-green-intense-fg ansi-bold">      6</span> h <span style="color: rgb(98,98,98)">=</span> h_initial<span style="color: rgb(98,98,98)">.</span>copy(deepcopy<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>)
+<span class="ansi-green-fg">----&gt; 7</span> s <span style="color: rgb(98,98,98)">=</span> icepack<span style="color: rgb(98,98,98)">.</span>compute_surface(thickness<span style="color: rgb(98,98,98)">=</span>h, bed<span style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">z_b</span>)
+<span class="ansi-green-intense-fg ansi-bold">      8</span> u <span style="color: rgb(98,98,98)">=</span> flow_solver<span style="color: rgb(98,98,98)">.</span>diagnostic_solve(
+<span class="ansi-green-intense-fg ansi-bold">      9</span>     velocity<span style="color: rgb(98,98,98)">=</span>us[<span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">1</span>]<span style="color: rgb(98,98,98)">.</span>copy(deepcopy<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>),
+<span class="ansi-green-intense-fg ansi-bold">     10</span>     thickness<span style="color: rgb(98,98,98)">=</span>h,
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">     13</span>     friction<span style="color: rgb(98,98,98)">=</span>C,
+<span class="ansi-green-intense-fg ansi-bold">     14</span> )
+<span class="ansi-green-intense-fg ansi-bold">     15</span> t <span style="color: rgb(98,98,98)">=</span> Constant(start_time)
+
+<span class="ansi-red-fg">NameError</span>: name 'z_b' is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The minimizer is appreciably different from the thickness at $t = 25.0$ and very to the value at $t = 23.5$, so the algorithm has reproduced the initial condition that we pretended not to know.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">δh_end</span> <span class="o">=</span> <span class="n">h_min</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"|h_min - h(25.0)|: </span><span class="si">{</span><span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">δh_end</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">final_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
+<span class="n">δh_start</span> <span class="o">=</span> <span class="n">h_min</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">num_steps</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"|h_min - h(23.5)|: </span><span class="si">{</span><span class="n">firedrake</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">δh_start</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[19], line 1</span>
+<span class="ansi-green-fg">----&gt; 1</span> δh_end <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">h_min</span> <span style="color: rgb(98,98,98)">-</span> hs[<span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">1</span>]
+<span class="ansi-green-intense-fg ansi-bold">      2</span> <span style="color: rgb(0,135,0)">print</span>(<span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">|h_min - h(25.0)|: </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>firedrake<span style="color: rgb(98,98,98)">.</span>norm(δh_end)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">"</span>)
+<span class="ansi-green-intense-fg ansi-bold">      3</span> num_steps <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">int</span>((final_time <span style="color: rgb(98,98,98)">-</span> start_time) <span style="color: rgb(98,98,98)">/</span> dt)
+
+<span class="ansi-red-fg">NameError</span>: name 'h_min' is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">icepack.plot</span>
+
+<span class="n">δh</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">h_min</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">num_steps</span><span class="p">],</span> <span class="n">Q2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Estimated - True thickness"</span><span class="p">)</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">tripcolor</span><span class="p">(</span>
+    <span class="n">δh</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.002</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=+</span><span class="mf">0.002</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu"</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.046</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+Cell <span class="ansi-green-fg">In[20], line 3</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-bold" style="color: rgb(0,135,0)">import</span> <span class="ansi-bold" style="color: rgb(0,0,255)">icepack</span><span class="ansi-bold" style="color: rgb(0,0,255)">.</span><span class="ansi-bold" style="color: rgb(0,0,255)">plot</span>
+<span class="ansi-green-fg">----&gt; 3</span> δh <span style="color: rgb(98,98,98)">=</span> interpolate(<span class="ansi-yellow-bg">h_min</span> <span style="color: rgb(98,98,98)">-</span> hs[<span style="color: rgb(98,98,98)">-</span><span style="color: rgb(98,98,98)">1</span> <span style="color: rgb(98,98,98)">-</span> num_steps], Q2)
+<span class="ansi-green-intense-fg ansi-bold">      4</span> fig, axes <span style="color: rgb(98,98,98)">=</span> icepack<span style="color: rgb(98,98,98)">.</span>plot<span style="color: rgb(98,98,98)">.</span>subplots()
+<span class="ansi-green-intense-fg ansi-bold">      5</span> axes<span style="color: rgb(98,98,98)">.</span>set_title(<span style="color: rgb(175,0,0)">"</span><span style="color: rgb(175,0,0)">Estimated - True thickness</span><span style="color: rgb(175,0,0)">"</span>)
+
+<span class="ansi-red-fg">NameError</span>: name 'h_min' is not defined</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a>
+</h4>
+<p>In previous demos, we've shown how use measurements of observable fields, like ice velocity and thickness, to estimate unknown parameters that satisfy constraints from a physics model.
+The physics model was fairly rudimentary before -- taking in a single field like the ice fluidity and returning the ice velocity as computed from the momentum conservation equation.
+Here we showed how to use much more complex simulations involving a full timestepping loop.
+Instead of estimating an unobservable parameter of the system, like the fluidity or friction coefficient, we instead showed how to estimate the thickness at a different time from when it was observed.</p>
+<p>Solving these kinds of problems is more computationally expensive and finding better or faster algorithms is an active area of research.
+While costly, the capability does open up many more possible research directions and improvements on existing practice.
+For example, when estimating the ice fluidity or friction, it's common to assume that the thickness and velocity measurements were taken at the same time.
+This assumption is almost never exactly true.
+The ability to do time-dependent data assimilation means that we can dispense with it.</p>
+</div>
+</div>
+</div>
+    </div>
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+    },
+    displayAlign: 'center', // Change this to 'left' if you want left-aligned equations.
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}}
+    }
+});
+</script></article></main>
+</div>
+    
+            <script src="../../../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>
