@@ -17,7 +17,7 @@
 <meta property="og:description" content="Performance optimization¶In this notebook, we'll show you how to make icepack run faster if you're finding that simulation speed is becoming a barrier for you.
 The solvers in icepack have been designe">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2023-11-06T16:42:26-08:00">
+<meta property="article:published_time" content="2023-11-06T21:46:12-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -393,7 +393,7 @@ Here we're passing some extra keyword arguments: <code>'diagnostic_solver_type</
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [03:45&lt;00:00,  1.33it/s]
+<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [03:01&lt;00:00,  1.65it/s]
 </pre>
 </div>
 </div>
@@ -457,7 +457,7 @@ We'll then try to beat this time by choosing better solvers from PETSc.</p>
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [02:56&lt;00:00,  3.06it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [02:26&lt;00:00,  3.69it/s]
 </pre>
 </div>
 </div>
@@ -560,7 +560,7 @@ Since the icepack solver is calling out to scipy to do a line search, this round
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:36&lt;00:00,  5.59it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:22&lt;00:00,  6.57it/s]
 </pre>
 </div>
 </div>
@@ -639,7 +639,7 @@ You might also be able to speed up the prognostic solver using a multigrid metho
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:02&lt;00:00,  8.61it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:16&lt;00:00,  7.08it/s]
 </pre>
 </div>
 </div>
