@@ -41,7 +41,7 @@ You can find them under the directory `notebooks/`.
         checkpointing [label="Checkpointing", href="/notebooks/how-to/02-checkpointing/"];
         adaptivity [label="Adaptivity", href="/notebooks/how-to/03-adaptivity/"];
         sparse_data [label="Sparse data", href="/notebooks/how-to/04-sparse-data/"];
-        time_dependent_da [label="Time-dependent\ndata assimilation", href="/notebooks/how-to/05-time-dependent-inverse/"];
+        //time_dependent_da [label="Time-dependent\ndata assimilation", href="/notebooks/how-to/05-time-dependent-inverse/"];
 
         subgraph cluster_planview_tutorials {
             penwidth=0;
@@ -74,7 +74,7 @@ You can find them under the directory `notebooks/`.
             performance -> checkpointing;
             performance -> adaptivity;
             ice_shelf_inverse -> sparse_data;
-            ice_shelf_inverse -> time_dependent_da;
+            //ice_shelf_inverse -> time_dependent_da;
         }
     }
 
