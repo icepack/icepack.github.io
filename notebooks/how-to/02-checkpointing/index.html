@@ -17,7 +17,7 @@
 <meta property="og:description" content="Checkpointing¶In the previous guide, we showed how to make simulations run faster by tuning how the linear and nonlinear solvers work under the hood.
 We'll revisit the MISMIP+ experiment of that demo ">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2023-11-08T21:24:24-08:00">
+<meta property="article:published_time" content="2023-11-09T10:42:21-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -77,17 +77,6 @@ This is a fairly typical workflow if you have to do expensive simulations.</p>
 <span class="n">Q1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">V1</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.10/site-packages/pytools/__init__.py:2484: UserWarning: unable to find git revision
-  warn("unable to find git revision")
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -410,7 +399,7 @@ Finally, we have to provide the mesh where the function will be defined when we 
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.03, 24.63: 100%|██████████| 720/720 [04:28&lt;00:00,  2.68it/s]
+<pre>avg, min h: 866.03, 24.63: 100%|██████████| 720/720 [04:33&lt;00:00,  2.63it/s]
 </pre>
 </div>
 </div>
@@ -500,7 +489,7 @@ To continue, we'll need to create and set up a fresh solver object that stores t
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 1042.94, 18.28: 100%|██████████| 900/900 [34:18&lt;00:00,  2.29s/it]
+<pre>avg, min h: 1042.94, 18.28: 100%|██████████| 900/900 [34:09&lt;00:00,  2.28s/it]
 </pre>
 </div>
 </div>

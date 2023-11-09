@@ -18,7 +18,7 @@
 We'll again use the MISMIP+ test case to demonstrate on.
 In the previous guides, we've focused solely on">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2023-11-08T21:35:06-08:00">
+<meta property="article:published_time" content="2023-11-09T10:52:37-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -112,17 +112,6 @@ We'll then use the helper function <code>triangle_to_firedrake</code> to convert
 <span class="n">triangle_mesh</span> <span class="o">=</span> <span class="n">triangle</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">mesh_info</span><span class="p">,</span> <span class="n">max_volume</span><span class="o">=</span><span class="n">area</span><span class="p">)</span>
 <span class="n">coarse_mesh</span> <span class="o">=</span> <span class="n">icepack</span><span class="o">.</span><span class="n">meshing</span><span class="o">.</span><span class="n">triangle_to_firedrake</span><span class="p">(</span><span class="n">triangle_mesh</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.10/site-packages/pytools/__init__.py:2484: UserWarning: unable to find git revision
-  warn("unable to find git revision")
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -446,7 +435,7 @@ Since we'll be running the same simulation many times, we'll again wrap up the c
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 916.81, 24.61: 100%|██████████| 720/720 [04:40&lt;00:00,  2.57it/s]
+<pre>avg, min h: 916.81, 24.61: 100%|██████████| 720/720 [04:43&lt;00:00,  2.54it/s]
 </pre>
 </div>
 </div>
@@ -551,7 +540,7 @@ There are clearly spurious artifacts in the shear margins at the top and bottom 
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 846.44, 36.84: 100%|██████████| 720/720 [07:27&lt;00:00,  1.61it/s]
+<pre>avg, min h: 846.44, 36.84: 100%|██████████| 720/720 [07:28&lt;00:00,  1.60it/s]
 </pre>
 </div>
 </div>
@@ -827,7 +816,7 @@ We've zoomed in on part of the domain so you can see how much more refined the m
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 975.03, 16.49: 100%|██████████| 900/900 [05:46&lt;00:00,  2.59it/s]
+<pre>avg, min h: 975.03, 16.49: 100%|██████████| 900/900 [05:47&lt;00:00,  2.59it/s]
 </pre>
 </div>
 </div>
@@ -900,7 +889,7 @@ We've zoomed in on part of the domain so you can see how much more refined the m
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 941.34, 12.54: 100%|██████████| 900/900 [32:23&lt;00:00,  2.16s/it]
+<pre>avg, min h: 941.34, 12.54: 100%|██████████| 900/900 [31:50&lt;00:00,  2.12s/it]
 </pre>
 </div>
 </div>

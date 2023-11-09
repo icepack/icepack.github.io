@@ -17,7 +17,7 @@
 <meta property="og:description" content="Performance optimization¶In this notebook, we'll show you how to make icepack run faster if you're finding that simulation speed is becoming a barrier for you.
 The solvers in icepack have been designe">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2023-11-08T21:24:22-08:00">
+<meta property="article:published_time" content="2023-11-09T10:42:20-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -75,17 +75,6 @@ MISMIP+ is a standard test problem for evaluating glaciological flow models and 
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.10/site-packages/pytools/__init__.py:2484: UserWarning: unable to find git revision
-  warn("unable to find git revision")
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -393,7 +382,7 @@ Here we're passing some extra keyword arguments: <code>'diagnostic_solver_type</
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [03:43&lt;00:00,  1.34it/s]
+<pre>avg, min h: 334.62, 71.59: 100%|██████████| 300/300 [03:44&lt;00:00,  1.33it/s]
 </pre>
 </div>
 </div>
@@ -457,7 +446,7 @@ We'll then try to beat this time by choosing better solvers from PETSc.</p>
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [02:55&lt;00:00,  3.08it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [02:53&lt;00:00,  3.11it/s]
 </pre>
 </div>
 </div>
@@ -560,7 +549,7 @@ Since the icepack solver is calling out to scipy to do a line search, this round
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:34&lt;00:00,  5.73it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:35&lt;00:00,  5.65it/s]
 </pre>
 </div>
 </div>
@@ -639,7 +628,7 @@ You might also be able to speed up the prognostic solver using a multigrid metho
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:01&lt;00:00,  8.73it/s]
+<pre>avg, min h: 866.04, 24.64: 100%|██████████| 540/540 [01:03&lt;00:00,  8.53it/s]
 </pre>
 </div>
 </div>

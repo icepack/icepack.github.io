@@ -17,7 +17,7 @@
 <meta property="og:description" content="Synthetic flowline ice stream¶In this demo, we'll simulate the evolution of 1D ice stream with both grounded and floating parts.
 Ice streams are substantially more complicated than a floating ice shel">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2023-11-08T21:24:36-08:00">
+<meta property="article:published_time" content="2023-11-09T10:42:33-08:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -83,17 +83,6 @@ The bedrock slopes down from 200 m above sea level at the inflow boundary to -40
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.10/site-packages/pytools/__init__.py:2484: UserWarning: unable to find git revision
-  warn("unable to find git revision")
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -443,7 +432,7 @@ I've tuned the accumulation rate so that it roughly balances out the ice flux at
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 500/500 [00:08&lt;00:00, 56.47it/s] 
+<pre>100%|██████████| 500/500 [00:08&lt;00:00, 56.73it/s] 
 </pre>
 </div>
 </div>
@@ -995,7 +984,7 @@ This saves a bit of repetition and makes it easier to parallelize later.</p>
 <div class="output">
 <div class="output_area">
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>100%|██████████| 200/200 [00:01&lt;00:00, 104.38it/s]
+<pre>100%|██████████| 200/200 [00:01&lt;00:00, 101.13it/s]
 </pre>
 </div>
 </div>
