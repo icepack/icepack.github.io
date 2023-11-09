@@ -36,6 +36,7 @@ You can find them under the directory `notebooks/`.
         ice_shelf_inverse [label="Ice shelf\ninverse", href="/notebooks/tutorials/05-ice-shelf-inverse/"];
         hybrid_ice_stream_xz [label="Hybrid ice\nstream (xz)", href="/notebooks/tutorials/06-hybrid-ice-stream-xz/"];
         hybrid_ice_stream_xyz [label="Hybrid ice\nstream (xyz)", href="/notebooks/tutorials/06-hybrid-ice-stream-xyz/"];
+        rgi_meshing [label="Meshing\nRGI polygons", href="/notebooks/tutorials/07-rgi-meshing"]
 
         performance [label="Performance\noptimization", href="/notebooks/how-to/01-performance/"];
         checkpointing [label="Checkpointing", href="/notebooks/how-to/02-checkpointing/"];
@@ -49,6 +50,7 @@ You can find them under the directory `notebooks/`.
             fontname="helvetica";
             label="Tutorials";
             meshes_functions -> synthetic_ice_sheet;
+            meshes_functions -> rgi_meshing;
             meshes_functions -> synthetic_ice_shelf -> larsen_ice_shelf -> ice_shelf_inverse;
             synthetic_ice_shelf -> synthetic_ice_stream_xy;
             synthetic_ice_sheet -> synthetic_ice_stream_xy;
