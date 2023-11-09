@@ -30,7 +30,10 @@ jobs:
         pip install "Nikola[extras]"
         pip install --editable ./icepack
     - name: Create jupyter kernel
-      run: python -m ipykernel install --user --name=firedrake
+      run: |
+        python -m ipykernel install --user --name=firedrake
+        mkdir -p /home/firedrake/.ipython/profile_default/startup
+        echo "import warnings; warnings.filterwarnings('ignore')" >> /home/firedrake/.ipython/profile_default/startup/disable-warnings.py
     - name: Checkout website source
       uses: actions/checkout@v2
       with:
