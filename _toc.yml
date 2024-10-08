@@ -2,3 +2,9 @@ format: jb-book
 root: intro
 chapters:
 - file: physics
+- file: install
+- file: tutorials
+  sections:
+    - file: notebooks/tutorials/00-meshes-functions
+- file: contact
+- file: developers
