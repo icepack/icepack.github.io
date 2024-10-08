@@ -1,17 +1,8 @@
 # Site-specific things
-pages/notebooks/
-executed-notebooks/
+notebooks/
 
-# Nikola-related things
-.doit.*
-*.db
-*~
-*.diff
-*.patch
-tmp/
-cache/
-output/
-plugins/
+# Jupyterbook-related things
+_build/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
