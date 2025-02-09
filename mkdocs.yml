@@ -21,3 +21,5 @@ nav:
   - Home: index.md
   - Install: install.md
   - Physics: physics.md
+  - Developers: developers.md
+  - Contact: contact.md

@@ -7,7 +7,7 @@ Then we'll show how to get the tutorials up and running.
 There are two options for how to get icepack: installing from source, and using Docker.
 We recommend starting with Docker if you're using MacOS or Windows.
 If you run into difficulties installing Firedrake, please consult their [website](https://firedrakeproject.org/download.html#system-requirements), which includes a debugging guide and other information on system requirements.
-For other problems, you can always [get in touch](/contact/) for more assistance.
+For other problems, you can always [get in touch](contact.md) for more assistance.
 
 ## From Docker
 
