@@ -1,0 +1,8 @@
+site_name: icepack
+theme:
+  name: material
+  favicon: 'images/logo.svg'
+  logo: 'images/logo.svg'
+nav:
+  - Home: index.md
+  - Install: install.md
