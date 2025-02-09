@@ -3,9 +3,14 @@ theme:
   name: material
   favicon: 'images/logo.svg'
   logo: 'images/logo.svg'
+  features:
+    - toc.integrate
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
+  # This effectively hides the table of contents. Possibly expand to 2.
+  - toc:
+      toc_depth: 1
 extra_javascript:
 - javascripts/katex.js
 - https://unpkg.com/katex@0/dist/katex.min.js
