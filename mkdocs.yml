@@ -5,12 +5,12 @@ theme:
   logo: 'images/logo.svg'
   features:
     - toc.integrate
+    - navigation.tabs
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
-  # This effectively hides the table of contents. Possibly expand to 2.
   - toc:
-      toc_depth: 1
+      toc_depth: 2
 extra_javascript:
 - javascripts/katex.js
 - https://unpkg.com/katex@0/dist/katex.min.js
