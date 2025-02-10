@@ -19,7 +19,8 @@ extra_javascript:
   - https://unpkg.com/katex@0/dist/katex.min.js
   - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 extra_css:
-- https://unpkg.com/katex@0/dist/katex.min.css
+  - https://unpkg.com/katex@0/dist/katex.min.css
+  - stylesheets/nord.css
 nav:
   - Home: index.md
   - Install: install.md
