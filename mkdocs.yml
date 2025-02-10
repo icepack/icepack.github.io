@@ -6,20 +6,27 @@ theme:
   features:
     - toc.integrate
     - navigation.tabs
+    - navigation.indexes
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - toc:
       toc_depth: 2
+plugins:
+  - mkdocs-jupyter
 extra_javascript:
-- javascripts/katex.js
-- https://unpkg.com/katex@0/dist/katex.min.js
-- https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 extra_css:
 - https://unpkg.com/katex@0/dist/katex.min.css
 nav:
   - Home: index.md
   - Install: install.md
   - Physics: physics.md
+  - Tutorials:
+    - tutorials/index.md
+    - tutorials/00-meshes-functions.ipynb
+    - tutorials/02-synthetic-ice-shelf.ipynb
   - Developers: developers.md
   - Contact: contact.md

@@ -10,14 +10,14 @@ Some features we're especially proud of include:
 * All the stress balance models are customizable -- changing the friction law is a few lines of code.
 * We've got a state-of-the-art inverse solver using the Gauss-Newton algorithm.
 
-For examples of what icepack is capable of, have a look at the [tutorials](tutorials.md).
+For examples of what icepack is capable of, have a look at the [tutorials](tutorials/index.md).
 
 ## How to use this site
 
 **You're just getting started:** See the [install](install.md) page for how to get icepack working on your machine.
-The [tutorials](tutorials.md) will show you how to set up and run simulations and analyze the results.
+The [tutorials](tutorials/index.md) will show you how to set up and run simulations and analyze the results.
 
-**You're doing real research:** The how-to guides on the [tutorials](tutorials.md) page assume you've already got off the ground, and you now want to do larger, more complex simulations and publish the results in peer-reviewed papers.
+**You're doing real research:** The how-to guides on the [tutorials](tutorials/index.md) page assume you've already got off the ground, and you now want to do larger, more complex simulations and publish the results in peer-reviewed papers.
 If there are new features you'd like to see included in icepack, see the [development](developers.md) page.
 
 ## Who we are
