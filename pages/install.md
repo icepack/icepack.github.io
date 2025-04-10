@@ -23,6 +23,10 @@ For other problems, you can always [get in touch](/contact/) for more assistance
 
 ### From Docker
 
+**Note:** The install procedure for Firedrake has changed recently (March 2025) and so has the file structure and naming of the most recent Docker images.
+The recommendations below are on the most recent Firedrake docker image (2025-01) that works like it always has.
+Expect some changes to this soon as we adjust to the new images.
+
 Docker is a command-line tool that lets you pretend like you're using a different OS.
 The blueprint for how this OS is constructed is called an *image*.
 For example, there's a Docker image that has Firedrake already installed on Ubuntu.
@@ -36,16 +40,16 @@ There are several things to learn first, but it's a good tool to be familiar wit
 You'll first need to [install Docker](https://docs.docker.com/get-docker/) and make sure that it's running.
 Once you have Docker, you can fetch a recent Firedrake image like so:
 ```shell
-docker pull firedrakeproject/firedrake-vanilla:2023-11
+docker pull firedrakeproject/firedrake-vanilla:2025-01
 ```
-The `firedrakeproject` part is the organization; `firedrake-vanilla` is the image name; and `2023-11` is the tag or version number of the image.
+The `firedrakeproject` part is the organization; `firedrake-vanilla` is the image name; and `2025-01` is the tag or version number of the image.
 You can see all of the images that the Firedrake project has created and uploaded to DockerHub [here](https://hub.docker.com/u/firedrakeproject).
 
 Now that you have the Firedrake image, you can start a container like so:
 ```shell
 docker run \
     --interactive --tty \
-    firedrakeproject/firedrake-vanilla:2023-11
+    firedrakeproject/firedrake-vanilla:2025-01
 ```
 The options are worth breaking down a bit: `--interactive --tty` tells Docker that we want to start up a container where we can type shell commands and receive printed feedback.
 It's also possible to start a container that runs in the background where we don't use it interactively at all, and this is very common for web applications.
@@ -62,8 +66,6 @@ For more information about virtual environments, what they do, and why Firedrake
 Next, install icepack and some of its dependencies:
 ```shell
 sudo apt update && sudo apt install patchelf
-pip install git+https://github.com/icepack/Trilinos.git
-pip install git+https://github.com/icepack/pyrol.git
 git clone https://github.com/icepack/icepack.git
 pip install --editable ./icepack
 ```
@@ -83,7 +85,7 @@ docker run \
     --interactive --tty \
     --volume </path/on/host>:</path/on/container> \
     --publish 8888:8888 \
-    firedrakeproject/firedrake-vanilla:2023-11
+    firedrakeproject/firedrake-vanilla:2025-01
 ```
 where `</path/on/host>` is the absolute path of the directory you want to share on your host system, and likewise for the container.
 Any files on your host system in the shared volume will show up in the container and vice versa.
@@ -95,11 +97,9 @@ To save you the trouble down the line, you can build your own Docker image off o
 Building a Docker image is specified by a Dockerfile.
 The text below shows the contents of a Dockerfile containing the commands above:
 ```dockerfile
-FROM firedrakeproject/firedrake-vanilla:2023-11
+FROM firedrakeproject/firedrake-vanilla:2025-01
 RUN sudo apt update && sudo apt install patchelf
 RUN source firedrake/bin/activate && \
-    pip install git+https://github.com/icepack/Trilinos.git && \
-    pip install git+https://github.com/icepack/pyrol.git && \
     git clone https://github.com/icepack/icepack.git && \
     pip install --editable ./icepack
 ```
@@ -116,31 +116,23 @@ to start a container with icepack and all its dependencies already installed.
 
 ### From source
 
-The installation procedure for Firedrake is a little unusual compared to a typical Python package.
-Most python projects use the simple `pip install .` formula to build and install everything.
-Firedrake is appreciably more complex -- it consists of several dependent sub-packages along with a complete PETSc installation -- and thus has its own custom build process.
-Rather than install the project in your system python package directory, Firedrake's install script builds it inside an isolated [*virtual environment*](https://docs.python.org/3/tutorial/venv.html).
-Python virtual environments were created to solve problems of conflicting package versions possibly breaking installed libraries.
-Rather than install every Python package globally, you can create an isolated virtual environment for one particular package.
-This environment includes a Python executable and all of the package's dependencies.
+**Note:** The procedure to install Firedrake has changed recently (March 2025).
+This is still in flux and some of the recommendations below might change.
 
-To install Firedrake and its dependencies, fetch the install script and then run it:
-```shell
-curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-python firedrake-install
-```
-Next, activate the Firedrake virtual environment:
-```shell
-source <path/to/firedrake>/bin/activate
-```
-Activating the virtual environment will change some environment variables; it only the current terminal session and doesn't do anything permanent.
+The Firedrake [website](https://www.firedrakeproject.org/install.html) includes instructions for how to install it.
+We won't repeat the instructions here, but the process consists of 
+1. installing system dependencies, like a C compiler
+1. installing [PETSc](https://petsc.org) with certain configuration options that Firedrake needs, and
+1. installing Firedrake using pip.
 
-Next, install icepack and some of its dependencies:
+PETSc is a large C library and can take some time to configure and build.
+
+You can install icepack once Firedrake is up and working.
+Assuming that you've installed Firedrake in a Python [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/), you'll need to have that environment activated first.
+You can then install icepack by cloning it and then calling `pip`:
 ```shell
-pip install git+https://github.com/icepack/Trilinos.git
-pip install git+https://github.com/icepack/pyrol.git
 git clone https://github.com/icepack/icepack.git
-pip install ./icepack
+pip install --editable ./icepack
 ```
 Run one of the icepack unit tests to make sure it works:
 ```shell
