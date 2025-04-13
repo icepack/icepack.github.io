@@ -153,3 +153,40 @@ This choice of friction coefficient will make the choice of $u$ that we made abo
 The description above was for the Weertman sliding law.
 We could also have used the regularized Coulomb sliding law or others.
 If the solver works with more than one different flow or sliding law, that lends us more confidence that it's working correctly.
+
+### Composite rheologies
+
+You might want to go through this same exercise with rheologies other than the conventional Glen rheology.
+For example, you might want a rheology with different exponents $n\_1$, $n\_2$ in different stress regimes.
+A plausible form is
+$$\dot\varepsilon = 2A\_1|M|\_{\mathscr A}^{n\_1 - 1}\mathscr A M + 2A\_2|M|\_{\mathscr A}^{n\_2 - 1}\mathscr A M$$
+where $A\_1$ and $A\_2$ are two fluidity coefficients and $\mathscr A$ is the tensor inverse to $\mathscr C$.
+You can compute explicitly that $\mathscr A$ acts on tensors like so:
+$$\mathscr AM = \frac{M - \frac{1}{3}\text{tr}(M)I}{2}$$
+which then defines the tensor norm
+$$|M|_{\mathscr A}^2 = \frac{M : M - \frac{1}{3}\text{tr}(M)^2}{2}.$$
+Continuing with the analogy to elasticity before, if $\mathscr C$ is like an elasticity tensor then $\mathscr A$ is like a compliance tensor.
+
+Most of the derivations above still apply.
+For example, we can in both cases make
+$$M\_{xx} = \frac{1}{2}\varrho gh.$$
+For ice shelves, $\varrho$ is the reduced density of ice over seawater, while for the grounded case we chose it to simplify the remaining algebra.
+
+Here's where some of the differences start.
+I didn't mention this before because it wasn't pertinent, but it will be now.
+Forgetting the linear term for a moment, you can see from the constitutive law and the definition of $\mathscr A$ that $M\_{yy}$ is not zero.
+It has no $y$-dependence, so it makes no contribution to the membrane stress divergence, but it is non-zero.
+In order to make $\dot\varepsilon\_{yy}$ zero, we need that $M\_{yy} = M\_{xx} / 2$.
+We need to know this in order to compute $|M|\_{\mathscr A}$ correctly:
+$$|M|_{\mathscr A} = \frac{1}{2}M\_{xx}.$$
+Now if we substitute this back into the constitutive relation and keep very careful track of some factors of two, we get
+$$\dot\varepsilon\_{xx} = A\_1\left(\frac{M\_{xx}}{2}\right)^{n\_1} + A\_2\left(\frac{M\_{xx}}{2}\right)^{n\_2}.$$
+Computing the velocity amounts to integrating this expression.
+
+That leaves only the basal stress.
+We assume again that
+$$\tau = -(1 - \beta)\rho\_Igh\nabla s.$$
+Let's make it weird and assume we also want to do some kind of composite sliding law
+$$u = -K\_1|\tau\|^{m\_1 - 1}\tau - K\_2|\tau\|^{m\_2 - 1}\tau.$$
+Knowing $u$ and $\tau$, we can pick $K\_1$ however like.
+We then manufacture the other sliding coefficient $K\_2$.
