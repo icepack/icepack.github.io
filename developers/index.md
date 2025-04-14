@@ -69,9 +69,6 @@ The process for submitting new code to icepack is to submit a [pull request](htt
 There are a few steps to this explained below.
 We welcome contributions of code to add new features of improve existing ones.
 When you do, you're a developer now.
-Join us...
-
-![meme](https://img.memecdn.com/join-us_o_1559835.jpg)
 
 We use the version control system git for managing the icepack source code and for keeping track of our work.
 If this is your first experience using git, a good resource is Aaron Meurer's [tutorial](http://www.asmeurer.com/git-workflow/).

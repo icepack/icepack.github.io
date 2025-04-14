@@ -21,6 +21,7 @@ Some features we're especially proud of include:
 * We've got a state-of-the-art inverse solver using the Gauss-Newton algorithm.
 
 For examples of what icepack is capable of, have a look at the [tutorials](/tutorials/).
+Icepack is built on the [Firedrake](https://firedrakeproject.org) package for finite element modeling.
 
 ## How to use this site
 
@@ -41,10 +42,12 @@ Please see the [contact](/contact/) page for how to get in touch.
 
 Several people and organizations have made this project possible.
 We're grateful to the National Science Foundation, National Aeronautics and Space Administration, and the University of Washington eScience Institute for their generous financial support.
+None of this would be possible without the fantastic [Firedrake](https://firedrakeproject.org) package for finite element modeling.
 The [Juneau Icefield Research Program](https://juneauicefield.org/) has provided wonderful opportunities for field work.
 [Jeremy Stock](http://jeremystock.com/) designed our logo.
 This webpage is powered by the static site generator [Nikola](https://getnikola.com).
 
-<img src="https://www.nsf.gov/images/logos/NSF_4-Color_bitmap_Logo_thumb.jpg" height="100px">
-<img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" height="100px">
-<img src="https://images.squarespace-cdn.com/content/v1/506e663fe4b04973cff68e47/1369952390562-6Z312A18G5AXIP7B4ZUH/ke17ZwdGBToddI8pDm48kPN_12wwgQFQ1P_MNUxodclZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PIptSEwx6RWl3Iho5G7dcdVrve9aC9KuCr35c8ZMFQhoQKMshLAGzx4R3EDFOm1kBS/JIRP_Blue.jpg" height="100px">
+<img src="/images/firedrake-logo.png", height="100px">
+<img src="/images/nsf-logo.png" height="100px">
+<img src="/images/nasa-logo.png" height="100px">
+<img src="/images/JIRP-logo.jpg" height="100px">
