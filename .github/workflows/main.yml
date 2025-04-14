@@ -8,7 +8,7 @@ jobs:
   nikola_build:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/firedrakeproject/firedrake-vanilla:2023-10
+      image: docker.io/firedrakeproject/firedrake-vanilla:2025-01
       options: --user root
     name: "Deploy Nikola to GitHub Pages"
     steps:
@@ -17,22 +17,20 @@ jobs:
         . /home/firedrake/firedrake/bin/activate
         echo PATH=$PATH >> $GITHUB_ENV
     - name: Checkout icepack source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: icepack/icepack
         path: icepack
     - name: Install icepack and dependencies
       run: |
         apt update && apt install -yq patchelf graphviz moreutils jq
-        pip install git+https://github.com/icepack/Trilinos.git
-        pip install git+https://github.com/icepack/pyrol.git
         pip install jupyter nbconvert netCDF4
         pip install "Nikola[extras]"
         pip install --editable ./icepack
     - name: Create jupyter kernel
       run: python -m ipykernel install --user --name=firedrake
     - name: Checkout website source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: website
     - name: Preparing
