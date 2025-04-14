@@ -24,7 +24,7 @@ jobs:
     - name: Install icepack and dependencies
       run: |
         apt update && apt install -yq patchelf graphviz moreutils jq
-        pip install jupyter nbconvert netCDF4
+        pip install jupyter nbconvert netCDF4 siphash24
         pip install "Nikola[extras]"
         pip install --editable ./icepack
     - name: Create jupyter kernel
