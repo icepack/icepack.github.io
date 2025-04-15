@@ -17,7 +17,7 @@
 <meta property="og:description" content="Meshes, functions¶This demo will show some of the basic features of the finite element modeling package firedrake, which icepack is built on.
 These are the kinds of things you'd need to know before yo">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2025-04-14T11:51:28-07:00">
+<meta property="article:published_time" content="2025-04-15T09:47:45-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -77,17 +77,6 @@ In this demo we'll use a mesh of the unit square.</p>
 <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">UnitSquareMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.12/site-packages/pytools/persistent_dict.py:52: RecommendedHashNotFoundWarning: Unable to import recommended hash 'siphash24.siphash13', falling back to 'hashlib.sha256'. Run 'python3 -m pip install siphash24' to install the recommended hash.
-  warn("Unable to import recommended hash 'siphash24.siphash13', "
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -169,7 +158,7 @@ So there can be some loss of precision when we interpolate an expression to a fu
 <div class="output">
 <div class="output_area">
 <div class="output_text output_subarea output_execute_result">
-<pre>Coefficient(WithGeometry(FunctionSpace(&lt;firedrake.mesh.MeshTopology object at 0x7fe6e1015610&gt;, FiniteElement('Lagrange', triangle, 2), name=None), Mesh(VectorElement(FiniteElement('Lagrange', triangle, 1), dim=2), 0)), 3)</pre>
+<pre>Coefficient(WithGeometry(FunctionSpace(&lt;firedrake.mesh.MeshTopology object at 0x7fa222ae5c40&gt;, FiniteElement('Lagrange', triangle, 2), name=None), Mesh(VectorElement(FiniteElement('Lagrange', triangle, 1), dim=2), 0)), 3)</pre>
 </div>
 </div>
 </div>

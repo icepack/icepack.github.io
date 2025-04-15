@@ -120,8 +120,8 @@ In his original paper on the subject, Forbes has a wonderful quote about this re
 </blockquote>
 <p>Both lava and ice flow can be described by the exact same mathematics, and that mathematics is the <em>Stokes equations.</em></p>
 <p>The Stokes equations consist of three parts: a conservation law, a constitutive relation, and boundary conditions.
-First, the <em>conservation law</em> states that the flux of stress across the boundary of a control volume $K$ cancels out exactly the body forces $f$:</p>
-<p>$$\int_{\partial K}(\tau - pI)\cdot\nu\, ds + \int_Kf\, dx = 0.$$</p>
+First, the <em>conservation law</em> states that the flux of stress across the boundary of a control volume $\omega$ cancels out exactly the body forces $f$:</p>
+<p>$$\int_{\partial\omega}(\tau - pI)\cdot\nu\, ds + \int_\omega f\, dx = 0.$$</p>
 <p>The right-hand side is zero because we're assuming that the surface and body forces are roughly in balance and thus the acceleration that a fluid parcel experiences is negligible.
 If we were to leave those terms in we would have the full Navier-Stokes equations.
 When we apply the usual continuum mechanics arguments, we get a system of PDEs</p>
@@ -158,7 +158,7 @@ The Schoof or regularized Coulomb friction law is a synthesis of the two types o
 <p>Rather than express the Stokes equations as one big nonlinear PDE, we assume in icepack that all of the diagnostic physics can be derived from an <em>action principle</em>.
 The action principle states that the velocity and pressure that solve the Stokes equations are really also the critical point of a certain functional, called the action.
 The action for the Stokes equations with the Weertman sliding law is</p>
-<p>$$J = \int_\Omega\left(\frac{n}{n + 1}A^{-1/n}|\dot\varepsilon|^{1/n + 1} - p\nabla\cdot u - f\cdot u\right)dx + \frac{m}{m + 1}\int_{\Gamma_b}C|u|^{1/m + 1}ds.$$</p>
+<p>$$J = \int_\Omega\left(\frac{2n}{n + 1}A^{-1/n}|\dot\varepsilon|^{1/n + 1} - p\nabla\cdot u - f\cdot u\right)dx + \frac{m}{m + 1}\int_{\Gamma_b}C|u|^{1/m + 1}ds.$$</p>
 <p>We've found that expressing the diagnostic model through an action principle is advantageous because there are more and better numerical methods for solving constrained convex optimization problems than there are for general nonlinear systems of equations.
 On top of that, an action principle is shorter to write down.</p>
 <h4 id="simplification">Simplification</h4>
@@ -178,7 +178,7 @@ Since the vertical component of the velocity and stress tensor has been eliminat
 <p>For the full 3D velocity, the trace of the strain rate tensor is zero -- this is another way of restating the divergence-free condition, which we'll discuss below.
 But the 2D strain rate of the depth-averaged velocity field can have non-zero divergence.
 The action functional then becomes</p>
-<p>$$J = \int_\Omega\left(\frac{n}{n + 1}hA^{-1/n}|\dot\varepsilon(u)|^{1/n + 1} + \frac{m}{m + 1}C|u|^{1/m + 1} + \rho gh\nabla s\cdot u\right)dx.$$</p>
+<p>$$J = \int_\Omega\left(\frac{2n}{n + 1}hA^{-1/n}|\dot\varepsilon(u)|^{1/n + 1} + \frac{m}{m + 1}C|u|^{1/m + 1} + \rho gh\nabla s\cdot u\right)dx.$$</p>
 <p>Note how the friction terms are no longer part of a boundary integral.
 The optimality conditions for this functional also result in a nonlinear elliptic system of partial differential equations.
 But the action is purely convex instead of having a saddle point structure like the Stokes equations.

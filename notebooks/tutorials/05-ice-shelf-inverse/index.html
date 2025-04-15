@@ -19,7 +19,7 @@ This time, we're going to estimate the fluidity coefficient $A$ in Glen's flow l
 $$\dot\varepsilon = A\tau^3$$
 from observational d">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2025-04-14T11:55:49-07:00">
+<meta property="article:published_time" content="2025-04-15T09:51:46-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -104,17 +104,6 @@ We can then use a descent method to iterate towards a critical point, which is h
 <span class="n">icepack</span><span class="o">.</span><span class="n">meshing</span><span class="o">.</span><span class="n">collection_to_gmsh</span><span class="p">(</span><span class="n">outline</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"larsen.msh"</span><span class="p">)</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">Mesh</span><span class="p">(</span><span class="s2">"larsen.msh"</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.12/site-packages/pytools/persistent_dict.py:52: RecommendedHashNotFoundWarning: Unable to import recommended hash 'siphash24.siphash13', falling back to 'hashlib.sha256'. Run 'python3 -m pip install siphash24' to install the recommended hash.
-  warn("Unable to import recommended hash 'siphash24.siphash13', "
-</pre>
-</div>
 </div>
 </div>
 </div>

@@ -47,9 +47,9 @@ In his original paper on the subject, Forbes has a wonderful quote about this re
 Both lava and ice flow can be described by the exact same mathematics, and that mathematics is the *Stokes equations.*
 
 The Stokes equations consist of three parts: a conservation law, a constitutive relation, and boundary conditions.
-First, the *conservation law* states that the flux of stress across the boundary of a control volume $K$ cancels out exactly the body forces $f$:
+First, the *conservation law* states that the flux of stress across the boundary of a control volume $\omega$ cancels out exactly the body forces $f$:
 
-$$\int_{\partial K}(\tau - pI)\cdot\nu\, ds + \int_Kf\, dx = 0.$$
+$$\int\_{\partial\omega}(\tau - pI)\cdot\nu\, ds + \int\_\omega f\, dx = 0.$$
 
 The right-hand side is zero because we're assuming that the surface and body forces are roughly in balance and thus the acceleration that a fluid parcel experiences is negligible.
 If we were to leave those terms in we would have the full Navier-Stokes equations.
@@ -75,21 +75,21 @@ By substituting this expression for the stress tensor into the conservation law,
 Finally, we have to know what conditions apply at the system boundaries.
 At the ice surface, there is effectively zero stress:
 
-$$(\tau - pI)\cdot\nu|_{z = s} = -p_0\nu$$
+$$(\tau - pI)\cdot\nu|\_{z = s} = -p\_0\nu$$
 
-where $p_0$ is atmospheric pressure.
+where $p\_0$ is atmospheric pressure.
 If we were explicitly modeling firn and snow, incorporating wind-blowing effects would be more of a problem.
 At the ice base things get much more interesting because there are different boundary conditions in the normal and tangential directions.
 In the normal direction, the ice velocity has to equal to the rate of basal melting:
 
-$$u\cdot\nu|_{z = b} = \dot m.$$
+$$u\cdot\nu|\_{z = b} = \dot m.$$
 
 In the tangential direction, frictional contact with the bed creates resistive stresses.
 The relationship between resistive stresses and the ice velocity and other fields is the content of the *sliding law*.
 One of the oldest proposed sliding laws, based on the theory of [*regelation*](https://en.wikipedia.org/wiki/Regelation), is due to work by Weertman in the 1960s.
 Weertman sliding is a power-law relation between stress and sliding speed:
 
-$$(\tau - pI)\cdot\nu|_{z = b} = -C|u|^{1/m - 1}u,$$
+$$(\tau - pI)\cdot\nu|\_{z = b} = -C|u|^{1/m - 1}u,$$
 
 where $m$ is the *sliding exponent*.
 In Weertman's theory, the sliding exponent is identical to the Glen flow law exponent $n$ because sliding occurs more through deformation within the ice.
@@ -102,7 +102,7 @@ Rather than express the Stokes equations as one big nonlinear PDE, we assume in 
 The action principle states that the velocity and pressure that solve the Stokes equations are really also the critical point of a certain functional, called the action.
 The action for the Stokes equations with the Weertman sliding law is
 
-$$J = \int_\Omega\left(\frac{n}{n + 1}A^{-1/n}|\dot\varepsilon|^{1/n + 1} - p\nabla\cdot u - f\cdot u\right)dx + \frac{m}{m + 1}\int_{\Gamma_b}C|u|^{1/m + 1}ds.$$
+$$J = \int\_\Omega\left(\frac{2n}{n + 1}A^{-1/n}|\dot\varepsilon|^{1/n + 1} - p\nabla\cdot u - f\cdot u\right)dx + \frac{m}{m + 1}\int_{\Gamma\_b}C|u|^{1/m + 1}ds.$$
 
 We've found that expressing the diagnostic model through an action principle is advantageous because there are more and better numerical methods for solving constrained convex optimization problems than there are for general nonlinear systems of equations.
 On top of that, an action principle is shorter to write down.
@@ -114,9 +114,9 @@ Nearly all terrestrial glacier flows have much wider horizontal than vertical ex
 By expanding the equations of motion in the aspect ratio $\delta = H/L$, it's possible to derive PDE systems that are much simpler than the Stokes equations.
 Eliminating terms that scale like $\delta$, the vertical component of the momentum balance becomes
 
-$$\frac{\partial}{\partial z}(\tau_{zz} - p) - \rho g = 0.$$
+$$\frac{\partial}{\partial z}(\tau\_{zz} - p) - \rho g = 0.$$
 
-By integrating this equation in the vertical direction and using the fact that $\tau_{xx} + \tau_{yy} + \tau_{zz} = 0$, we can write the pressure as a function of the surface elevation and the horizontal components of the deviatoric stress tensor.
+By integrating this equation in the vertical direction and using the fact that $\tau\_{xx} + \tau\_{yy} + \tau\_{zz} = 0$, we can write the pressure as a function of the surface elevation and the horizontal components of the deviatoric stress tensor.
 This leaves us with a 3D differential equation for the two horizontal components of the velocity.
 The `HybridModel` class in icepack describes this system, known in the literature as either the *first-order* equations or the *Blatter-Pattyn* equations.
 We can then depth-average them to arrive at a purely 2D system called the *shallow stream equations*.
@@ -132,7 +132,7 @@ For the full 3D velocity, the trace of the strain rate tensor is zero -- this is
 But the 2D strain rate of the depth-averaged velocity field can have non-zero divergence.
 The action functional then becomes
 
-$$J = \int_\Omega\left(\frac{n}{n + 1}hA^{-1/n}|\dot\varepsilon(u)|^{1/n + 1} + \frac{m}{m + 1}C|u|^{1/m + 1} + \rho gh\nabla s\cdot u\right)dx.$$
+$$J = \int\_\Omega\left(\frac{2n}{n + 1}hA^{-1/n}|\dot\varepsilon(u)|^{1/n + 1} + \frac{m}{m + 1}C|u|^{1/m + 1} + \rho gh\nabla s\cdot u\right)dx.$$
 
 Note how the friction terms are no longer part of a boundary integral.
 The optimality conditions for this functional also result in a nonlinear elliptic system of partial differential equations.

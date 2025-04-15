@@ -17,7 +17,7 @@
 <meta property="og:description" content="Help, the solver crashed!¶The previous tutorials have mostly used simple input data where we can rely on Firedrake's built-in numerical solvers to work on the first try.
 One exception to this was in t">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2025-04-14T11:51:44-07:00">
+<meta property="article:published_time" content="2025-04-15T09:48:00-07:00">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -88,17 +88,6 @@ MISMIP+ is a standard test problem for evaluating glaciological flow models and 
 <span class="n">Q</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">V</span> <span class="o">=</span> <span class="n">firedrake</span><span class="o">.</span><span class="n">VectorFunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">"CG"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-</div>
-<div class="output_wrapper">
-<div class="output">
-<div class="output_area">
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/firedrake/firedrake/lib/python3.12/site-packages/pytools/persistent_dict.py:52: RecommendedHashNotFoundWarning: Unable to import recommended hash 'siphash24.siphash13', falling back to 'hashlib.sha256'. Run 'python3 -m pip install siphash24' to install the recommended hash.
-  warn("Unable to import recommended hash 'siphash24.siphash13', "
-</pre>
-</div>
 </div>
 </div>
 </div>
@@ -381,13 +370,13 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  1 SNES Function norm 5.480577373167e+06
   2 SNES Function norm 5.647080148201e+06
+  3 SNES Function norm 5.475457080921e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  3 SNES Function norm 5.475457080921e+06
-  4 SNES Function norm 5.395947242374e+06
+<pre>  4 SNES Function norm 5.395947242374e+06
 </pre>
 </div>
 </div>
@@ -395,51 +384,46 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  5 SNES Function norm 5.325603796412e+06
   6 SNES Function norm 5.255728041832e+06
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>  7 SNES Function norm 5.185563042411e+06
+  7 SNES Function norm 5.185563042411e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  8 SNES Function norm 5.115038691794e+06
-  9 SNES Function norm 5.044144524186e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 10 SNES Function norm 4.972877116932e+06
+<pre>  9 SNES Function norm 5.044144524186e+06
+ 10 SNES Function norm 4.972877116932e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 11 SNES Function norm 4.901233051883e+06
- 12 SNES Function norm 4.829204138000e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 13 SNES Function norm 4.756767033025e+06
+<pre> 12 SNES Function norm 4.829204138000e+06
+ 13 SNES Function norm 4.756767033025e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 14 SNES Function norm 4.683872373464e+06
- 15 SNES Function norm 4.610443892275e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 16 SNES Function norm 4.536396639772e+06
+<pre> 15 SNES Function norm 4.610443892275e+06
+ 16 SNES Function norm 4.536396639772e+06
  17 SNES Function norm 4.461677318032e+06
 </pre>
 </div>
@@ -447,13 +431,13 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 18 SNES Function norm 4.386312090508e+06
- 19 SNES Function norm 4.310390499966e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 20 SNES Function norm 4.233945487049e+06
+<pre> 19 SNES Function norm 4.310390499966e+06
+ 20 SNES Function norm 4.233945487049e+06
  21 SNES Function norm 4.156893939679e+06
 </pre>
 </div>
@@ -461,26 +445,26 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 22 SNES Function norm 4.079178488317e+06
- 23 SNES Function norm 4.001045306745e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 24 SNES Function norm 3.923381604826e+06
+<pre> 23 SNES Function norm 4.001045306745e+06
+ 24 SNES Function norm 3.923381604826e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 25 SNES Function norm 3.847543556770e+06
- 26 SNES Function norm 3.773507891812e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 27 SNES Function norm 3.697208807850e+06
+<pre> 26 SNES Function norm 3.773507891812e+06
+ 27 SNES Function norm 3.697208807850e+06
 </pre>
 </div>
 </div>
@@ -488,13 +472,13 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 28 SNES Function norm 2.254802077992e+06
  29 SNES Function norm 1.705453423110e+06
- 30 SNES Function norm 2.487374445257e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 31 SNES Function norm 2.538577968160e+06
+<pre> 30 SNES Function norm 2.487374445257e+06
+ 31 SNES Function norm 2.538577968160e+06
 </pre>
 </div>
 </div>
@@ -502,13 +486,13 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 32 SNES Function norm 2.316657676231e+06
  33 SNES Function norm 2.126894258051e+06
- 34 SNES Function norm 1.994281615756e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 35 SNES Function norm 1.894733543640e+06
+<pre> 34 SNES Function norm 1.994281615756e+06
+ 35 SNES Function norm 1.894733543640e+06
 </pre>
 </div>
 </div>
@@ -516,40 +500,40 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 36 SNES Function norm 8.431789817564e+05
  37 SNES Function norm 1.555118234017e+06
- 38 SNES Function norm 7.151557168747e+05
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 38 SNES Function norm 7.151557168747e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 39 SNES Function norm 5.069806973716e+05
+ 40 SNES Function norm 3.258508351032e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 40 SNES Function norm 3.258508351032e+05
- 41 SNES Function norm 7.280287479400e+05
+<pre> 41 SNES Function norm 7.280287479400e+05
+ 42 SNES Function norm 3.975975753663e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 42 SNES Function norm 3.975975753663e+05
- 43 SNES Function norm 3.298258007234e+05
+<pre> 43 SNES Function norm 3.298258007234e+05
+ 44 SNES Function norm 2.437827234215e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 44 SNES Function norm 2.437827234215e+05
- 45 SNES Function norm 1.846270127212e+05
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="output_subarea output_stream output_stdout output_text">
-<pre> 46 SNES Function norm 1.381000318646e+05
+<pre> 45 SNES Function norm 1.846270127212e+05
+ 46 SNES Function norm 1.381000318646e+05
 </pre>
 </div>
 </div>
@@ -557,13 +541,13 @@ If you parse through all of this you can see that the residual norm went from $1
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 47 SNES Function norm 7.158492916430e+04
  48 SNES Function norm 2.565813911597e+04
- 49 SNES Function norm 3.099976556521e+03
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 50 SNES Function norm 2.415309034863e+02
+<pre> 49 SNES Function norm 3.099976556521e+03
+ 50 SNES Function norm 2.415309034863e+02
 Nonlinear solve failed to converge after 50 nonlinear iterations.
 Reason:
    DIVERGED_MAX_IT
@@ -710,51 +694,66 @@ What if we instead budgeted for more iterations?</p>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  5 SNES Function norm 5.325603796412e+06
   6 SNES Function norm 5.255728041832e+06
-  7 SNES Function norm 5.185563042411e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  7 SNES Function norm 5.185563042411e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  8 SNES Function norm 5.115038691794e+06
+  9 SNES Function norm 5.044144524186e+06
+ 10 SNES Function norm 4.972877116932e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  9 SNES Function norm 5.044144524186e+06
- 10 SNES Function norm 4.972877116932e+06
- 11 SNES Function norm 4.901233051883e+06
+<pre> 11 SNES Function norm 4.901233051883e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 12 SNES Function norm 4.829204138000e+06
+ 13 SNES Function norm 4.756767033025e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 13 SNES Function norm 4.756767033025e+06
- 14 SNES Function norm 4.683872373464e+06
- 15 SNES Function norm 4.610443892275e+06
+<pre> 14 SNES Function norm 4.683872373464e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 16 SNES Function norm 4.536396639772e+06
+<pre> 15 SNES Function norm 4.610443892275e+06
+ 16 SNES Function norm 4.536396639772e+06
  17 SNES Function norm 4.461677318032e+06
- 18 SNES Function norm 4.386312090508e+06
- 19 SNES Function norm 4.310390499966e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 20 SNES Function norm 4.233945487049e+06
- 21 SNES Function norm 4.156893939679e+06
+<pre> 18 SNES Function norm 4.386312090508e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 19 SNES Function norm 4.310390499966e+06
+ 20 SNES Function norm 4.233945487049e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 21 SNES Function norm 4.156893939679e+06
  22 SNES Function norm 4.079178488317e+06
 </pre>
 </div>
@@ -763,53 +762,88 @@ What if we instead budgeted for more iterations?</p>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 23 SNES Function norm 4.001045306745e+06
  24 SNES Function norm 3.923381604826e+06
- 25 SNES Function norm 3.847543556770e+06
- 26 SNES Function norm 3.773507891812e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 27 SNES Function norm 3.697208807850e+06
+<pre> 25 SNES Function norm 3.847543556770e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 26 SNES Function norm 3.773507891812e+06
+ 27 SNES Function norm 3.697208807850e+06
  28 SNES Function norm 2.254802077992e+06
- 29 SNES Function norm 1.705453423110e+06
- 30 SNES Function norm 2.487374445257e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 31 SNES Function norm 2.538577968160e+06
+<pre> 29 SNES Function norm 1.705453423110e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 30 SNES Function norm 2.487374445257e+06
+ 31 SNES Function norm 2.538577968160e+06
  32 SNES Function norm 2.316657676231e+06
- 33 SNES Function norm 2.126894258051e+06
- 34 SNES Function norm 1.994281615756e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 35 SNES Function norm 1.894733543640e+06
+<pre> 33 SNES Function norm 2.126894258051e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 34 SNES Function norm 1.994281615756e+06
+ 35 SNES Function norm 1.894733543640e+06
  36 SNES Function norm 8.431789817564e+05
- 37 SNES Function norm 1.555118234017e+06
- 38 SNES Function norm 7.151557168747e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 39 SNES Function norm 5.069806973716e+05
- 40 SNES Function norm 3.258508351032e+05
+<pre> 37 SNES Function norm 1.555118234017e+06
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 38 SNES Function norm 7.151557168747e+05
+ 39 SNES Function norm 5.069806973716e+05
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 40 SNES Function norm 3.258508351032e+05
  41 SNES Function norm 7.280287479400e+05
- 42 SNES Function norm 3.975975753663e+05
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 43 SNES Function norm 3.298258007234e+05
- 44 SNES Function norm 2.437827234215e+05
+<pre> 42 SNES Function norm 3.975975753663e+05
+ 43 SNES Function norm 3.298258007234e+05
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 44 SNES Function norm 2.437827234215e+05
  45 SNES Function norm 1.846270127212e+05
- 46 SNES Function norm 1.381000318646e+05
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 46 SNES Function norm 1.381000318646e+05
 </pre>
 </div>
 </div>
@@ -818,7 +852,12 @@ What if we instead budgeted for more iterations?</p>
 <pre> 47 SNES Function norm 7.158492916430e+04
  48 SNES Function norm 2.565813911597e+04
  49 SNES Function norm 3.099976556521e+03
- 50 SNES Function norm 2.415309034863e+02
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 50 SNES Function norm 2.415309034863e+02
 </pre>
 </div>
 </div>
@@ -914,35 +953,30 @@ To use a trust region method, we give a different argument for <code>"snes_type"
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>  6 SNES Function norm 2.298630174769e+07
   7 SNES Function norm 2.294400491613e+07
+  8 SNES Function norm 2.285846834629e+07
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  8 SNES Function norm 2.285846834629e+07
-  9 SNES Function norm 2.268348906507e+07
+<pre>  9 SNES Function norm 2.268348906507e+07
  10 SNES Function norm 2.231668500066e+07
+ 11 SNES Function norm 2.150280106671e+07
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 11 SNES Function norm 2.150280106671e+07
- 12 SNES Function norm 1.954590972955e+07
+<pre> 12 SNES Function norm 1.954590972955e+07
  13 SNES Function norm 1.352880133667e+07
+ 14 SNES Function norm 5.719870635666e+06
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 14 SNES Function norm 5.719870635666e+06
- 15 SNES Function norm 3.477097341342e+06
-</pre>
-</div>
-</div>
-<div class="output_area">
-<div class="output_subarea output_stream output_stdout output_text">
-<pre> 16 SNES Function norm 1.948905156717e+06
+<pre> 15 SNES Function norm 3.477097341342e+06
+ 16 SNES Function norm 1.948905156717e+06
  17 SNES Function norm 9.924709855265e+05
 </pre>
 </div>
@@ -981,13 +1015,13 @@ To use a trust region method, we give a different argument for <code>"snes_type"
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> 28 SNES Function norm 3.231351259296e+03
  29 SNES Function norm 4.838645509234e+02
+ 30 SNES Function norm 7.051910772154e+00
 </pre>
 </div>
 </div>
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre> 30 SNES Function norm 7.051910772154e+00
- 31 SNES Function norm 1.475489825636e-03
+<pre> 31 SNES Function norm 1.475489825636e-03
 </pre>
 </div>
 </div>
