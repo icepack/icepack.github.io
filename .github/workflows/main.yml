@@ -50,7 +50,9 @@ jobs:
         AKPYTHON_EXEC_IMPORT_UNAVAILABLE: 1  # TODO: try to remove this
         EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
         EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
-      run: make all --jobs $(nproc --all)
+      run: |
+        python fetch_data.py
+        make all --jobs $(nproc --all)
     - name: Publish
       working-directory: ./website
       run: |
