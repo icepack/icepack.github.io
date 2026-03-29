@@ -1,0 +1,14 @@
+/* JupyterLab theme variables used by xarray's HTML repr as its first fallback
+   when resolving its own --xr-* color variables. Defining them here causes
+   xarray output to inherit the Nord color scheme without needing to override
+   any xarray rules directly. */
+:root {
+    --jp-content-font-color0: var(--nord4);  /* primary text */
+    --jp-content-font-color2: var(--nord9);  /* secondary text (labels, section headers) */
+    --jp-content-font-color3: var(--nord10); /* tertiary text (previews, hints) */
+    --jp-border-color2:       var(--nord3);
+    --jp-layout-color0:       var(--nord0);
+    --jp-layout-color1:       var(--nord1);
+    --jp-layout-color2:       var(--nord2);
+    --jp-layout-color3:       var(--nord3);
+}

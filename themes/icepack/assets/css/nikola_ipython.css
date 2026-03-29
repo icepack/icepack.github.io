@@ -1,3 +1,5 @@
+@import url("xarray.css");
+
 /* Override the light gray background from the original nikola_ipython.css. */
 div.prompt {
   padding: 0.6em;
@@ -25,8 +27,14 @@ div.output_text {
   color: var(--nord4);
 }
 
-/* Override color: #333333 set by the original nikola_ipython.css, which would
-   make all text in notebook markdown cells dark regardless of page theme. */
+/* Override color: #000 set by ipython.min.css on all .rendered_html elements.
+   This affects both notebook markdown cells and HTML output (e.g. xarray).
+   The original nikola_ipython.css also set color: #333333 on div.text_cell_render
+   for the same reason; that rule is now redundant but kept for clarity. */
+.rendered_html {
+  color: var(--nord4);
+}
+
 div.text_cell_render {
   padding: 0px;
   color: var(--nord4);
