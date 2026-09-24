@@ -467,3 +467,5 @@ pre.code, .code .codetable, .highlight pre {
 
 /* Center graphviz diagrams on the page */
 p.graphviz { text-align: center; }
+p.graphviz svg g.graph > polygon { fill: none; }
+p.graphviz a:hover text { fill: var(--color-hover); }
