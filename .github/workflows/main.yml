@@ -8,27 +8,23 @@ jobs:
   nikola_build:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/firedrakeproject/firedrake-vanilla:2025-01
+      image: docker.io/firedrakeproject/firedrake-vanilla-default:2026.4.2
       options: --user root
     name: "Deploy Nikola to GitHub Pages"
     steps:
-    - name: Activate Firedrake virtual environment
-      run: |
-        . /home/firedrake/firedrake/bin/activate
-        echo PATH=$PATH >> $GITHUB_ENV
     - name: Checkout icepack source
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: icepack/icepack
         path: icepack
     - name: Install icepack and dependencies
       run: |
-        apt update && apt install -yq patchelf graphviz moreutils jq
-        pip install jupyter nbconvert netCDF4 siphash24
-        pip install "Nikola[extras]"
-        pip install --editable ./icepack
+        apt update && apt install -yq patchelf graphviz moreutils jq libglue1-mesa-dev libxft2-dev
+        pip3 install jupyter nbconvert netCDF4 siphash24
+        pip3 install "Nikola[extras]"
+        pip3 install --editable ./icepack
     - name: Create jupyter kernel
-      run: python -m ipykernel install --user --name=firedrake
+      run: python3 -m ipykernel install --user --name=firedrake
     - name: Checkout website source
       uses: actions/checkout@v4
       with:
@@ -36,8 +32,8 @@ jobs:
     - name: Preparing
       working-directory: ./website
       run: |
-        src_branch=$(python -c 'import conf; print(conf.GITHUB_SOURCE_BRANCH)')
-        dest_branch=$(python -c 'import conf; print(conf.GITHUB_DEPLOY_BRANCH)')
+        src_branch=$(python3 -c 'import conf; print(conf.GITHUB_SOURCE_BRANCH)')
+        dest_branch=$(python3 -c 'import conf; print(conf.GITHUB_DEPLOY_BRANCH)')
         git remote add ghpages "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" || true
         git fetch ghpages $dest_branch || true
         git checkout -b $dest_branch --track ghpages/$dest_branch || true
@@ -51,7 +47,7 @@ jobs:
         EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
         EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
       run: |
-        python fetch_data.py
+        python3 fetch_data.py
         make all --jobs $(nproc --all)
     - name: Publish
       working-directory: ./website
