@@ -19,7 +19,7 @@ jobs:
         path: icepack
     - name: Install icepack and dependencies
       run: |
-        apt update && apt install -yq patchelf graphviz moreutils jq libglue1-mesa-dev libxft2-dev
+        apt update && apt install -yq patchelf graphviz moreutils jq libglu1-mesa-dev libxft2-dev
         pip3 install jupyter nbconvert netCDF4 siphash24
         pip3 install "Nikola[extras]"
         pip3 install --editable ./icepack
