@@ -27,7 +27,7 @@ notebooks: $(patsubst $(ICEPACK)/notebooks/%.ipynb,pages/notebooks/%.ipynb,$(NOT
 
 pages/notebooks/%.ipynb: executed-notebooks/%.ipynb
 	rm -f $@
-	python -m nikola new_page \
+	python3 -m nikola new_page \
 	    --format ipynb \
 	    --title="$$(python3 extract_title.py $<)" \
 	    --import=$< \
@@ -35,11 +35,11 @@ pages/notebooks/%.ipynb: executed-notebooks/%.ipynb
 	jq '.metadata.nikola += {hidetitle: "True"}' $@ | sponge $@
 
 plugins/graphviz/graphviz.plugin:
-	python -m nikola plugin --install graphviz
+	python3 -m nikola plugin --install graphviz
 
 all: plugins/graphviz/graphviz.plugin notebooks
-	python -m nikola build
+	python3 -m nikola build
 
 clean:
 	rm pages/*.ipynb executed-demos/*.ipynb
-	python -m nikola clean
+	python3 -m nikola clean
