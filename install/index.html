@@ -53,41 +53,40 @@ We recommend starting with Docker if you're using MacOS or Windows.
 If you run into difficulties installing Firedrake, please consult their <a href="https://firedrakeproject.org/download.html#system-requirements">website</a>, which includes a debugging guide and other information on system requirements.
 For other problems, you can always <a href="../contact/">get in touch</a> for more assistance.</p>
 <h4 id="from-docker">From Docker</h4>
-<p><strong>Note:</strong> The install procedure for Firedrake has changed recently (March 2025) and so has the file structure and naming of the most recent Docker images.
-The recommendations below are on the most recent Firedrake docker image (2025-01) that works like it always has.
-Expect some changes to this soon as we adjust to the new images.</p>
 <p>Docker is a command-line tool that lets you pretend like you're using a different OS.
 The blueprint for how this OS is constructed is called an <em>image</em>.
 For example, there's a Docker image that has Firedrake already installed on Ubuntu.
-These images are shareable and you can upload them to the internet, for example to <a href="https://hub.docker.com">DockerHub</a> or the GitHub container registry.
-From an image, you can then create <em>containers</em>, which are running instances of the desired OS.
-These containers are mostly isolated from the rest of your system, so you can set them up and tear them down without doing anything permanent.
+These images are shareable and you can upload them to the internet, for example to <a href="https://hub.docker.com">DockerHub</a>.
+From an image, you create a <em>container</em>: a running instances of that OS.
+A container is isolated from the rest of your system.
+You can set them up and tear them down without doing anything permanent.
 Using Docker requires root privileges, so it'll work well on your own machine but not on a supercomputer.
 The advantage of Docker is that it saves you from having to install Firedrake yourself.
-There are several things to learn first, but it's a good tool to be familiar with on principle.</p>
+There are things to learn, but it's a good tool to be familiar with on principle.</p>
 <p>You'll first need to <a href="https://docs.docker.com/get-docker/">install Docker</a> and make sure that it's running.
 Once you have Docker, you can fetch a recent Firedrake image like so:</p>
-<div class="code"><pre class="code literal-block">docker<span class="w"> </span>pull<span class="w"> </span>firedrakeproject/firedrake-vanilla:2025-01
+<div class="code"><pre class="code literal-block">docker<span class="w"> </span>pull<span class="w"> </span>firedrakeproject/firedrake-vanilla-default:2026.4.2
 </pre></div>
 
-<p>The <code>firedrakeproject</code> part is the organization; <code>firedrake-vanilla</code> is the image name; and <code>2025-01</code> is the tag or version number of the image.
+<p>The <code>firedrakeproject</code> part is the organization; <code>firedrake-vanilla-default</code> is the image name; and <code>2026.4.2</code> is the tag or version number of the image.
 You can see all of the images that the Firedrake project has created and uploaded to DockerHub <a href="https://hub.docker.com/u/firedrakeproject">here</a>.</p>
 <p>Now that you have the Firedrake image, you can start a container like so:</p>
 <div class="code"><pre class="code literal-block">docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--interactive<span class="w"> </span>--tty<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>firedrakeproject/firedrake-vanilla:2025-01
+<span class="w">    </span>firedrakeproject/firedrake-vanilla-default:2026.4.2
 </pre></div>
 
 <p>The options are worth breaking down a bit: <code>--interactive --tty</code> tells Docker that we want to start up a container where we can type shell commands and receive printed feedback.
-It's also possible to start a container that runs in the background where we don't use it interactively at all, and this is very common for web applications.
+It's also possible to start a container that runs in the background where we don't use it interactively at all.
+This is common for, say, a web server.
 But for our purposes we'll always be using containers interactively.</p>
-<p>Within this container, everything will appear to you as if you're running a terminal session on Ubuntu.
-From this terminal session, you can see that the current user is called <code>firedrake</code> by running the command <code>whoami</code> and that there's a folder in this user's home directory called <code>firedrake</code> containing the Firedrake installation.
-You'll next want to activate the Firedrake virtual environment:</p>
-<div class="code"><pre class="code literal-block"><span class="nb">source</span><span class="w"> </span>~/firedrake/bin/activate
+<p>Within a container, everything will appear to you as if you're running a terminal session on Ubuntu as the root user.
+Firedrake is already installed in this image.
+You can test that by running</p>
+<div class="code"><pre class="code literal-block"><span class="w">    </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import firedrake; help(firedrake)"</span>
 </pre></div>
 
-<p>For more information about virtual environments, what they do, and why Firedrake uses one, you can read the section below about installing Firedrake from source.</p>
+<p>in the terminal.</p>
 <p>Next, install icepack and some of its dependencies:</p>
 <div class="code"><pre class="code literal-block">sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>patchelf
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/icepack/icepack.git
@@ -98,7 +97,7 @@ pip<span class="w"> </span>install<span class="w"> </span>--editable<span class=
 <div class="code"><pre class="code literal-block">pytest<span class="w"> </span>-s<span class="w"> </span>icepack/test/ice_shelf_test.py
 </pre></div>
 
-<p>Your icepack installation lives in the directory <code>~/icepack</code>.</p>
+<p>Your icepack installation lives in the directory <code>/icepack</code>.</p>
 <p>The commands above are the bare minimum to get you started.
 There are a few more things that you might need to know in order to be productive.
 By default, a Docker container is isolated from your host system, which means no sharing of files or ports.
@@ -108,7 +107,7 @@ To do that, we need to add an extra flag when we start up the container:</p>
 <span class="w">    </span>--interactive<span class="w"> </span>--tty<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--volume<span class="w"> </span>&lt;/path/on/host&gt;:&lt;/path/on/container&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--publish<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>firedrakeproject/firedrake-vanilla:2025-01
+<span class="w">    </span>firedrakeproject/firedrake-vanilla-default:2026.4.2
 </pre></div>
 
 <p>where <code>&lt;/path/on/host&gt;</code> is the absolute path of the directory you want to share on your host system, and likewise for the container.
@@ -119,7 +118,7 @@ Once you start up a container, there's a bunch of installation you have to do, a
 To save you the trouble down the line, you can build your own Docker image off of the Firedrake image.
 Building a Docker image is specified by a Dockerfile.
 The text below shows the contents of a Dockerfile containing the commands above:</p>
-<div class="code"><pre class="code literal-block"><span class="k">FROM</span><span class="w"> </span><span class="s">firedrakeproject/firedrake-vanilla:2025-01</span>
+<div class="code"><pre class="code literal-block"><span class="k">FROM</span><span class="w"> </span><span class="s">firedrakeproject/firedrake-vanilla:2026.4.2</span>
 <span class="k">RUN</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>patchelf
 <span class="k">RUN</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>firedrake/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/icepack/icepack.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
@@ -136,13 +135,12 @@ You can then do
 <code>docker run --interactive --tty &lt;my-image-name&gt;</code>
 to start a container with icepack and all its dependencies already installed.</p>
 <h4 id="from-source">From source</h4>
-<p><strong>Note:</strong> The procedure to install Firedrake has changed recently (March 2025).
-This is still in flux and some of the recommendations below might change.</p>
-<p>The Firedrake <a href="https://www.firedrakeproject.org/install.html">website</a> includes instructions for how to install it.
+<p>The Firedrake <a href="https://www.firedrakeproject.org/install.html">website</a> has instructions for how to install it.
 We won't repeat the instructions here, but the process consists of 
 1. installing system dependencies, like a C compiler
-1. installing <a href="https://petsc.org">PETSc</a> with certain configuration options that Firedrake needs, and
-1. installing Firedrake using pip.</p>
+1. installing <a href="https://petsc.org">PETSc</a> with certain configuration options that Firedrake needs,
+1. installing Firedrake using pip, and
+1. testing that Firedrake can run correctly.</p>
 <p>PETSc is a large C library and can take some time to configure and build.</p>
 <p>You can install icepack once Firedrake is up and working.
 Assuming that you've installed Firedrake in a Python <a href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/">virtual environment</a>, you'll need to have that environment activated first.
@@ -202,7 +200,7 @@ You can save yourself the trouble of remembering where the activate script lives
 </pre></div>
 
 <p>When you type <code>firedrake-env</code> at the terminal, the firedrake virtual environment will be activated.
-If you find yourself using lots of different virtual environments, you might also like <a href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper</a>.</p>
+There are tools like <a href="https://github.com/pyenv/pyenv">pyenv</a> that can do environment management and many other things besides.</p>
 <h5 id="docker">Docker</h5>
 <p>Docker can be a bit of a disk space hog.
 A typical image can be 2GB or more, and even stopped containers take up disk space.
@@ -228,14 +226,6 @@ When this happens, you can look for the hash of the intermediate image in the te
 Then you can use <code>docker commit</code> to make give a name to the image at that failing build stage.
 Finally you can start a container from the failing stage to recover the log file.
 See this <a href="https://forums.docker.com/t/how-to-debug-build-failures/7049/3">forum post</a> for more detail.</p>
-<h5 id="petsc">PETSc</h5>
-<p>Firedrake uses the library <a href="https://www.mcs.anl.gov/petsc/">PETSc</a> for many of its internal data structures (meshes, vectors, matrices).
-PETSc has loads of optional features, chiefly interfaces to other computational libraries.
-Some of these features are mandatory for Firedrake.
-The Firedrake install script will build its own PETSc installation with the right configuration, but this could create problems if you already do have PETSc installed on your system.
-In that case, you will need to unset <code>$PETSC_DIR</code> and <code>$PETSC_ARCH</code> while installing Firedrake and every time you activate the virtual environment.
-You can add an extra line to the <code>firedrake-env</code> command above to unset these variables if you want to keep a pre-existing PETSc installation.
-While installing Firedrake will fail with an error if you have a pre-existing PETSc installation, trying to run a script that uses Firedrake will instead crash with a segmentation fault if you have not first unset the PETSc environment variables.</p>
     </div>
     
 

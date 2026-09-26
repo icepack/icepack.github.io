@@ -18,8 +18,8 @@ You can find them under the directory `notebooks/`.
 .. graphviz::
 
     digraph tutorials {
-        node [fontname="helvetica", shape="plaintext", fontcolor="#007bff", fontsize="12"];
-        edge [arrowsize=0.25, color="#4F5151"];
+        node [fontname="helvetica", shape="plaintext", fontcolor="#88C0D0", fontsize="12"];
+        edge [arrowsize=0.25, color="#4C566A"];
         ranksep=0.15;
         rankdir="TB";
         splines="false";
@@ -46,7 +46,7 @@ You can find them under the directory `notebooks/`.
 
         subgraph cluster_planview_tutorials {
             penwidth=0;
-            fontcolor="#4F5151"
+            fontcolor="#D8DEE9";
             fontname="helvetica";
             label="Tutorials";
             meshes_functions -> synthetic_ice_sheet;
@@ -59,7 +59,7 @@ You can find them under the directory `notebooks/`.
 
         subgraph cluster_flowband_tutorials {
             penwidth=0;
-            fontcolor="#4F5151"
+            fontcolor="#D8DEE9";
             fontname="helvetica";
             label="Flowband\ntutorials";
             meshes_functions -> synthetic_ice_stream_x -> hybrid_ice_stream_xz;
@@ -69,7 +69,7 @@ You can find them under the directory `notebooks/`.
 
         subgraph cluster_how_to {
             penwidth=0;
-            fontcolor="#4F5151"
+            fontcolor="#D8DEE9";
             fontname="helvetica";
             label="How-to\nguides";
             labeljust="r";

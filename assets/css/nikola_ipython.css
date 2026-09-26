@@ -1,7 +1,10 @@
+@import url("xarray.css");
+
+/* Override the light gray background from the original nikola_ipython.css. */
 div.prompt {
   padding: 0.6em;
   font-size: 13px;
-  background-color: #E9E9E9;
+  background-color: var(--nord1);
   margin-right: 1em;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -13,13 +16,28 @@ div.output_prompt {
   margin: 0 5px 0 0px;
 }
 
+/* Override color: black set by ipython.min.css on output pre elements. */
 div.output_area pre {
   font-size: 13px;
+  color: var(--nord4);
+}
+
+/* Override color: #000 set by ipython.min.css on text output (print statements). */
+div.output_text {
+  color: var(--nord4);
+}
+
+/* Override color: #000 set by ipython.min.css on all .rendered_html elements.
+   This affects both notebook markdown cells and HTML output (e.g. xarray).
+   The original nikola_ipython.css also set color: #333333 on div.text_cell_render
+   for the same reason; that rule is now redundant but kept for clarity. */
+.rendered_html {
+  color: var(--nord4);
 }
 
 div.text_cell_render {
   padding: 0px;
-  color: #333333;
+  color: var(--nord4);
 }
 
 .rendered_html p {
@@ -38,10 +56,20 @@ div.text_cell_render {
   text-decoration: none;
 }
 
+/* Override background-color: #DDDDDD and color: #000 set by ipython.min.css
+   on pre and code elements inside rendered notebook markdown cells. */
 .rendered_html pre, .rendered_html code {
-  background-color: #DDDDDD;
+  background-color: var(--nord1);
+  color: var(--nord4);
   margin: 1em 0em;
   font-size: 14px;
+}
+
+/* Add padding and rounded corners to inline code in notebook markdown cells,
+   matching the styling applied to inline code in plain markdown pages. */
+.rendered_html :not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
 }
 
 .rendered_html pre {
